@@ -18,73 +18,80 @@ use App\Entity\Product;
 #[Route('/user')]
 class UserInformationController extends AbstractController
 {
-    #[Route('/profile', name: 'app_user_information_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
-    {
-        $user = $this->getUser();
-        $userId = $user->getId();
+#[Route('/profile', name: 'app_user_information_index', methods: ['GET'])]
+public function index(EntityManagerInterface $entityManager): Response
+{
+    $user = $this->getUser();
+    $userId = $user->getId();
 
-        $userInformationRepository = $entityManager->getRepository(UserInformation::class);
-        $sefareshatRepository = $entityManager->getRepository(Sefareshat::class);
-        $productRepository = $entityManager->getRepository(Product::class);
+    $userInformationRepository = $entityManager->getRepository(UserInformation::class);
+    $sefareshatRepository = $entityManager->getRepository(Sefareshat::class);
+    $productRepository = $entityManager->getRepository(Product::class);
 
-        // Fetch UserInformation and all products
-        $userInformations = $userInformationRepository->findBy(['User' => $userId]);
-        $products = $productRepository->findBy(['published' => 1]);
+    // Fetch UserInformation and all published products
+    $userInformations = $userInformationRepository->findBy(['User' => $userId]);
+    $products = $productRepository->findBy(['published' => 1]);
 
-        $purchasedProducts = $sefareshatRepository->createQueryBuilder('s')
-            ->where('s.user = :user')
-            ->andWhere('s.product IN (:productIds)')
-            ->setParameter('user', $user)
-            ->setParameter('productIds', [1, 2])
-            ->getQuery()
-            ->getResult();
+    // Fetch purchased products for the user
+    $purchasedProducts = $sefareshatRepository->createQueryBuilder('s')
+        ->where('s.user = :user')
+        ->andWhere('s.product IN (:productIds)')
+        ->setParameter('user', $user)
+        ->setParameter('productIds', [1, 2])
+        ->getQuery()
+        ->getResult();
 
-        $hasPurchasedProduct1 = false;
-        $hasPurchasedProduct2 = false;
+    // Track purchased products
+    $hasPurchasedProduct1 = false;
+    $hasPurchasedProduct2 = false;
 
-        foreach ($purchasedProducts as $purchasedProduct) {
-            $productId = $purchasedProduct->getProduct()->getId();
-            $hasPurchasedProduct1 |= ($productId == 1);
-            $hasPurchasedProduct2 |= ($productId == 2);
-        }
-
-        $results = array_map(function($userInformation) use ($products, $hasPurchasedProduct1, $hasPurchasedProduct2, $sefareshatRepository, $user) {
-            $completion = min(array_sum(array_map(fn($field) => !empty($field) ? 5 : 0, [
-                $userInformation->getFullName(),
-                $userInformation->getDesignation(),
-                $userInformation->getAddress(),
-                $userInformation->getPhone(),
-                $userInformation->getEmail(),
-                $userInformation->getImage(),
-                $userInformation->getName(),
-            ])) + array_sum(array_map(function($section) {
-                $weights = [
-                    'درباره من' => [6, 7],
-                    'تجربیات' => [5, 5, 2, 2, 1],
-                    'تحصیلات' => [5, 5, 2, 2, 1],
-                    'توانایی ها' => [5, 5, 1],
-                    'شبکه های اجتماعی' => [5, 5, 1],
-                ];
-                return array_sum(array_map(fn($weight, $field) => $field ? $weight : 0, $weights[$section->getType()], [
-                    $section->getDescription(), $section->getShtype(), $section->getTitle(),
-                    $section->getStart(), $section->getEnd(),
-                ]));
-            }, $userInformation->getSections()->toArray())), 100);  // Convert PersistentCollection to array
-
-            $productPurchases = array_map(function($product) use ($hasPurchasedProduct1, $hasPurchasedProduct2, $sefareshatRepository, $user) {
-                return [
-                    'product' => $product,
-                    'hasPurchased' => $hasPurchasedProduct1 || $product->getId() == 2 ||
-                        count($sefareshatRepository->findBy(['user' => $user, 'product' => $product])) > 0,
-                ];
-            }, $products);
-
-            return compact('userInformation', 'completion', 'hasPurchasedProduct1', 'productPurchases');
-        }, $userInformations);
-
-        return $this->render('user_information/index.html.twig', compact('results'));
+    foreach ($purchasedProducts as $purchasedProduct) {
+        $productId = $purchasedProduct->getProduct()->getId();
+        $hasPurchasedProduct1 |= ($productId == 1);
+        $hasPurchasedProduct2 |= ($productId == 2);
     }
+
+    // Map user information to the results array
+    $results = array_map(function($userInformation) use ($products, $hasPurchasedProduct1, $hasPurchasedProduct2, $sefareshatRepository, $user) {
+        // Calculate completion percentage
+        $completion = min(array_sum(array_map(fn($field) => !empty($field) ? 5 : 0, [
+            $userInformation->getFullName(),
+            $userInformation->getDesignation(),
+            $userInformation->getAddress(),
+            $userInformation->getPhone(),
+            $userInformation->getEmail(),
+            $userInformation->getImage(),
+            $userInformation->getName(),
+        ])) + array_sum(array_map(function($section) {
+            $weights = [
+                'درباره من' => [6, 7],
+                'تجربیات' => [5, 5, 2, 2, 1],
+                'تحصیلات' => [5, 5, 2, 2, 1],
+                'توانایی ها' => [5, 5, 1],
+                'شبکه های اجتماعی' => [5, 5, 1],
+            ];
+            return array_sum(array_map(fn($weight, $field) => $field ? $weight : 0, $weights[$section->getType()], [
+                $section->getDescription(), $section->getShtype(), $section->getTitle(),
+                $section->getStart(), $section->getEnd(),
+            ]));
+        }, $userInformation->getSections()->toArray())), 100);
+
+        // Check purchase status for each product
+        $productPurchases = array_map(function($product) use ($hasPurchasedProduct1, $hasPurchasedProduct2, $sefareshatRepository, $user) {
+            $isPurchased = $hasPurchasedProduct1 || $product->getId() == 2 ||
+                           count($sefareshatRepository->findBy(['user' => $user, 'product' => $product])) > 0;
+            return [
+                'product' => $product,
+                'hasPurchased' => $isPurchased,
+            ];
+        }, $products);
+
+        return compact('userInformation', 'completion', 'hasPurchasedProduct1', 'productPurchases');
+    }, $userInformations);
+
+    return $this->render('user_information/index.html.twig', compact('results'));
+}
+
 
     #[Route('/information/new/{variable}', defaults: ["variable" => '1'], name: 'app_user_information_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, Service $service, string $variable): Response

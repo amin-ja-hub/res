@@ -16,8 +16,9 @@ class UserInformation
     #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(type: "integer", nullable: true)]
-    private ?int $product = null;
+    #[ORM\ManyToOne(targetEntity: "Product")]
+    #[ORM\JoinColumn(name: "Product", referencedColumnName: "id", nullable: true)]
+    private ?Product $product = null;
 
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $fullName;
@@ -186,12 +187,12 @@ class UserInformation
         return $this;
     }
 
-    public function getProduct(): ?int
+    public function getProduct(): ?Product
     {
         return $this->product;
     }
 
-    public function setProduct(?int $product): static
+    public function setProduct(?Product $product): static
     {
         $this->product = $product;
 

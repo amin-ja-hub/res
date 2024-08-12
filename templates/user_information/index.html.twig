@@ -32,7 +32,7 @@
                                             <!-- When completion is 100%, handle product-related checks -->
                                             {% if result.userInformation.product %}
                                                 {% if result.hasPurchasedProduct1 %}
-                                                <a href="{{ path('app_user_information_show', {'id': result.userInformation.id, 'temp': result.userInformation.product }) }}" class=" p-0">
+                                                <a href="{{ path('app_user_information_show', {'id': result.userInformation.id, 'temp': result.userInformation.product.htmlfile }) }}" class=" p-0">
                                                      بازدید
                                                 </a>
                                                 {% else %}
