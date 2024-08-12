@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ContactUs{% endblock %}
+
+{% block body %}
+    <h1>Create new ContactUs</h1>
+
+    {{ include('contact_us/_form.html.twig') }}
+
+    <a href="{{ path('app_contact_us_index') }}">back to list</a>
+{% endblock %}

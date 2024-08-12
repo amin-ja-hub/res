@@ -1,0 +1,878 @@
+{% extends "base.html.twig" %}
+{% block title %}a{% endblock title %}
+{% block css %}
+    <link href="{{ asset('panel/user/persian-datepicker.min.css') }}" rel="stylesheet" type="text/css" />
+<style>
+    #success-message {
+        display: none;
+        background-color: #4CAF50; /* Green background */
+        color: white; /* White text */
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 5px; /* Rounded corners */
+        text-align: center; /* Centered text */
+        font-size: 16px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        position: fixed; /* Stay fixed at the top of the page */
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000; /* Ensure it's on top of other elements */
+        width: 300px; /* Fixed width */
+        opacity: 0; /* Start with the message hidden */
+        transition: opacity 1s ease-in-out; /* Smooth transition for showing/hiding */
+    }
+
+    #success-message.show {
+        display: block;
+        opacity: 1; /* Fully visible */
+    }
+
+    #success-message.hide {
+        opacity: 0; /* Fully invisible */
+    }
+</style>
+
+
+{% endblock css %}
+{% block jshead %}
+    <script src="{{ asset('panel/assets/js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('panel/user/persian-date.min.js') }}"></script>
+    <script src="{{ asset('panel/user/persian-datepicker.min.js') }}"></script>
+    <script src="{{ asset('panel/user/moment.min.js') }}"></script>
+{% endblock jshead %}
+{% block body %}
+
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data','id':'data-form'}}) }}
+        <div class="container-fluid">
+            <div class="row">
+                <input type="hidden" name="id" value="{{ userInformation.id }}">
+                <main class="container mt-4">
+                    <div class="tab-container">
+                        <div class="tabs mb-3">
+                            <button id="defaultOpen" class="btn btn-primary submit-button" onclick="openTab(event, 'Step1')" type="button" ><i class="bi bi-info-square-fill" style='font-size:24px'></i> اطلاعات عمومی</button>
+                            <button id="tab2" class="btn btn-primary submit-button" onclick="openTab(event, 'Step2')"  type="button" ><i class="bi bi-person-square "style='font-size:24px'></i> درباره من</button>
+                            <button class="btn btn-primary submit-button" onclick="openTab(event, 'Step3')" type="button"><i class="bi bi-clock-history" style='font-size:24px'></i> تجربیات</button>
+                            <button class="btn btn-primary submit-button" onclick="openTab(event, 'Step4')" type="button"><i class="bi bi-building" style='font-size:24px'></i> تحصیلات</button>
+                            <button class="btn btn-primary submit-button" onclick="openTab(event, 'Step5')" type="button"><i class="bi bi-building" style='font-size:24px'></i> توانایی ها</button>
+                            <button class="btn btn-primary submit-button" onclick="openTab(event, 'Step6')" type="button"><i class="bi bi-reception-4 " style='font-size:24px'></i>شبکه های اجتماعی</button>
+                        </div>
+                        <div id="success-message">اطلاعات با موفقیت ثبت شد</div>
+                        <div class="tab-content-container">
+                            <div class="tab-content" id="Step1">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="col-12">
+                                            <label for="full_name" class="form-label">نام و نام خانوادگی:</label>
+                                            <input type="text" id="full_name" name="full_name" class="form-control" value="{{ userInformation.fullname }}" placeholder="نام و نام خانوادگی">
+                                            <div class="text-muted fs-7">نام و نام خانوادگی خود را به صورت کامل وارد کنید.</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label for="designation" class="form-label">شغل:</label>
+                                                <input type="text" id="designation" name="designation" class="form-control" value="{{ userInformation.designation }}" placeholder="برای مثال:گرافیست">
+                                                <div class="text-muted fs-7">شغل خود را وارد کنید.</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="address" class="form-label">آدرس:</label>
+                                                <input type="text" id="address" name="address" class="form-control" placeholder="برای مثال: ایران - تهران" value="{{ userInformation.address }}">
+                                                <div class="text-muted fs-7">آدرس حدودی خود را وارد کنید.</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="phone" class="form-label">تلفن:</label>
+                                                <input type="text" id="phone" name="phone" class="form-control" dir="rtl" placeholder="برای مثال: 09123456789" value="{{ userInformation.phone }}">
+                                                <div class="text-muted fs-7">شماره تماس حود را وارد کنید.</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="email" class="form-label">ایمیل:</label>
+                                                <input type="text" id="email" name="email" class="form-control" placeholder="برای مثال: example@example" value="{{ userInformation.email }}" >
+                                                <div class="text-muted fs-7">ایمیل خود را وارد کنید.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <!--begin::کناری column-->
+                                        <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
+                                                <!--begin::Thumbnail settings-->
+                                                <div class="card card-flush py-4">
+                                                        <!--begin::کارت header-->
+                                                        <div class="card-header">
+                                                                <!--begin::کارت title-->
+                                                                <div class="card-title">
+                                                                        <h2>تصویر پروفایل</h2>
+                                                                </div>
+                                                                <!--end::کارت title-->
+                                                        </div>
+                                                        <!--end::کارت header-->
+                                                        <!--begin::کارت body-->
+                                                        <div class="card-body text-center pt-0">
+                                                                <!--begin::Image input-->
+                                                                <!--begin::Image input placeholder-->
+                                                                <style>.image-input-placeholder { background-image: url('{%if userInformation.image %}{{ userInformation.image.path ~ '/300x300_' ~ userInformation.image.name ~ '.webp' }}{%else%}https://metronictheme.job100.ir/rtl/metronic8/demo8/dist/assets/media/svg/files/blank-image.svg{% endif%}'); } [data-bs-theme="dark"] .image-input-placeholder { background-image: url('{%if userInformation.image %}{{ userInformation.image.path ~ '/300x300_' ~ userInformation.image.name ~ '.webp' }}{%else%}https://metronictheme.job100.ir/rtl/metronic8/demo8/dist/assets/media/svg/files/blank-image.svg{% endif%}'); }</style>
+                                                                <!--end::Image input placeholder-->
+                                                                <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true">
+                                                                        <!--begin::نمایش existing avatar-->
+                                                                        <div class="image-input-wrapper w-150px h-150px"></div>
+                                                                        <!--end::نمایش existing avatar-->
+                                                                        <!--begin::Tags-->
+                                                                        <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="تعویض آواتار">
+                                                                                <i class="ki-duotone ki-pencil fs-7">
+                                                                                        <span class="path1"></span>
+                                                                                        <span class="path2"></span>
+                                                                                </i>
+                                                                                <!--begin::Inputs-->
+                                                                                <input type="file" name="file" accept=".png, .jpg, .jpeg" />
+                                                                                <input type="hidden" name="avatar_remove" />
+                                                                                <!--end::Inputs-->
+                                                                        </label>
+                                                                        <!--end::Tags-->
+                                                                        <!--begin::انصراف-->
+                                                                        <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="انصراف avatar">
+                                                                                <i class="ki-duotone ki-cross fs-2">
+                                                                                        <span class="path1"></span>
+                                                                                        <span class="path2"></span>
+                                                                                </i>
+                                                                        </span>
+                                                                        <!--end::انصراف-->
+                                                                        <!--begin::حذف-->
+                                                                        <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="حذف آواتار">
+                                                                                <i class="ki-duotone ki-cross fs-2">
+                                                                                        <span class="path1"></span>
+                                                                                        <span class="path2"></span>
+                                                                                </i>
+                                                                        </span>
+                                                                        <!--end::حذف-->
+                                                                </div>
+                                                                <!--end::Image input-->
+                                                                <!--begin::توضیحات-->
+                                                                <div class="text-muted fs-7">یک عکس پرسنلی با سایز 300*200 وارد کنید</div>
+                                                                <!--end::توضیحات-->
+                                                        </div>
+                                                        <!--end::کارت body-->
+                                                </div>
+                                                <!--end::Thumbnail settings-->
+                                        </div>
+                                        <!--end::کناری column-->
+                                    </div>
+                                </div>
+                            </div>
+                            {% for section in userInformation.sections %}
+                                {% if section.type == 'درباره من' %}
+                                    <div class="tab-content" id="Step2">
+                                        <div class="section" data-section="{{ loop.index0 }}">
+                                            <label for="sections[{{ loop.index0 }}][type]" class="form-label">عنوان این بخش:</label>
+                                            <input type="text" value="{{ section.shtype }}" name="sections[{{ loop.index0 }}][shtype]" class="form-control" placeholder="عنوان این بخش را وارد کنید.">
+                                            <div class="text-muted fs-7">عنوان این بخش را در صورت نپسندیدن میتواندی عوض کنید.</div>
+                                            <input type="hidden" value="{{ section.type }}" name="sections[{{ loop.index0 }}][type]" >
+                                            <label for="sections[{{ loop.index0 }}][type]" class="form-label">درباری من</label>
+                                            <textarea name="sections[0][description]" rows="4" cols="50" class="form-control" placeholder="چند خط درباره خودتان، تجربیات و علایقتان بنویسید...">{{ section.description }}</textarea>
+                                            <div class="text-muted fs-7">لطفا به صورت مختصر در مورد خودتان چند پاراگراف بنویسید.</div>
+                                        </div>
+                                    </div>
+                                {% elseif section.type == 'تجربیات' %}
+                                    <div class="tab-content" id="Step3">
+                                        <div class="section" data-section="{{ loop.index0 }}">
+                                            <label for="sections[{{ loop.index0 }}][type]" class="form-label">عنوان این بخش:</label>
+                                            <input type="text" class="form-control" value="{{ section.shtype }}" name="sections[{{ loop.index0 }}][shtype]" placeholder="عنوان این بخش را وارد کنید.">
+                                            <input type="hidden" value="{{ section.type }}" name="sections[{{ loop.index0 }}][type]">
+                                            <div class="text-muted fs-7">عنوان این بخش را در صورت نپسندیدن میتواندی عوض کنید.</div>
+                                            <div class="add-this-part">
+                                                <!-- New container div for part inputs -->
+                                                <div class="part-inputs-container row py-3">
+                                                    <div class="col-8">
+                                                        <label class="form-label" for="sections[{{ loop.index0 }}][title]">عنوان بخش:</label>
+                                                        <input class="form-control" type="text" name="sections[{{ loop.index0 }}][title]" placeholder="برای مثال: فعالیت در شرکت نفت">
+                                                        <div class="text-muted fs-7">لطفا عنوان  تجربه ی خود را وارد کنید</div>
+                                                        <label class="form-label" for="sections[{{ loop.index0 }}][description]">توضیحات:</label>
+                                                        <textarea class="form-control" name="sections[{{ loop.index0 }}][description]" rows="4" cols="50" placeholder="برای مثال: به مدت دو سال در شرکت نفت بع عنوان مدیر فعالیت کردم و ..."></textarea>
+                                                        <div class="text-muted fs-7">لطفا یک توضیح جامعه در مورد تجربه ی خودتان وارد کنید</div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <label class="form-label" for="sections[{{ loop.index0 }}][start]">تاریخ شروع</label>
+                                                        <input class="form-control persian_date" type="text" persian_date autocomplete="off" name="sections[{{ loop.index0 }}][start]" placeholder="برای انتخاب تاریخ کلیک کنید.">
+                                                        <div class="text-muted fs-7">تاریخ شروع فعالیت خورد را وارد کنید.</div>
+                                                        <label class="form-label" for="sections[{{ loop.index0 }}][end]">تاریخ پایان</label>
+                                                        <input class="form-control persian_date" type="text" autocomplete="off" name="sections[{{ loop.index0 }}][end]" placeholder="برای انتخاب تاریخ کلیک کنید.">
+                                                        <div class="text-muted fs-7">تاریخ اتمام فعالیت خورد را وارد کنید.</div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="add-this-part-button btn btn-success w-100">ثبت اطلاعات</button>
+
+                                                <!-- start completed output parts -->
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][starts]" value="{{ section.start }}">
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][ends]" value="{{ section.end }}">
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][titles]" value="{{ section.title }}">
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][descriptions]" value="{{ section.description }}">
+                                                <!-- end completed output parts -->
+                                                {% set starts = section.start|split('&') %}
+                                                {% set ends = section.end|split('&') %}
+                                                {% set titles = section.title|split('&') %}
+                                                {% set descriptions = section.description|split('&') %}
+                                                {% set all_empty = starts|length == 1 and starts[0] == '' and ends[0] == '' and titles[0] == '' and descriptions[0] == '' %}
+
+                                                {% if not all_empty %}
+                                                    {% for i in 0..(titles|length - 1) %}
+                                                        {% if starts[i] or ends[i] or titles[i] or descriptions[i] != '' %}
+                                                            <button type="button" class="toggle-button btn btn-outline-primary btn-lg btn-block w-100 m-1" data-target="#{{ loop.index }}0">
+                                                                {{ titles[i] }} <span class="toggle-icon">&#x2193;</span> <!-- Down arrow Unicode -->
+                                                            </button>
+                                                            <div id="{{ loop.index }}0" class="content" style="display:none;">
+                                                                <div class="part">
+                                                                    <p>تاریخ شروع: {{ starts[i] }}</p>
+                                                                    <p>تاریخ پایان: {{ ends[i] }}</p>
+                                                                    <p>عنوان: {{ titles[i] }}</p>
+                                                                    <p>توضیحات: {{ descriptions[i] }}</p>
+                                                                    <button type="button" class="remove-part-button btn-danger btn">حذف</button>
+                                                                    <button type="button" class="edit-part-button btn btn-info">ویرایش</button>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elseif section.type == 'تحصیلات' %}
+                                    <div class="tab-content" id="Step4">
+                                        <div class="section" data-section="{{ loop.index0 }}">
+                                            <label class="form-label" for="sections[{{ loop.index0 }}][type]">عنوان این بخش:</label>
+                                            <input class="form-control" type="text" value="{{ section.shtype }}" name="sections[{{ loop.index0 }}][shtype]" placeholder="عنوان این بخش را وارد کنید.">
+                                            <input type="hidden" value="{{ section.type }}" name="sections[{{ loop.index0 }}][type]">
+                                            <div class="text-muted fs-7">عنوان این بخش را در صورت نپسندیدن میتواندی عوض کنید.</div>
+
+                                            <div class="add-this-part">
+                                                <div class="part-inputs-container row py-3">
+                                                    <div class="col-8">
+                                                    <label class="form-label" for="sections[{{ loop.index0 }}][title]">تجربه ی شما:</label>
+                                                    <input class="form-control " type="text" name="sections[{{ loop.index0 }}][title]" placeholder="برای مثلا: لیسانس زبان انگلیسی">
+                                                        <div class="text-muted fs-7">لطفا عنوان تحصیلات خود را وارد کنید</div>
+                                                    <label class="form-label" for="sections[{{ loop.index0 }}][description]">توضیحات:</label>
+                                                    <textarea class="form-control" name="sections[{{ loop.index0 }}][description]" rows="4" cols="50" placeholder="برای مثال: دارای مدرک لیسانس زبان از دانشگاه تهران..."></textarea>
+                                                        <div class="text-muted fs-7">لطفا یک توضیح جامعه در مورد تحصیلات خودتان وارد کنید</div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                    <label class="form-label" for="sections[{{ loop.index0 }}][start]">تاریخ شروع</label>
+                                                    <input class="form-control persian_date" type="text" autocomplete="off" name="sections[{{ loop.index0 }}][start]" placeholder="برای انتخاب تاریخ کلیک کنید.">
+                                                        <div class="text-muted fs-7">تاریخ شروع تحصیل خورد را وارد کنید.</div>
+
+                                                    <label class="form-label" for="sections[{{ loop.index0 }}][end]">تاریخ پایان</label>
+                                                    <input class="form-control persian_date" type="text" autocomplete="off" name="sections[{{ loop.index0 }}][end]" placeholder="برای انتخاب تاریخ کلیک کنید.">
+                                                        <div class="text-muted fs-7">تاریخ اتمام تحصیل خورد را وارد کنید.</div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="add-this-part-button btn btn-success w-100">اضافه کردن</button>
+                                                <!-- start completed output parts -->
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][starts]" value="{{ section.start }}">
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][ends]" value="{{ section.end }}">
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][titles]" value="{{ section.title }}">
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][descriptions]" value="{{ section.description }}">
+                                                <!-- end completed output parts -->
+                                                {% set starts = section.start|split('&') %}
+                                                {% set ends = section.end|split('&') %}
+                                                {% set titles = section.title|split('&') %}
+                                                {% set descriptions = section.description|split('&') %}
+
+                                                {% set all_empty = starts[0] == '' and ends[0] == '' and titles[0] == '' and descriptions[0] == '' %}
+
+                                                {% if not all_empty %}
+                                                    {% for i in 0..(titles|length - 1) %}
+                                                        {% if starts[i] or ends[i] or titles[i] or descriptions[i] != '' %}
+                                                            <button type="button" class="toggle-button btn btn-outline-primary btn-lg btn-block w-100 m-1" data-target="#{{ loop.index }}1">{{ titles[i] }}<span class="toggle-icon">&#x2193;</span></button>
+                                                            <div id="{{ loop.index }}1" class="content" style="display:none;">
+                                                                <div class="part">
+                                                                    <p>تاریخ شروع: {{ starts[i] }}</p>
+                                                                    <p>تاریخ پایان: {{ ends[i] }}</p>
+                                                                    <p>عنوان: {{ titles[i] }}</p>
+                                                                    <p>توضیحات: {{ descriptions[i] }}</p>
+                                                                    <button type="button" class="remove-part-button btn-danger btn">حذف</button>
+                                                                    <button type="button" class="edit-part-button btn btn-info">ویرایش</button>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elseif section.type == 'توانایی ها' %}
+                                    <div id="Step5" class="tab-content" >
+                                        <div class="section" data-section="{{ loop.index0 }}">
+                                            <label class="form-label" for="sections[{{ loop.index0 }}][type]">عنوان این بخش:</label>
+                                            <input class="form-control" type="text" value="{{ section.shtype }}" name="sections[{{ loop.index0 }}][shtype]" placeholder="عنوان این بخش را وارد کنید.">
+                                            <div class="text-muted fs-7">عنوان این بخش را در صورت نپسندیدن میتواندی عوض کنید.</div>
+                                            <input type="hidden" value="{{ section.type }}" name="sections[{{ loop.index0 }}][type]">
+                                            <div class="add-this-part">
+                                                <div class="part-inputs-container row py-3">
+                                                {% set titles = section.title|split('&') %}
+                                                {% set descriptions = section.description|split('&') %}
+                                                    <label class="form-label" for="sections[{{ loop.index0 }}][title]">لطفا توانایی خود را وارد کنید:</label>
+                                                    <input class="form-control" type="text" name="sections[{{ loop.index0 }}][title]" placeholder="برای مثال:برنامه نویس وب">
+                                                    <div class="text-muted fs-7">لطفا عنوان توانایی خودرا وارد کنید.</div>
+                                                    <label class="form-label" for="sections[{{ loop.index0 }}][description]">بخش سطح مهارت خود را با عددی بین صفر تا صد تکمیل کنید:</label>
+                                                    <input class="form-control options" type="text" name="sections[{{ loop.index0 }}][description]" placeholder="لطفا عدد بین 0 تا 100 وارد کنید در غیر اینصورت پاک میشود" pattern="^100$|^([1-9]?[0-9])$" oninput="this.value = this.value.match(/^\d+$/) ? Math.min(100, Math.max(0, this.value)) : '';" list="skill-levels">
+                                                    <div class="text-muted fs-7">برای تعیین سطح توانایی خود، می‌توانید مقدار دلخواه وارد کنید یا از گزینه‌های پیشنهادی استفاده نمایید.</div>
+                                                    <datalist id="skill-levels">
+                                                        <option value="10"></option>
+                                                        <option value="20"></option>
+                                                        <option value="30"></option>
+                                                        <option value="40"></option>
+                                                        <option value="50"></option>
+                                                        <option value="60"></option>
+                                                        <option value="70"></option>
+                                                        <option value="80"></option>
+                                                        <option value="90"></option>
+                                                        <option value="100"></option>
+                                                    </datalist>
+                                                </div>
+                                                <button type="button" class="add-this-part-button btn btn-success">اضافه کردن</button>
+                                                <!-- start completed output parts -->
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][titles]" value="{{ section.title }}">
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][descriptions]" value="{{ section.description }}">
+                                                <!-- end completed output parts -->
+                                                    {% set all_empty = titles|length == 1 and titles[0] == '' and descriptions[0] == '' %}
+                                                    {% if not all_empty %}
+                                                        {% for i in 0..(titles|length - 1) %}
+                                                            {% if titles[i] != '' or descriptions[i] != '' %}
+                                                                <button type="button" class="toggle-button btn btn-outline-primary btn-lg btn-block w-100 m-1" data-target="#{{ loop.index }}3">{{ titles[i] }}<span class="toggle-icon">&#x2193;</span></button>
+                                                                <div id="{{ loop.index }}3" class="content" style="display:none;">
+                                                                    <div class="part">
+                                                                        <p>عنوان: {{ titles[i] }}</p>
+                                                                        <p>لینک: {{ descriptions[i] }}</p>
+                                                                        <button type="button" class="remove-part-button btn-danger btn">حذف</button>
+                                                                        <button type="button" class="edit-part-button btn btn-info">ویرایش</button>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elseif section.type == 'شبکه های اجتماعی' %}
+                                    <div class="tab-content" id="Step6">
+                                        <div class="section" data-section="{{ loop.index0 }}">
+                                            <label class="form-label" for="sections[{{ loop.index0 }}][type]">عنوان این بخش:</label>
+                                            <input class="form-control" type="text" value="{{ section.shtype }}" name="sections[{{ loop.index0 }}][shtype]" placeholder="عنوان این بخش را وارد کنید.">
+                                            <input type="hidden" value="{{ section.type }}" name="sections[{{ loop.index0 }}][type]">
+                                            <div class="add-this-part">
+                                                <div class="part-inputs-container row py-3">
+                                                {% set titles = section.title|split('&') %}
+                                                {% set descriptions = section.description|split('&') %}
+                                                    <label class="form-label" for="sections[{{ loop.index0 }}][title]">لطفا اسم شبکه اجتماعی خود را وارد کنید:</label>
+                                                    <input list="social-networks" class="form-control" type="text" name="sections[{{ loop.index0 }}][title]" placeholder="مثلاً لینکدین، واتساپ، یا گیت‌هاب">
+                                                    <datalist id="social-networks">
+                                                        <option value="لینکدین"></option>
+                                                        <option value="واتساپ"></option>
+                                                        <option value="تلگرام"></option>
+                                                        <option value="گیت‌هاب"></option>
+                                                        <option value="توییتر"></option>
+                                                        <option value="اینستاگرام"></option>
+                                                        <option value="فیسبوک"></option>
+                                                        <option value="یوتیوب"></option>
+                                                        <option value="مدیوم"></option>
+                                                        <option value="دریبل"></option>
+                                                        <option value="بیهنس"></option>
+                                                        <option value="استک اورفلو"></option>
+                                                    </datalist>
+                                                    <div class="text-muted fs-7">
+                                                        لطفاً نام شبکه اجتماعی خود را وارد کنید یا از لیست پیشنهاد شده انتخاب نمایید.
+                                                    </div>
+                                                    <label class="form-label" for="sections[{{ loop.index0 }}][description]">لینک:</label>
+                                                    <input class="form-control" type="text" name="sections[{{ loop.index0 }}][description]" placeholder="لینک وب‌سایت یا پروفایل شبکه اجتماعی را وارد کنید">
+                                                    <div class="text-muted fs-7">
+                                                        لطفاً آدرس کامل لینک را وارد کنید، به عنوان مثال: https://www.example.com
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="add-this-part-button btn btn-success">اضافه کردن</button>
+                                                <!-- start completed output parts -->
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][titles]" value="{{ section.title }}">
+                                                <input type="hidden" name="sections[{{ loop.index0 }}][descriptions]" value="{{ section.description }}">
+                                                <!-- end completed output parts -->
+                                                {% set titles = section.title|split('&') %}
+                                                {% set descriptions = section.description|split('&') %}
+                                                {% set all_empty = titles|length == 1 and titles[0] == '' and descriptions[0] == '' %}
+                                                {% if not all_empty %}
+                                                    {% for i in 0..(titles|length - 1) %}
+                                                        {% if titles[i] != '' or descriptions[i] != '' %}
+                                                            <button type="button" class="toggle-button btn btn-outline-primary btn-lg btn-block w-100 m-1" data-target="#{{ loop.index }}3">{{ titles[i] }}<span class="toggle-icon">&#x2193;</span></button>
+                                                            <div id="{{ loop.index }}3" class="content" style="display:none;">
+                                                                <div class="part">
+                                                                    <p>عنوان: {{ titles[i] }}</p>
+                                                                    <p>لینک: {{ descriptions[i] }}</p>
+                                                                    <button type="button" class="remove-part-button btn-danger btn">حذف</button>
+                                                                    <button type="button" class="edit-part-button btn btn-info">ویرایش</button>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="navigation-buttons mt-3">
+                            <button type="button" class="btn btn-secondary submit-button" onclick="previousTab()">قبلی</button>
+                            <button type="button" class="btn btn-primary submit-button" onclick="nextTab()">بعدی</button>
+                            <button type="submit" class="btn btn-primary float-end">ارسال</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+    {{ form_end(form) }}
+
+{% endblock body %}
+{% block js %}
+<script>
+    let isFormChanged = false;
+
+    // Listen for any changes on the form
+    document.getElementById('data-form').addEventListener('input', function(event) {
+        isFormChanged = true; // Mark that the form has been changed
+    });
+
+    // Event listener for the submit button click event
+    document.querySelectorAll('.submit-button').forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            if (!isFormChanged) {
+                // If the form hasn't been changed, do nothing
+                console.log('Form has not been changed.');
+                return;
+            }
+
+            event.preventDefault(); // Prevent the default form submission
+
+            var form = document.getElementById('data-form');
+            var formData = new FormData(form);
+
+            // Send the data using fetch
+            fetch('{{ path('handle_form_submission') }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+
+                // Display success message with smooth transition
+                let messageContainer = document.getElementById('success-message');
+                messageContainer.style.display = 'block'; // Ensure the element is shown
+                messageContainer.classList.add('show');
+                messageContainer.classList.remove('hide');
+
+                // Hide the message after 3 seconds with smooth transition
+                setTimeout(() => {
+                    messageContainer.classList.add('hide');
+                    messageContainer.classList.remove('show');
+
+                    // Ensure the element is completely hidden after the transition
+                    setTimeout(() => {
+                        messageContainer.style.display = 'none';
+                    }, 500); // Match this with the CSS transition duration
+                }, 3000);
+
+                // Reset the isFormChanged flag
+                isFormChanged = false;
+
+                // Optional: Reset the form or perform other actions here
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Handle error here
+            });
+        });
+    });
+</script>
+
+        <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const defaultTab = new URLSearchParams(window.location.search).get('Tab');
+        const tabToOpen = defaultTab ? `tab${defaultTab}` : 'defaultOpen';
+        console.log(defaultTab,tabToOpen);
+        const tabLink = document.getElementById(tabToOpen);
+        if (tabLink) {
+            tabLink.click();
+        }
+        updateNavigationButtons();
+    });
+
+function openTab(evt, tabId) {
+    const tabContents = document.querySelectorAll(".tab-content");
+    tabContents.forEach(content => {
+        if (content) content.style.display = "none";
+    });
+
+    const tabLinks = document.querySelectorAll(".tab-link");
+    tabLinks.forEach(link => {
+        if (link) link.classList.remove("active");
+    });
+
+    const selectedTab = document.getElementById(tabId);
+    if (selectedTab) {
+        selectedTab.style.display = "block";
+        evt.currentTarget.classList.add("active");
+    } else {
+        console.error(`Tab with id '${tabId}' not found.`);
+    }
+
+    updateNavigationButtons();
+}
+
+function nextTab() {
+    const currentTab = document.querySelector(".tab-content:not([style*='display: none'])");
+    if (currentTab) {
+        const nextTab = currentTab.nextElementSibling;
+        if (nextTab && nextTab.classList.contains("tab-content")) {
+            openTab({ currentTarget: document.querySelector(`.tab-link[onclick*="${nextTab.id}"]`) }, nextTab.id);
+        }
+    }
+}
+
+function previousTab() {
+    const currentTab = document.querySelector(".tab-content:not([style*='display: none'])");
+    if (currentTab) {
+        const previousTab = currentTab.previousElementSibling;
+        if (previousTab && previousTab.classList.contains("tab-content")) {
+            openTab({ currentTarget: document.querySelector(`.tab-link[onclick*="${previousTab.id}"]`) }, previousTab.id);
+        }
+    }
+}
+
+function updateNavigationButtons() {
+    const tabs = document.querySelectorAll(".tab-link");
+    const activeTab = document.querySelector(".tab-link.active");
+    if (activeTab) {
+        const currentIndex = Array.from(tabs).indexOf(activeTab);
+
+        document.getElementById("prevBtn").style.display = currentIndex === 0 ? "none" : "inline";
+        document.getElementById("nextBtn").style.display = currentIndex === tabs.length - 1 ? "none" : "inline";
+    }
+}
+
+
+$(document).ready(function() {
+    // Function to initialize Persian Date Picker
+    function PersianDate(selector) {
+        $(selector).persianDatepicker({
+            format: 'YYYY-MM',
+            autoClose: true,
+            altFormat: 'YYYY-MM',
+            navigator: {
+                enabled: true
+            },
+            toolbox: {
+                enabled: true
+            },
+            dayPicker: {
+                enabled: false
+            },
+            yearPicker: {
+                enabled: true
+            },
+            monthPicker: {
+                enabled: true
+            }
+        });
+    }
+
+    // Bind the PersianDate function to focus event for elements with the class 'persian_date'
+    $(document).on('focus', '.persian_date', function() {
+        // Initialize the date picker for the focused input
+        PersianDate(this);
+    });
+});
+
+            $(document).ready(function () {
+
+            // Add a new part
+        $(".add-this-part-button").on("click", function () {
+                var sectionDiv = $(this).closest('.section');
+                var sectionIndex = sectionDiv.data('section');
+
+                // Collect data from the new part-inputs-container
+                var inputFields = sectionDiv.find('.part-inputs-container').find('input, textarea');
+
+                var sectionType = sectionDiv.find('input[type="hidden"]').first().val();
+                var part = {};
+                var uniqueId = new Date().getTime();  // Generate a unique ID for the new part
+
+                // Collect data from input fields inside the part-inputs-container
+                inputFields.each(function () {
+                    var name = $(this).attr('name').split('[').pop().split(']')[0];
+                    part[name] = $(this).val();
+                    $(this).val('');
+                });
+
+                addPartToSection(sectionDiv, part, sectionType, uniqueId);
+                updateHiddenInputs(sectionDiv, sectionIndex, sectionType);
+
+            });
+
+          // Remove a part
+        $(document).on("click", ".remove-part-button", function () {
+                var partDiv = $(this).closest('.part');
+                var contentDiv = partDiv.closest('.content');
+                var toggleButton = $(`button[data-target="#${contentDiv.attr('id')}"]`);
+                var sectionDiv = partDiv.closest('.section');
+                var sectionIndex = sectionDiv.data('section');
+                var sectionType = sectionDiv.find('input[type="hidden"]').first().val();
+
+                // Remove the entire part including the toggle button and content div
+                toggleButton.remove();
+                contentDiv.remove();
+
+                updateHiddenInputs(sectionDiv, sectionIndex, sectionType);
+            });
+
+                // Edit a part
+        $(document).on("click", ".edit-part-button", function () {
+            var partDiv = $(this).closest('.part');
+
+            // Replace <p> elements with <label> and <input> fields
+            partDiv.find('p').each(function () {
+                var text = $(this).text().split(': ');
+                var field = text[0].trim().replace('تاریخ شروع', 'start')
+                                          .replace('تاریخ پایان', 'end')
+                                          .replace('عنوان', 'title')
+                                          .replace('توضیحات', 'description')
+                                          .replace('توانایی', 'skill')
+                                          .replace('درصد', 'percent')
+                                          .toLowerCase();
+                var value = text[1] ? text[1].trim() : '';
+
+                // Create a label element
+                var label = $('<label />', {
+                    text: text[0],
+                    for: 'input-' + field,
+                    class: 'form-label'
+                });
+                var inputClass = (field === 'start' || field === 'end') ? 'persian_date form-control' : 'form-control';
+
+                // Create an input field
+                var input = $('<input />', {
+                    type: 'text',
+                    value: value,
+                    'data-field': field,
+                    class: inputClass,
+                    id: 'input-' + field
+                });
+
+                // Create a container for label and input
+                var inputContainer = $('<div />', {
+                    class: 'form-group'
+                }).append(label).append(input);
+
+                // Replace the <p> element with the inputContainer
+                $(this).replaceWith(inputContainer);
+            });
+
+            // Replace Edit button with Save button
+            $(this).replaceWith('<button type="button" class="save-part-button btn btn-success">Save</button>');
+        });
+
+        $(document).on("click", ".save-part-button", function () {
+            var partDiv = $(this).closest('.part');
+            var toggleButton = $(`button[data-target="#${partDiv.closest('.content').attr('id')}"]`);
+            var sectionDiv = partDiv.closest('.section');
+            var sectionIndex = sectionDiv.data('section');
+            var sectionType = sectionDiv.find('input[type="hidden"]').first().val();
+            var part = {};
+
+            partDiv.find('.form-group').each(function () {
+                var input = $(this).find('input');
+                var field = input.data('field');
+                var value = input.val();
+                part[field] = value;
+
+                // Create a new <p> element with the field and value
+                var labelText = (field === 'start') ? 'تاریخ شروع: ' :
+                                (field === 'end') ? 'تاریخ پایان: ' :
+                                (field === 'title') ? 'عنوان: ' :
+                                (field === 'description') ? 'توضیحات: ' :
+                                (field === 'skill') ? 'توانایی: ' :
+                                (field === 'percent') ? 'درصد: ' : '';
+
+                var p = $('<p></p>').text(labelText + value);
+
+                // Replace the form group with the <p> element
+                $(this).replaceWith(p);
+            });
+
+            // Replace Save button with Edit button
+            $(this).replaceWith('<button type="button" class="edit-part-button btn btn-info">ویرایش</button>');
+
+            // Update the toggle button text to reflect the new title or skill
+            toggleButton.html(`${part.title || part.skill || 'بدون عنوان'} <span class="toggle-icon">&#x2191;</span>`);
+
+            // Update hidden inputs
+            updateHiddenInputs(sectionDiv, sectionIndex, sectionType);
+        });
+
+
+        function ToggleFun() {
+            $(".toggle-button").off('click').on('click', function() {
+                const target = $(this).data("target");
+                const icon = $(this).find(".toggle-icon");
+
+                $(target).slideToggle("slow", function() {
+                    if ($(target).is(':visible')) {
+                        icon.html('&#x2191;'); // Up arrow Unicode
+                    } else {
+                        icon.html('&#x2193;'); // Down arrow Unicode
+                    }
+                });
+            });
+        }
+
+
+        $(document).ready(function() {
+            ToggleFun();
+        });
+
+        function addPartToSection(sectionDiv, part, sectionType) {
+            var partHtml = '';
+            var uniqueId = 'part-' + new Date().getTime();  // Unique ID based on timestamp
+
+            switch (sectionType) {
+                case "تجربیات":
+                case "تحصیلات":
+                    partHtml = `
+                        <button type="button" class="toggle-button btn btn-outline-primary btn-lg btn-block w-100 m-1" data-target="#${uniqueId}">
+                            ${part.title} <span class="toggle-icon">&#x2193;</span> <!-- Down arrow Unicode -->
+                        </button>
+                        <div id="${uniqueId}" class="content" style="display:none;">
+                            <div class="part">
+                                <p>تاریخ شروع: ${part.start}</p>
+                                <p>تاریخ پایان: ${part.end}</p>
+                                <p>عنوان: ${part.title}</p>
+                                <p>توضیحات: ${part.description}</p>
+                                <button type="button" class="remove-part-button btn-danger btn">Remove</button>
+                                <button type="button" class="edit-part-button btn btn-info">Edit</button>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case "توانایی ها":
+                    partHtml = `
+                        <button type="button" class="toggle-button btn btn-outline-primary btn-lg btn-block w-100 m-1" data-target="#${uniqueId}">
+                            ${part.title} <span class="toggle-icon">&#x25BC;</span> <!-- Down arrow Unicode -->
+                        </button>
+                        <div id="${uniqueId}" class="content" style="display:none;">
+                            <div class="part">
+                                <p>عنوان: ${part.title}</p>
+                                <p>توضیحات: ${part.description}</p>
+                                <button type="button" class="remove-part-button btn-danger btn">Remove</button>
+                                <button type="button" class="edit-part-button btn btn-info">Edit</button>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case "شبکه های اجتماعی":
+                    partHtml = `
+                        <button type="button" class="toggle-button btn btn-outline-primary btn-lg btn-block w-100 m-1" data-target="#${uniqueId}">
+                            ${part.title} <span class="toggle-icon">&#x25BC;</span> <!-- Down arrow Unicode -->
+                        </button>
+                        <div id="${uniqueId}" class="content" style="display:none;">
+                            <div class="part">
+                                <p>عنوان: ${part.title}</p>
+                                <p>توضیحات: ${part.description}</p>
+                                <button type="button" class="remove-part-button btn-danger btn">Remove</button>
+                                <button type="button" class="edit-part-button btn btn-info">Edit</button>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            sectionDiv.append(partHtml);
+
+            // Reinitialize the toggle functionality for the new parts
+            ToggleFun();
+        }
+
+        function updateHiddenInputs(sectionDiv, sectionIndex, sectionType) {
+            const parts = [];
+
+            // Collect data from each .part element
+            sectionDiv.find('.part').each(function () {
+                const part = {};
+                $(this).find('p, .form-group').each(function () {
+                    let text, value;
+                    if ($(this).is('p')) {
+                        // Extract data from <p> elements
+                        text = $(this).text().split(': ');
+                        value = text[1] ? text[1].trim() : '';
+                        text = text[0].trim();
+                    } else {
+                        // Extract data from .form-group inputs
+                        text = $(this).find('label').text().split(': ')[0].trim();
+                        value = $(this).find('input').val().trim();
+                    }
+
+                    // Map field labels to internal field names
+                    switch (text) {
+                        case 'تاریخ شروع':
+                        case 'Start':
+                            part['start'] = value;
+                            break;
+                        case 'تاریخ پایان':
+                        case 'End':
+                            part['end'] = value;
+                            break;
+                        case 'عنوان':
+                        case 'Title':
+                            part['title'] = value;
+                            break;
+                        case 'توضیحات':
+                        case 'Description':
+                            part['description'] = value;
+                            break;
+                        case 'توانایی':
+                        case 'Skill':
+                            part['skill'] = value;
+                            break;
+                        case 'درصد':
+                        case 'Percent':
+                            part['percent'] = value;
+                            break;
+                    }
+                });
+
+                // Only add parts with non-empty data
+                if (Object.keys(part).length > 0) {
+                    parts.push(part);
+                }
+            });
+
+            // Debugging: Log collected parts
+            console.log('Collected Parts:', parts);
+
+            // Helper function to get the value for a field
+            const getFieldValues = (field) => {
+                return parts.map(p => p[field] || '').join('&');
+            };
+
+            // Update hidden inputs based on sectionType
+            switch (sectionType) {
+                case "تجربیات":
+                case "تحصیلات":
+                    $("input[name='sections[" + sectionIndex + "][starts]']").val(getFieldValues('start'));
+                    $("input[name='sections[" + sectionIndex + "][ends]']").val(getFieldValues('end'));
+                    $("input[name='sections[" + sectionIndex + "][titles]']").val(getFieldValues('title'));
+                    $("input[name='sections[" + sectionIndex + "][descriptions]']").val(getFieldValues('description'));
+                    break;
+                case "شبکه های اجتماعی":
+                case "توانایی ها":
+                    $("input[name='sections[" + sectionIndex + "][titles]']").val(getFieldValues('title'));
+                    $("input[name='sections[" + sectionIndex + "][descriptions]']").val(getFieldValues('description'));
+                    break;
+            }
+        }
+    });
+    </script>
+{% endblock %}
+

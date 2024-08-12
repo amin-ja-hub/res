@@ -1,0 +1,21 @@
+# config/services.yaml
+services:
+    Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Service\Service:
+        arguments:
+            $targetDirectory: '%target_directory%'
+            $slugger: '@Symfony\Component\String\Slugger\SluggerInterface'
+            $em: '@doctrine.orm.entity_manager'
+            $pdf: '@knp_snappy.pdf'
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'

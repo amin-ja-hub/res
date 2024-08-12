@@ -1,0 +1,302 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Article{% endblock %}
+{% block jshead %}
+
+<script src="https://cdn.ckeditor.com/4.17.2/standard/ckeditor.js"></script>
+
+{% endblock %}
+{% block js %}
+    <script>
+        CKEDITOR.replace( 'editor1',{
+        language: 'fa'
+
+        } );
+    </script>
+        <script>
+        $(document).ready(function() {
+            $('.DroidNaskh').select2({
+                placeholder: "Select or add fruits",
+                allowClear: true,
+                tags: true
+            });
+        });
+    </script>
+{% endblock %}
+{% block body %}
+    <!--begin::Content-->
+    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+            <!--begin::Post-->
+            <div class="post d-flex flex-column-fluid" id="kt_post">
+                    <!--begin::Container-->
+                    <div id="kt_content_container" class="container-xxl">
+                            <!--begin::Form-->
+                                {{ form_start(form, {'attr': {'id': 'kt_ecommerce_add_product_form', 'enctype': 'multipart/form-data','class': 'd-flex flex-column flex-lg-row'}}) }}
+
+
+                                    <!--begin::کناری column-->
+                                    <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
+                                            <!--begin::Thumbnail settings-->
+                                            <div class="card card-flush py-4">
+                                                    <!--begin::کارت header-->
+                                                    <div class="card-header">
+                                                            <!--begin::کارت title-->
+                                                            <div class="card-title">
+                                                                    <h2>تصویر شاخص</h2>
+                                                            </div>
+                                                            <!--end::کارت title-->
+                                                    </div>
+                                                    <!--end::کارت header-->
+                                                    <!--begin::کارت body-->
+                                                    <div class="card-body text-center pt-0">
+                                                            <!--begin::Image input-->
+                                                            <!--begin::Image input placeholder-->
+                                                            <style>.image-input-placeholder { background-image: url('https://metronictheme.job100.ir/rtl/metronic8/demo8/dist/assets/media/svg/files/blank-image.svg'); } [data-bs-theme="dark"] .image-input-placeholder { background-image: url('https://metronictheme.job100.ir/rtl/metronic8/demo8/dist/assets/media/svg/files/blank-image-dark.svg'); }</style>
+                                                            <!--end::Image input placeholder-->
+                                                            <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true">
+                                                                    <!--begin::نمایش existing avatar-->
+                                                                    <div class="image-input-wrapper w-150px h-150px"></div>
+                                                                    <!--end::نمایش existing avatar-->
+                                                                    <!--begin::Tags-->
+                                                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="تعویض آواتار">
+                                                                            <i class="ki-duotone ki-pencil fs-7">
+                                                                                    <span class="path1"></span>
+                                                                                    <span class="path2"></span>
+                                                                            </i>
+                                                                            <!--begin::Inputs-->
+                                                                            <input type="file" name="file" accept=".png, .jpg, .jpeg" />
+                                                                            <input type="hidden" name="avatar_remove" />
+                                                                            <!--end::Inputs-->
+                                                                    </label>
+                                                                    <!--end::Tags-->
+                                                                    <!--begin::انصراف-->
+                                                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="انصراف avatar">
+                                                                            <i class="ki-duotone ki-cross fs-2">
+                                                                                    <span class="path1"></span>
+                                                                                    <span class="path2"></span>
+                                                                            </i>
+                                                                    </span>
+                                                                    <!--end::انصراف-->
+                                                                    <!--begin::حذف-->
+                                                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="حذف آواتار">
+                                                                            <i class="ki-duotone ki-cross fs-2">
+                                                                                    <span class="path1"></span>
+                                                                                    <span class="path2"></span>
+                                                                            </i>
+                                                                    </span>
+                                                                    <!--end::حذف-->
+                                                            </div>
+                                                            <!--end::Image input-->
+                                                            <!--begin::توضیحات-->
+                                                            <div class="text-muted fs-7">Set the product thumbnail image. Only *.png, *.jpg and *.jpeg image files are accepted</div>
+                                                            <!--end::توضیحات-->
+                                                    </div>
+                                                    <!--end::کارت body-->
+                                            </div>
+                                            <!--end::Thumbnail settings-->
+                                            <!--begin::وضعیت-->
+                                            <div class="card card-flush py-4">
+                                                    <!--begin::کارت header-->
+                                                    <div class="card-header">
+                                                            <!--begin::کارت title-->
+                                                            <div class="card-title">
+                                                                    <h2>وضعیت</h2>
+                                                            </div>
+                                                            <!--end::کارت title-->
+                                                            <!--begin::کارت toolbar-->
+                                                            <div class="card-toolbar">
+                                                                    <div class="rounded-circle bg-success w-15px h-15px" id="kt_ecommerce_add_product_status"></div>
+                                                            </div>
+                                                            <!--begin::کارت toolbar-->
+                                                    </div>
+                                                    <!--end::کارت header-->
+                                                    <!--begin::کارت body-->
+                                                    <div class="card-body pt-0">
+                                                            <!--begin::انتخاب2-->
+                                                            <select class="form-select mb-2" name="publish" data-control="select2" data-hide-search="true" data-placeholder="انتخاب " id="kt_ecommerce_add_product_status_select">
+                                                                    <option></option>
+                                                                    <option value="1" selected="selected">منتشر شده</option>
+                                                                    <option value="0">پیش نویس</option>
+                                                            </select>
+                                                            <!--end::انتخاب2-->
+                                                            <!--begin::توضیحات-->
+                                                            <div class="text-muted fs-7">وضعیت محصول را تنظیم کنید.</div>
+                                                            <!--end::توضیحات-->
+                                                            <!--begin::تاریخpicker-->
+                                                            <div class="d-none mt-10">
+                                                                    <label for="kt_ecommerce_add_product_status_datepicker" class="form-label">انتخاب publishing date and time</label>
+                                                                    <input class="form-control" id="kt_ecommerce_add_product_status_datepicker" placeholder="انتخاب تاریخ & time" />
+                                                            </div>
+                                                            <!--end::تاریخpicker-->
+                                                    </div>
+                                                    <!--end::کارت body-->
+                                            </div>
+                                            <!--end::وضعیت-->
+                                            <!--begin::دسته بندی & tags-->
+                                            <div class="card card-flush py-4">
+                                                    <!--begin::کارت header-->
+                                                    <div class="card-header">
+                                                            <!--begin::کارت title-->
+                                                            <div class="card-title">
+                                                                    <h2>محصولات جزییات</h2>
+                                                            </div>
+                                                            <!--end::کارت title-->
+                                                    </div>
+                                                    <!--end::کارت header-->
+                                                    <!--begin::کارت body-->
+                                                    <div class="card-body pt-0">
+                                                            <!--begin::Input group-->
+                                                            <!--begin::Tags-->
+                                                            <label class="form-label">دسته بندی ها</label>
+                                                            <!--end::Tags-->
+                                                            <!--begin::انتخاب2-->
+                                                            <select name="category1" class="form-select "  data-placeholder="انتخاب">
+                                                                {% for category in getCategory() %}
+                                                                    <option value="{{ category.id }}">{{ category.title }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <!--end::انتخاب2-->
+                                                            <!--begin::توضیحات-->
+                                                            <div class="text-muted fs-7 mb-7">افزودن product to a category.</div>
+                                                            <!--end::توضیحات-->
+                                                            <!--end::Input group-->
+                                                            <!--begin::Button-->
+                                                            <a href="add-category.html" class="btn btn-light-primary btn-sm mb-10">
+                                                            <i class="ki-duotone ki-plus fs-2"></i>ساختن new category</a>
+                                                            <!--end::Button-->
+                                                            <!--begin::Input group-->
+                                                            <!--begin::Tags-->
+                                                            <label class="form-label d-block">متا توضیحات</label>
+                                                            <!--end::Tags-->
+                                                            <!--begin::Input-->
+                                                            <textarea name="metadesc" class="form-control mb-2"></textarea>
+                                                            <!--end::Input-->
+                                                            <!--begin::توضیحات-->
+                                                            <div class="text-muted fs-7">افزودن متا توضیحات</div>
+                                                            <!--end::توضیحات-->
+                                                            <!--end::Input group-->
+                                                            <!--begin::Input group-->
+                                                            <div class="form-group col-md-12">
+                                                                <label class="form-label d-block pt-10">متا کلمات کلیدی</label>
+                                                                <select name="keywords[]" class="DroidNaskh form-control mb-2" multiple data-role="tagsinput">
+                                                                {% for barchasb in barchasbs %}
+                                                                    <option value="{{ barchasb.title }}">{{ barchasb.title }}</option>
+                                                                {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="text-muted fs-7">
+                                                                ﮐﻠﻤﺎﺕ ﮐﻠﯿﺪﯼ ﺭا ﺑﺎ اﯾﻨﺘﺮ اﺯ ﻫﻢ ﺟﺪا ﮐﻨﯿﺪ
+                                                                ﺣﺪاﮐﺜﺮ
+                                                                5
+                                                                ﮐﻠﻤﻪ ﻭاﺭﺩ ﻧﻤﺎﺋﯿﺪ
+                                                            </div>
+                                                            <!--end::توضیحات-->
+                                                            <!--end::Input group-->
+                                                    </div>
+                                                    <!--end::کارت body-->
+                                            </div>
+                                            <!--end::دسته بندی & tags-->
+                                    </div>
+                                    <!--end::کناری column-->
+                                    <!--begin::اصلی column-->
+                                    <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
+                                            <!--begin:::Tabs-->
+                                            <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-n2">
+                                                    <!--begin:::Tab item-->
+                                                    <li class="nav-item">
+                                                            <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab" href="../../../index.html#kt_ecommerce_add_product_general">عمومی</a>
+                                                    </li>
+                                                    <!--end:::Tab item-->
+                                                    <!--begin:::Tab item-->
+                                            </ul>
+                                            <!--end:::Tabs-->
+                                            <!--begin::Tab content-->
+                                            <div class="tab-content">
+                                                    <!--begin::Tab pane-->
+                                                    <div class="tab-pane fade show active" id="kt_ecommerce_add_product_general" role="tab-panel">
+                                                            <div class="d-flex flex-column gap-7 gap-lg-10">
+                                                                    <!--begin::عمومی options-->
+                                                                    <div class="card card-flush py-4">
+                                                                            <!--begin::کارت header-->
+                                                                            <div class="card-header">
+                                                                                    <div class="card-title">
+                                                                                            <h2>عمومی</h2>
+                                                                                    </div>
+                                                                            </div>
+                                                                            <!--end::کارت header-->
+                                                                            <!--begin::کارت body-->
+                                                                            <div class="card-body pt-0">
+                                                                                    <!--begin::Input group-->
+                                                                                    <div class="mb-10 fv-row">
+                                                                                            <!--begin::Tags-->
+                                                                                            <label class="required form-label">محصولات نام</label>
+                                                                                            <!--end::Tags-->
+                                                                                            <!--begin::Input-->
+                                                                                            <input type="text" name="title" class="form-control mb-2" placeholder="نام محصول" value="" />
+                                                                                            <!--end::Input-->
+                                                                                            <!--begin::توضیحات-->
+                                                                                            <div class="text-muted fs-7">نام محصول مورد نیاز است و توصیه می شود منحصر به فرد باشد.</div>
+                                                                                            <!--end::توضیحات-->
+                                                                                    </div>
+                                                                                    <!--end::Input group-->
+                                                                            </div>
+                                                                            <!--end::کارت header-->
+                                                                    </div>
+                                                                    <!--end::عمومی options-->
+                                                                    <!--begin::قیمت گذاری-->
+                                                                    <div class="card card-flush py-4">
+                                                                            <!--begin::کارت header-->
+                                                                            <div class="card-header">
+                                                                                    <div class="card-title">
+                                                                                            <h2>لینک</h2>
+                                                                                    </div>
+                                                                            </div>
+                                                                            <!--end::کارت header-->
+                                                                            <!--begin::کارت body-->
+                                                                            <div class="card-body pt-0">
+                                                                                    <!--begin::Input group-->
+                                                                                    <div class="mb-10 fv-row">
+                                                                                            <!--begin::Tags-->
+                                                                                            <label class="required form-label">لینک مقاله</label>
+                                                                                            <!--end::Tags-->
+                                                                                            <!--begin::Input-->
+                                                                                            <input type="text" name="url" class="form-control mb-2" placeholder="لینک را وارد کنید" value="" />
+                                                                                            <!--end::Input-->
+                                                                                            <!--begin::توضیحات-->
+                                                                                            <div class="text-muted fs-7">لینک مقاله باید منحصر به فرد باشد</div>
+                                                                                            <!--end::توضیحات-->
+                                                                                    </div>
+                                                                                    <!--end::Input group-->
+                                                                            </div>
+                                                                            <!--end::کارت header-->
+                                                                    </div>
+                                                                    <!--end::قیمت گذاری-->
+                                                            </div>
+                                                    </div>
+                                                    <!--end::Tab pane-->
+                                            </div>
+                                            <!--end::Tab content-->
+                                            <div class="d-flex justify-content-end">
+                                                    <!--begin::Button-->
+                                                    <a href="products.html" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">انصراف</a>
+                                                    <!--end::Button-->
+                                                    <!--begin::Button-->
+                                                    <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">
+                                                            <span class="indicator-label">ذخیره تغییرات</span>
+                                                            <span class="indicator-progress">لطفا صبر کنید...
+                                                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                                                    </button>
+                                                    <!--end::Button-->
+                                            </div>
+                                    </div>
+                                    <!--end::اصلی column-->
+                                    {{ form_end(form) }}
+
+                            <!--end::Form-->
+                    </div>
+                    <!--end::Container-->
+            </div>
+            <!--end::Post-->
+    </div>
+    <!--end::Content-->
+{% endblock %}

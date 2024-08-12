@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Article{% endblock %}
+
+{% block body %}
+    <h1>Article</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ article.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ article.title }}</td>
+            </tr>
+            <tr>
+                <th>Text</th>
+                <td>{{ article.text }}</td>
+            </tr>
+            <tr>
+                <th>Cdate</th>
+                <td>{{ article.cdate ? article.cdate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Udate</th>
+                <td>{{ article.udate ? article.udate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>MetaKey</th>
+                <td>{{ article.metaKey }}</td>
+            </tr>
+            <tr>
+                <th>Metadesc</th>
+                <td>{{ article.metadesc }}</td>
+            </tr>
+            <tr>
+                <th>Published</th>
+                <td>{{ article.published }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ article.type }}</td>
+            </tr>
+            <tr>
+                <th>Url</th>
+                <td>{{ article.url }}</td>
+            </tr>
+            <tr>
+                <th>Bazdid</th>
+                <td>{{ article.bazdid }}</td>
+            </tr>
+            <tr>
+                <th>Remove</th>
+                <td>{{ article.remove }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_article_index') }}">back to list</a>
+
+    <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
+
+    {{ include('article/_delete_form.html.twig') }}
+{% endblock %}

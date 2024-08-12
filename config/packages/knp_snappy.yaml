@@ -1,0 +1,7 @@
+# config/packages/knp_snappy.yaml
+knp_snappy:
+    pdf:
+        enabled: true
+        binary: '/usr/bin/wkhtmltopdf' # مسیر صحیح باینری روی اوبونتو
+    image:
+        enabled: false

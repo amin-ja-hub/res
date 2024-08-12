@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ContactUs{% endblock %}
+
+{% block body %}
+    <h1>ContactUs</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ contact_u.id }}</td>
+            </tr>
+            <tr>
+                <th>FullName</th>
+                <td>{{ contact_u.fullName }}</td>
+            </tr>
+            <tr>
+                <th>Text</th>
+                <td>{{ contact_u.text }}</td>
+            </tr>
+            <tr>
+                <th>Cdate</th>
+                <td>{{ contact_u.cdate ? contact_u.cdate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Published</th>
+                <td>{{ contact_u.published }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ contact_u.type }}</td>
+            </tr>
+            <tr>
+                <th>Subject</th>
+                <td>{{ contact_u.subject }}</td>
+            </tr>
+            <tr>
+                <th>Mobile</th>
+                <td>{{ contact_u.mobile }}</td>
+            </tr>
+            <tr>
+                <th>Emali</th>
+                <td>{{ contact_u.emali }}</td>
+            </tr>
+            <tr>
+                <th>Remove</th>
+                <td>{{ contact_u.remove }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_contact_us_index') }}">back to list</a>
+
+    <a href="{{ path('app_contact_us_edit', {'id': contact_u.id}) }}">edit</a>
+
+    {{ include('contact_us/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fa">
+
+<head>
+    <title>ODDO - قالب HTML فرم ثبت نام و ورود اُددو</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <!-- External CSS libraries -->
+    <link type="text/css" rel="stylesheet" href="{{ asset('RegisterLogin/assets/css/bootstrap.min.css') }}">
+    <link type="text/css" rel="stylesheet" href="{{ asset('RegisterLogin/assets/fonts/font-awesome/css/font-awesome.min.css') }}">
+    <link type="text/css" rel="stylesheet" href="{{ asset('RegisterLogin/assets/fonts/flaticon/font/flaticon.css') }}">
+
+    <!-- Favicon icon -->
+    <link rel="shortcut icon" href="{{ asset('RegisterLogin/assets/img/favicon.ico') }}" type="image/x-icon" >
+
+    <!-- Custom Stylesheet -->
+    <link type="text/css" rel="stylesheet" href="{{ asset('RegisterLogin/assets/css/style.css') }}">
+    <style>
+/* public/css/styles.css */
+
+/* Style the unordered list that contains error messages */
+.password-error-container ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+}
+
+/* Style the list items that contain error messages */
+.password-error-container ul li {
+    color: red; /* Change text color */
+    font-weight: bold; /* Make text bold */
+    margin-top: 5px; /* Add space above each error message */
+    font-size: 0.9em; /* Adjust font size */
+}
+    </style>
+</head>
+<body id="top" class="login-3-bodycolor" dir="rtl">
+<div class="page_loader"></div>
+
+<!-- Login 3 start -->
+<div class="login-3">
+    <div class="login-3-inner">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-info">
+                        <div class="form-section align-self-center">
+                            <div class="btn-section clearfix">
+                                <a href="{{ path('app_login') }}" class="link-btn active btn-1 default-bg">ورود</a>
+                                <a href="{{ path('app_register') }}" class="link-btn btn-2 active-bg">ثبت نام</a>
+                            </div>
+                            <div class="logo">
+                                <a href="login-3.html">
+                                    <img src="{{ asset('RegisterLogin/assets/img/logos/logo-2.png') }}" alt="logo">
+                                </a>
+                            </div>
+                            <h1>خوش آمدید!</h1>
+                            <h3>ایجاد حساب کاربری</h3>
+                            <div class="clearfix"></div>
+                            {{ form_start(registrationForm) }}
+                                <div class="form-group">
+                                    <div class="password-error-container">
+                                        {{ form_errors(registrationForm.username) }}
+                                    </div>
+                                    <label class="form-label">نام کاربری</label>
+                                    {{ form_widget(registrationForm.username) }}
+                                </div>
+                                <div class="form-group clearfix">
+                                    <div class="password-error-container">
+                                        {{ form_errors(registrationForm.plainPassword.first) }}
+                                    </div>
+                                    <label class="form-label">رمز عبور</label>
+                                    {{ form_widget(registrationForm.plainPassword.first) }}
+                                    <label class="form-label">تکرار رمز عبور</label>
+                                    {{ form_widget(registrationForm.plainPassword.second) }}
+                                </div>
+                                <div class="form-group checkbox clearfix">
+                                    <div class="clearfix float-end">
+                                        <div class="form-check mb-0">
+                                            <input class="form-check-input" type="checkbox" id="rememberme">
+                                            <label class="form-check-label" for="rememberme">
+                                                من با شرایط استفاده از خدمات موافقم.
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-theme">ثبت نام</button>
+                                </div>
+                            {{ form_end(registrationForm) }}
+                            <p>راهنما و پشتیبانی</p>
+                            <div class="social-list">
+                                <a href="register-3.html#">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                                <a href="register-3.html#">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                                <a href="register-3.html#">
+                                    <i class="fa fa-google"></i>
+                                </a>
+                                <a href="register-3.html#">
+                                    <i class="fa fa-linkedin"></i>
+                                </a>
+                                <a href="register-3.html#">
+                                    <i class="fa fa-pinterest"></i>
+                                </a>
+                                <a href="register-3.html#">
+                                    <i class="fa fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Login 3 end -->
+
+<!-- Ripple background start -->
+<div class="ripple-background">
+    <div class="circle xxlarge shade1"></div>
+    <div class="circle xlarge shade2"></div>
+    <div class="circle large shade3"></div>
+    <div class="circle mediun shade4"></div>
+    <div class="circle small shade5"></div>
+</div>
+<!-- Ripple background end -->
+
+<!-- External JS libraries -->
+<script src="{{ asset('RegisterLogin/assets/js/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ asset('RegisterLogin/assets/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('RegisterLogin/assets/js/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('RegisterLogin/assets/js/app.js') }}"></script>
+<!-- Custom JS Script -->
+
+</body>
+
+</html>
+

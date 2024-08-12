@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Factor{% endblock %}
+
+{% block body %}
+    <h1>Create new Factor</h1>
+
+    {{ include('factor/_form.html.twig') }}
+
+    <a href="{{ path('app_factor_index') }}">back to list</a>
+{% endblock %}

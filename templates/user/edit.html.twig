@@ -1,0 +1,172 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Article{% endblock %}
+{% block jshead %}
+
+<script src="https://cdn.ckeditor.com/4.17.2/standard/ckeditor.js"></script>
+
+{% endblock %}
+{% block js %}
+    <script>
+        CKEDITOR.replace( 'editor1',{
+        language: 'fa'
+
+        } );
+    </script>
+        <script>
+        $(document).ready(function() {
+            $('.DroidNaskh').select2({
+                placeholder: "Select or add fruits",
+                allowClear: true,
+                tags: true
+            });
+        });
+    </script>
+{% endblock %}
+{% block body %}
+    <!--begin::Content-->
+    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+            <!--begin::Post-->
+            <div class="post d-flex flex-column-fluid" id="kt_post">
+                    <!--begin::Container-->
+                    <div id="kt_content_container" class="container-xxl">
+                            <!--begin::Form-->
+                                {{ form_start(form, {'attr': {'id': 'kt_ecommerce_add_product_form', 'enctype': 'multipart/form-data','class': 'd-flex flex-column flex-lg-row'}}) }}
+
+
+                                    <!--begin::کناری column-->
+                                    <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
+                                            <!--begin::Thumbnail settings-->
+                                            <div class="card card-flush py-4">
+                                                    <!--begin::کارت header-->
+                                                    <div class="card-header">
+                                                            <!--begin::کارت title-->
+                                                            <div class="card-title">
+                                                                    <h2>تصویر شاخص</h2>
+                                                            </div>
+                                                            <!--end::کارت title-->
+                                                    </div>
+                                                    <!--end::کارت header-->
+                                                    <!--begin::کارت body-->
+                                                    <div class="card-body text-center pt-0">
+                                                            <!--begin::Image input-->
+                                                            <!--begin::Image input placeholder-->
+                                                            <style>.image-input-placeholder { background-image: url('{% if user.image is not null %}{{ user.image.path~'/'~user.image.name }}{% endif %}'); }</style>
+                                                            <!--end::Image input placeholder-->
+                                                            <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true">
+                                                                    <!--begin::نمایش existing avatar-->
+                                                                    <div class="image-input-wrapper w-150px h-150px"></div>
+                                                                    <!--end::نمایش existing avatar-->
+                                                                    <!--begin::Tags-->
+                                                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="تعویض آواتار">
+                                                                            <i class="ki-duotone ki-pencil fs-7">
+                                                                                    <span class="path1"></span>
+                                                                                    <span class="path2"></span>
+                                                                            </i>
+                                                                            <!--begin::Inputs-->
+                                                                            <input type="file" name="file" accept=".png, .jpg, .jpeg" />
+                                                                            <input type="hidden" name="avatar_remove" />
+                                                                            <!--end::Inputs-->
+                                                                    </label>
+                                                                    <!--end::Tags-->
+                                                                    <!--begin::انصراف-->
+                                                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="انصراف avatar">
+                                                                            <i class="ki-duotone ki-cross fs-2">
+                                                                                    <span class="path1"></span>
+                                                                                    <span class="path2"></span>
+                                                                            </i>
+                                                                    </span>
+                                                                    <!--end::انصراف-->
+                                                                    <!--begin::حذف-->
+                                                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="حذف آواتار">
+                                                                            <i class="ki-duotone ki-cross fs-2">
+                                                                                    <span class="path1"></span>
+                                                                                    <span class="path2"></span>
+                                                                            </i>
+                                                                    </span>
+                                                                    <!--end::حذف-->
+                                                            </div>
+                                                            <!--end::Image input-->
+                                                            <!--begin::توضیحات-->
+                                                            <div class="text-muted fs-7">Set the product thumbnail image. Only *.png, *.jpg and *.jpeg image files are accepted</div>
+                                                            <!--end::توضیحات-->
+                                                    </div>
+                                                    <!--end::کارت body-->
+                                            </div>
+                                            <!--end::Thumbnail settings-->
+                                    </div>
+                                    <!--end::کناری column-->
+                                    <!--begin::اصلی column-->
+                                    <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
+                                            <!--begin::Tab content-->
+                                            <div class="tab-content">
+                                                    <!--begin::Tab pane-->
+                                                    <div class="tab-pane fade show active" id="kt_ecommerce_add_product_general" role="tab-panel">
+                                                            <div class="d-flex flex-column gap-7 gap-lg-10">
+                                                                    <!--begin::عمومی options-->
+                                                                    <div class="card card-flush py-4">
+                                                                            <!--begin::کارت body-->
+                                                                            <div class="card-body pt-0">
+                                                                                    <!--begin::Input group-->
+                                                                                    <div class="mb-10 fv-row">
+                                                                                            <!--begin::Tags-->
+                                                                                            <label class="required form-label">نام و نام خانوادگی</label>
+                                                                                            <!--end::Tags-->
+                                                                                            <!--begin::Input-->
+                                                                                            <input type="text" name="name" class="form-control mb-2" placeholder="نام و نام خانوادگی را وارد کنید" value="{{ user.fullName }}" />
+                                                                                            <!--end::Input-->
+                                                                                            <!--begin::Tags-->
+                                                                                            <label class="required form-label">ایمیل</label>
+                                                                                            <!--end::Tags-->
+                                                                                            <!--begin::Input-->
+                                                                                            <input type="text" name="email" class="form-control mb-2" placeholder="ایمیل خود را وارد کنید" value="{{ user.email }}" />
+                                                                                            <!--end::Input-->
+                                                                                            <!--begin::Tags-->
+                                                                                            <label class="required form-label">شماره موبایل</label>
+                                                                                            <!--end::Tags-->
+                                                                                            <!--begin::Input-->
+                                                                                            <input type="text" name="mobile" class="form-control mb-2" placeholder="شماره موبایل خود را وارد کنید" value="{{ user.mobile }}" />
+                                                                                            <!--end::Input-->
+                                                                                            <!--begin::Tags-->
+                                                                                            <label class="required form-label">رمز ورود</label>
+                                                                                            <!--end::Tags-->
+                                                                                            <!--begin::Input-->
+                                                                                            <input type="text" name="pass" class="form-control mb-2" placeholder="رمز ورود شما" value="{{ user.plainPassword }}" />
+                                                                                            <!--end::Input-->
+                                                                                    </div>
+                                                                                    <!--end::Input group-->
+                                                                            </div>
+                                                                            <!--end::کارت header-->
+                                                                    </div>
+                                                                    <!--end::عمومی options-->
+                                                            </div>
+                                                    </div>
+                                                    <!--end::Tab pane-->
+                                            </div>
+                                            <!--end::Tab content-->
+                                            <div class="d-flex justify-content-end">
+                                                    <!--begin::Button-->
+                                                    <a href="products.html" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">انصراف</a>
+                                                    <!--end::Button-->
+                                                    <!--begin::Button-->
+                                                    <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">
+                                                            <span class="indicator-label">ذخیره تغییرات</span>
+                                                            <span class="indicator-progress">لطفا صبر کنید...
+                                                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                                                    </button>
+                                                    <!--end::Button-->
+                                            </div>
+                                    </div>
+                                    <!--end::اصلی column-->
+                                    {{ form_end(form) }}
+
+                            <!--end::Form-->
+                    </div>
+                    <!--end::Container-->
+            </div>
+            <!--end::Post-->
+    </div>
+    <!--end::Content-->
+
+    <a href="{{ path('app_user_index') }}">back to list</a>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SefareshatProduct index{% endblock %}
+
+{% block body %}
+    <h1>SefareshatProduct index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sefareshat_product in sefareshat_products %}
+            <tr>
+                <td>{{ sefareshat_product.id }}</td>
+                <td>
+                    <a href="{{ path('app_sefareshat_product_show', {'id': sefareshat_product.id}) }}">show</a>
+                    <a href="{{ path('app_sefareshat_product_edit', {'id': sefareshat_product.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_sefareshat_product_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Factor{% endblock %}
+
+{% block body %}
+    <h1>Factor</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ factor.id }}</td>
+            </tr>
+            <tr>
+                <th>Cdate</th>
+                <td>{{ factor.cdate ? factor.cdate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>TrackingCode</th>
+                <td>{{ factor.trackingCode }}</td>
+            </tr>
+            <tr>
+                <th>Amount</th>
+                <td>{{ factor.amount }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_factor_index') }}">back to list</a>
+
+    <a href="{{ path('app_factor_edit', {'id': factor.id}) }}">edit</a>
+
+    {{ include('factor/_delete_form.html.twig') }}
+{% endblock %}

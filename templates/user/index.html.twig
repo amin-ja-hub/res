@@ -1,0 +1,255 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product index{% endblock %}
+{% block css %}
+{#    <!--begin::Vendor Stylesheets(used for this page only)-->
+    <link href="{{ asset('panel/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('panel/assets/plugins/custom/datatables/datatables.bundle.css')}}" rel="stylesheet" type="text/css" />
+    <!--end::Vendor Stylesheets-->#}
+{% endblock %}
+{% block js %}
+{#    <!--begin::سفارشی Javascript(used for this page only)-->
+    <script src="{{ asset('panel/assets/js/widgets.bundle.js')}}"></script>
+    <script src="{{ asset('panel/assets/js/custom/widgets.js')}}"></script>
+    <script src="{{ asset('panel/assets/js/custom/apps/chat/chat.js')}}"></script>
+    <script src="{{ asset('panel/assets/js/custom/utilities/modals/users-search.js')}}"></script>
+    <!--end::سفارشی Javascript-->
+    <!--begin::Vendors Javascript(used for this page only)-->
+    <script src="{{ asset('panel/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}""></script>
+#}
+<script>
+$(document).ready(function() {
+    $('.sendData').click(function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var dataTable = button.data('table');
+        var dataField = button.data('field');
+        var dataValue = button.data('value');
+        var dataId = button.data('id');
+
+        var dataToSend = {
+            table: dataTable,
+            field: dataField,
+            value: dataValue,
+            id: dataId
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ path('update_field') }}', // Replace with your Symfony route
+            data: dataToSend,
+            success: function(response) {
+                if (dataField === 'published') {
+                    var newValue = dataValue === 1 ? 0 : 1;
+                    button.data('value', newValue);
+                    if (newValue === 1) {
+                        button.removeClass('badge-danger').addClass('badge-light-success').text('برسی کردن');
+                    } else {
+                        button.removeClass('badge-light-success').addClass('badge-danger').text('کنارگذاشتن');
+                    }
+                    var statusSpan = $('#publishStatus-' + dataId);
+                    if (newValue === 0) {
+                        statusSpan.removeClass('badge-danger').addClass('badge-light-success').text('برسی شده');
+                    } else {
+                        statusSpan.removeClass('badge-light-success').addClass('badge-danger').text('در انتظار');
+                    }
+                } else if (dataField === 'remove') {
+                    $('#userRow-' + dataId).remove();
+                } else if (dataField === 'roles'){
+
+                } else if (dataField === 'role') {
+                    var roleSpan = $('#role-span-' + dataId);
+                    var newRoleText = '';
+                    switch (parseInt(dataValue)) {
+                        case 0:
+                            newRoleText = 'معمولی';
+                            break;
+                        case 1:
+                            newRoleText = 'ادمین';
+                            break;
+                        case 2:
+                            newRoleText = 'نویسنده';
+                            break;
+                    }
+                    roleSpan.html(newRoleText + '<i class="ki-duotone ki-down fs-5 ms-1"></i>');
+                }
+                alert('OK: ');
+
+            },
+            error: function(error) {
+                alert('Not OK: ' + error.responseJSON.error);
+            }
+        });
+    });
+});
+
+</script>
+
+{% endblock %}
+{% block jshead %}
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% endblock %}
+{% block body %}
+
+    <!--begin::Content-->
+    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+            <!--begin::Post-->
+            <div class="post d-flex flex-column-fluid" id="kt_post">
+                    <!--begin::Container-->
+                    <div id="kt_content_container" class="container-xxl">
+                            <!--begin::محصولات-->
+                            <div class="card card-flush">
+                                    <!--begin::کارت header-->
+                                    <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+                                            <!--begin::کارت title-->
+                                            <div class="card-title">
+                                                    <!--begin::جستجو-->
+                                                    <div class="d-flex align-items-center position-relative my-1">
+                                                            <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4">
+                                                                    <span class="path1"></span>
+                                                                    <span class="path2"></span>
+                                                            </i>
+                                                            <input type="text" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="جستجو کاربران" />
+                                                    </div>
+                                                    <!--end::جستجو-->
+                                            </div>
+                                            <!--end::کارت title-->
+                                    </div>
+                                    <!--end::کارت header-->
+                                    <!--begin::کارت body-->
+                                    <div class="card-body pt-0">
+                                            <!--begin::Table-->
+                                            <table class="table align-middle table-row-dashed fs-6 gy-5 border" id="kt_ecommerce_products_table">
+                                                <thead class="border">
+                                                        <tr class="text-start fw-bold fs-7 text-uppercase gs-0">
+                                                            <th class="text-center">ردیف</th>
+                                                            <th class="text-start">نام و نام کاربری</th>
+                                                            <th class="text-start">تلفن</th>
+                                                            <th class="text-start">ایمیل</th>
+                                                            <th class="text-start">زمان ساخت</th>
+                                                            <th class="text-start">زمان آپدیت</th>
+                                                            <th class="text-start">وضعیت</th>
+                                                            <th class="text-start">نوع کاربری</th>
+                                                            <th class="text-start">عملیات</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="fw-semibold border">
+                                                        {% for user in users %}
+                                                            <tr id="userRow-{{ user.id }}">
+                                                                <td>
+                                                                    <div class="d-flex align-items-center">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <!--begin::Thumbnail-->
+                                                                            {% if user.image.id is defined %}
+                                                                            <a class="symbol symbol-50px">
+                                                                                <span class="symbol-label" style="background-image:url({{ asset(user.image.path ~'/'~user.image.name) }})"></span>
+                                                                            </a>
+                                                                            {% else %}
+                                                                            <a class="symbol symbol-50px">
+                                                                                <span class="symbol-label" style="background-image:url({{ asset('panel/assets/media/images/not-found.png') }})"></span>
+                                                                            </a>
+                                                                            {% endif %}
+                                                                            <!--end::Thumbnail-->
+                                                                        </div>
+                                                                        <!--end::Thumbnail-->
+                                                                        <div class="ms-5">
+                                                                            <!--begin::Title-->
+                                                                            <a class="text-gray-800 text-hover-primary fs-5 fw-bold">{{ user.id }}</a>
+                                                                            <!--end::Title-->
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                    <td class="text-start pe-0">
+                                                                        <span class="fw-bold">{{ user.fullname }}</span><br>
+                                                                        <span> کابری:{{ user.username }}</span>
+                                                                        <span> رمز:{{ user.plainPassword }}</span>
+                                                                    </td>
+                                                                    <td class="text-start pe-0" data-order="1">
+                                                                        <span class="">{{ user.mobile }}</span>
+                                                                    </td>
+                                                                    <td class="text-start pe-0">{{ user.email }}</td>
+                                                                    <td class="text-center pe-0">
+                                                                        <span>{{ user.cdate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian' , 'Asia/Tehran' , 'yyy/MM/dd' ) }} ساعت {{ user.cdate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian' , 'Asia/Tehran' , ' HH:mm' ) }}</span>
+                                                                    </td>
+                                                                    <td class="text-center pe-0" data-order="در انتظار">
+                                                                        <span>{{ user.udate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian' , 'Asia/Tehran' , 'yyy/MM/dd' ) }} ساعت {{ user.udate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian' , 'Asia/Tehran' , ' HH:mm' ) }}</span>
+                                                                    </td>
+                                                                    <td class="text-start">
+                                                                        {% if user.published == 1 %}
+                                                                            <span id="publishStatus-{{ user.id }}" class="badge badge-light-success">برسی شده</span>
+                                                                        {% else %}
+                                                                            <span id="publishStatus-{{ user.id }}" class="badge badge-danger">در انتظار</span>
+                                                                        {% endif %}
+                                                                    </td>
+<td class="text-start">
+    <span id="role-span-{{ user.id }}" class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+        {% if user.role == 1 %}
+            ادمین
+        {% elseif user.role == 0 %}
+            معمولی
+        {% elseif user.role == 2 %}
+            نویسنده
+        {% endif %}
+        <i class="ki-duotone ki-down fs-5 ms-1"></i>
+    </span>
+    <!--begin::Menu-->
+    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
+        <!--begin::Menu item-->
+        <div class="menu-item px-3">
+            <button class="btn badge badge-light-primary sendData" data-id="{{ user.id }}" data-table="user" data-field="role" data-value="2">نویسنده</button>
+        </div>
+        <div class="menu-item px-3">
+            <button class="btn badge badge-light-primary sendData" data-id="{{ user.id }}" data-table="user" data-field="role" data-value="1">ادمین</button>
+        </div>
+        <div class="menu-item px-3">
+            <button class="btn badge badge-light-primary sendData" data-id="{{ user.id }}" data-table="user" data-field="role" data-value="0">معمولی</button>
+        </div>
+        <!--end::Menu item-->
+    </div>
+    <!--end::Menu-->
+</td>
+
+                                                                        </td>
+                                                                    <td class="text-start">
+                                                                        <span class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">عملیات
+                                                                            <i class="ki-duotone ki-down fs-5 ms-1"></i>
+                                                                        </span>
+                                                                        <!--begin::Menu-->
+                                                                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
+                                                                                <!--begin::Menu item-->
+                                                                                <div class="menu-item px-3">
+                                                                                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="menu-link px-3">ویرایش محصول</a>
+                                                                                </div>
+                                                                                <!--end::Menu item-->
+                                                                                <!--begin::Menu item-->
+                                                                                <div class="menu-item px-3">
+                                                                                    <button id="removeButton-{{ user.id }}" href="#" class="sendData deleteData btn badge badge-dark" data-table="user" data-field="remove" data-value="1" data-id="{{ user.id }}">حذف کردن</button>
+                                                                                </div>
+                                                                                <div class="menu-item px-3">
+                                                                                    {% if user.published == 0 %}
+                                                                                        <button id="publishButton-{{ user.id }}" href="#" class="btn badge badge-light-success sendData" data-table="user" data-field="published" data-value="1" data-id="{{ user.id }}">برسی کردن</button>
+                                                                                    {% elseif user.published == 1 %}
+                                                                                        <button id="publishButton-{{ user.id }}" href="#" class="btn badge badge-danger sendData" data-table="user" data-field="published" data-value="0" data-id="{{ user.id }}">کنارگذاشتن</button>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                                <!--end::Menu item-->
+                                                                        </div>
+                                                                        <!--end::Menu-->
+                                                                    </td>
+                                                                </tr>
+                                                        {% endfor %}
+
+                                                    </tbody>
+                                            </table>
+                                            <!--end::Table-->
+                                    </div>
+                                    <!--end::کارت body-->
+                            </div>
+                            <!--end::محصولات-->
+                    </div>
+                    <!--end::Container-->
+            </div>
+            <!--end::Post-->
+    </div>
+{% endblock %}

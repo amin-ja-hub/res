@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New SefareshatProduct{% endblock %}
+
+{% block body %}
+    <h1>Create new SefareshatProduct</h1>
+
+    {{ include('sefareshat_product/_form.html.twig') }}
+
+    <a href="{{ path('app_sefareshat_product_index') }}">back to list</a>
+{% endblock %}

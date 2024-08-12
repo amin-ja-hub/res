@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Factor{% endblock %}
+
+{% block body %}
+    <h1>Edit Factor</h1>
+
+    {{ include('factor/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_factor_index') }}">back to list</a>
+
+    {{ include('factor/_delete_form.html.twig') }}
+{% endblock %}

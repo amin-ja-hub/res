@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product{% endblock %}
+
+{% block body %}
+    <h1>Product</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ product.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ product.title }}</td>
+            </tr>
+            <tr>
+                <th>Text</th>
+                <td>{{ product.text }}</td>
+            </tr>
+            <tr>
+                <th>Cdate</th>
+                <td>{{ product.cdate ? product.cdate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Udate</th>
+                <td>{{ product.udate ? product.udate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Published</th>
+                <td>{{ product.published }}</td>
+            </tr>
+            <tr>
+                <th>Remove</th>
+                <td>{{ product.remove }}</td>
+            </tr>
+            <tr>
+                <th>HtmlFile</th>
+                <td>{{ product.htmlFile }}</td>
+            </tr>
+            <tr>
+                <th>Metadesc</th>
+                <td>{{ product.metadesc }}</td>
+            </tr>
+            <tr>
+                <th>MetaKey</th>
+                <td>{{ product.metaKey }}</td>
+            </tr>
+            <tr>
+                <th>Bazdid</th>
+                <td>{{ product.bazdid }}</td>
+            </tr>
+            <tr>
+                <th>Order</th>
+                <td>{{ product.order }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ product.type }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ product.price }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_product_index') }}">back to list</a>
+
+    <a href="{{ path('app_product_edit', {'id': product.id}) }}">edit</a>
+
+    {{ include('product/_delete_form.html.twig') }}
+{% endblock %}

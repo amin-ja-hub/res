@@ -1,0 +1,342 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product index{% endblock %}
+{% block css %}
+{#    <!--begin::Vendor Stylesheets(used for this page only)-->
+    <link href="{{ asset('panel/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('panel/assets/plugins/custom/datatables/datatables.bundle.css')}}" rel="stylesheet" type="text/css" />
+    <!--end::Vendor Stylesheets-->#}
+    <style>
+        .form-control[readonly] {
+            background-color: #f9f9f9;
+            color: #555;
+            border: 1px solid #e0e0e0;
+            cursor: default;
+        }
+
+        .form-control[readonly]:focus {
+            box-shadow: none;
+            border-color: #e0e0e0;
+        }
+        .max-width-130{
+            max-width: 130px;
+        }
+        .line-height-25{
+            line-height: 25px;
+        }
+        .max-height-100{
+            max-height: 100px
+        }
+        .smoth-scroll{
+            scroll-behavior: smooth;
+        }
+        .btn-custom{
+            padding: 4px !important;
+            margin: 5px !important;
+        }
+    </style>
+{% endblock %}
+{% block js %}
+{#    <!--begin::سفارشی Javascript(used for this page only)-->
+    <script src="{{ asset('panel/assets/js/widgets.bundle.js')}}"></script>
+    <script src="{{ asset('panel/assets/js/custom/widgets.js')}}"></script>
+    <script src="{{ asset('panel/assets/js/custom/apps/chat/chat.js')}}"></script>
+    <script src="{{ asset('panel/assets/js/custom/utilities/modals/users-search.js')}}"></script>
+    <!--end::سفارشی Javascript-->
+    <!--begin::Vendors Javascript(used for this page only)-->
+    <script src="{{ asset('panel/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}""></script>
+#}
+    <script>
+        $(document).ready(function() {
+            $('.sendData').click(function(e) {
+                e.preventDefault();
+                var button = $(this);
+                var dataTable = button.data('table');
+                var dataField = button.data('field');
+                var dataValue = button.data('value');
+                var dataId = button.data('id');
+
+                var dataToSend = {
+                    table: dataTable,
+                    field: dataField,
+                    value: dataValue,
+                    id: dataId
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('update_field') }}', // Replace with your Symfony route
+                    data: dataToSend,
+                    success: function(response) {
+                        // Handle the response based on the action
+                        if (dataField === 'published') {
+                            // Update button's data-value attribute and text based on new value
+                            var newValue = dataValue === 1 ? 0 : 1; // Toggle the value
+                            button.data('value', newValue);
+                            if (newValue === 1) {
+                                button.removeClass('badge-danger').addClass('badge-light-success').text('منتشر کردن');
+                            } else {
+                                button.removeClass('badge-light-success').addClass('badge-danger').text('کنارگذاشتن');
+                            }
+
+                            // Update status display based on new value
+                            var statusSpan = $('#publishStatus-' + dataId);
+                            if (newValue === 0) {
+                                statusSpan.removeClass('badge-danger').addClass('badge-light-success').text('منتشر شده');
+                            } else {
+                                statusSpan.removeClass('badge-light-success').addClass('badge-danger').text('پیش نویس');
+                            }
+                        } else if (dataField === 'remove') {
+                            // Remove the corresponding <tr> from the table
+                            $('#commentRow-' + dataId).remove();
+                        }
+
+                        // Optionally show a success message
+                        alert('OK: ' + response.message);
+                    },
+                    error: function(error) {
+                        alert('Not OK: ' + error.responseJSON.error);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        // Custom scroll speed functionality
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const textareas = document.querySelectorAll('.contactMessage');
+            const scrollSpeed = 50; // Lower number means faster scroll
+
+            textareas.forEach((textarea) => {
+                textarea.addEventListener('wheel', function(e) {
+                    if (e.deltaY !== 0) {
+                        e.preventDefault();
+                        textarea.scrollTop += e.deltaY < 0 ? -scrollSpeed : scrollSpeed;
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        // Assuming you have included jQuery library
+        $(document).ready(function() {
+            // Event listener for the edit button
+            $('.edit-btn').on('click', function() {
+                var messageId = $(this).data('message-id'); // Retrieve message ID from data attribute
+                var newValue = $('.messageText[data-message-id="' + messageId + '"]').val(); // Retrieve new value from textarea
+
+                // Prepare data to send via AJAX
+                var data = {
+                    table: 'comment', // tableName
+                    field: 'text', // fieldName
+                    value: newValue, // fieldValue (value of the textarea)
+                    id: messageId // id (message.id)
+                };
+
+                // AJAX POST request
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('update_field') }}', // Replace with your Symfony route
+                    data: data,
+                    success: function(response) {
+                        alert('با موفقیت ثبت شد');
+                        console.log('Update successful');
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response if needed
+                        alert('با موفقیت ثبت نشد');
+                        console.error('Error updating:', error);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+    $(document).ready(function() {
+        $('.sub-btn').each(function(index) {
+            $(this).on('click', function() {
+                var commentId = $(this).data('comment');
+                var commentText = $(this).prev('.contactMessage2').val(); // Assuming textarea is placed just before the button
+
+                if (commentText.length === 0) {
+                    alert("Comment cannot be empty.");
+                    return;
+                }
+
+                var data = {
+                    comment_id: commentId,
+                    text: commentText
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('add_comment') }}', // Replace with your actual endpoint
+                    data: data,
+                    success: function(response) {
+                        if (response.success) {
+                            console.log('Comment added successfully');
+                            alert('ثبت شد');
+                        } else {
+                            console.error('Error adding comment:', response.error);
+                            alert('Error adding comment: ' + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error adding comment:', error);
+                        alert('An error occurred while adding your comment. Please try again.');
+                    }
+                });
+            });
+        });
+    });
+    </script>
+{% endblock %}
+{% block jshead %}
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% endblock %}
+{% block body %}
+
+    <!--begin::Content-->
+    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+            <!--begin::Post-->
+            <div class="post d-flex flex-column-fluid" id="kt_post">
+                    <!--begin::Container-->
+                    <div id="kt_content_container" class="container-xxl">
+                            <!--begin::محصولات-->
+                            <div class="card card-flush">
+                                    <!--begin::کارت header-->
+                                    <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+                                            <!--begin::کارت title-->
+                                            <div class="card-title">
+                                                    <!--begin::جستجو-->
+                                                    <div class="d-flex align-items-center position-relative my-1">
+                                                            <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4">
+                                                                    <span class="path1"></span>
+                                                                    <span class="path2"></span>
+                                                            </i>
+                                                            <input type="text" data-kt-ecommerce-comment-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="جستجو محصولات" />
+                                                    </div>
+                                                    <!--end::جستجو-->
+                                            </div>
+                                            <!--end::کارت title-->
+                                    </div>
+                                    <!--end::کارت header-->
+                                    <!--begin::کارت body-->
+                                    <div class="card-body pt-0">
+                                            <!--begin::Table-->
+                                            <table class="table align-middle table-row-dashed fs-6 gy-5 border" id="kt_ecommerce_comments_table">
+                                                <thead class="border">
+                                                        <tr class="text-start fw-bold fs-7 text-uppercase gs-0">
+                                                            <th class="min-w-40px">ردیف</th>
+                                                            <th class="text-start min-w-100px">نام و نام خانوادگی</th>
+                                                            <th class="text-start min-w-70px">متن</th>
+                                                            <th class="text-start min-w-70px">پاسخ متن</th>
+                                                            <th class="text-start min-w-100px">زمان ساخت</th>
+                                                            <th class="text-start min-w-100px">زمان آپدیت</th>
+                                                            <th class="text-start min-w-100px">وضعیت</th>
+                                                            <th class="text-start min-w-100px">مقاله</th>
+                                                            <th class="text-start min-w-70px">عملیات</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="fw-semibold border">
+                                                        {% for comment in comments %}
+                                                            <tr id="commentRow-{{ comment.id }}">
+                                                                <td>
+                                                                    <div class="d-flex align-items-center">
+                                                                        <div class="ms-5">
+                                                                            <!--begin::Title-->
+                                                                            <a class="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-comment-filter="comment_name">{{ comment.id }}</a>
+                                                                            <!--end::Title-->
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                    <td class="text-start pe-0">
+                                                                        <span class="fw-bold">{{ comment.fullname }}</span>
+                                                                    </td>
+                                                                    <td class="text-start max-width-130 max-heig ">
+                                                                        <textarea class="form-control floatRight messageText" name="text" style="height: 60px; resize: vertical; width: 109px;" data-message-id="{{ comment.id }}">{{ comment.text }}</textarea>
+                                                                        <button class="btn btn-primary edit-btn center-block p-1 m-0" data-message-id="{{ comment.id }}">ویرایش</button>
+                                                                    </td>
+
+                                                                    <td class="text-start max-width-130 max-heig ">
+                                                                        {% for message in getReplayMessages(comment.id) %}
+                                                                            {% if message.published == 1 %}
+                                                                                <div class="publish-color text-center">
+                                                                                    <small class="badge badge-light-success" id="publishStatus-{{ message.id }}">منتشر شده</small>
+                                                                                </div>
+                                                                            {% else %}
+                                                                                <div class="npublish-color text-center">
+                                                                                    <small class="badge badge-danger" id="publishStatus-{{ message.id }}">پیش نویس</small>
+                                                                                </div>
+                                                                            {% endif %}
+                                                                            <div class="input-container">
+                                                                                <textarea class="form-control floatRight messageText" name="text" style="height: 60px; resize: vertical; width: 109px;" data-message-id="{{ message.id }}">{{ message.text }}</textarea>
+                                                                                <div>
+                                                                                {% if message.published == 1 %}
+                                                                                    <button id="publishButton-{{ message.id }}" href="#" class="btn badge badge-danger sendData p-1 m-0" data-table="comment" data-field="published" data-value="0" data-id="{{ message.id }}">کنارگذاشتن</button>
+                                                                                {% else %}
+                                                                                    <button id="publishButton-{{ message.id }}" href="#" class="btn badge badge-light-success sendData p-1  m-0" data-table="comment" data-field="published" data-value="1" data-id="{{ message.id }}">منتشر کردن</button>
+                                                                                {% endif %}
+                                                                                <button class="btn btn-primary edit-btn center-block p-1 m-0" data-message-id="{{ message.id }}">ویرایش</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endfor %}
+                                                                        <textarea class="contactMessage2 form-control max-height-100 smoth-scroll"></textarea>
+                                                                        <button class="btn-primary btn w-100 sub-btn" data-comment="{{ comment.id }}">ثبت</button>
+                                                                    </td>
+                                                                    <td class="text-center pe-0">
+                                                                    <span>{{ comment.cdate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian' , 'Asia/Tehran' , 'yyy/MM/dd' ) }} ساعت {{ comment.cdate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian' , 'Asia/Tehran' , ' HH:mm' ) }}</span>
+                                                                    </td>
+                                                                    <td class="text-center pe-0">
+                                                                    <span>{{ comment.udate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian' , 'Asia/Tehran' , 'yyy/MM/dd' ) }} ساعت {{ comment.udate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian' , 'Asia/Tehran' , ' HH:mm' ) }}</span>
+                                                                    </td>
+                                                                    <td class="text-start">
+                                                                        {% if comment.published == 1 %}
+                                                                            <span id="publishStatus-{{ comment.id }}" class="badge badge-light-success">منتشر شده</span>
+                                                                        {% else %}
+                                                                            <span id="publishStatus-{{ comment.id }}" class="badge badge-danger">پیش نویس</span>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td class="text-start pe-0">{% if comment.article is not null %}{{ comment.article.title }}{% endif %}</td>
+                                                                    <td class="text-start">
+                                                                        <a href="../../../index.html#" class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">عملیات
+                                                                        <i class="ki-duotone ki-down fs-5 ms-1"></i></a>
+                                                                        <!--begin::Menu-->
+                                                                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
+                                                                                <!--begin::Menu item-->
+                                                                                <div class="menu-item px-3">
+                                                                                    <a href="{{ path('app_comment_edit', {'id': comment.id}) }}" class="menu-link px-3">ویرایش محصول</a>
+                                                                                </div>
+                                                                                <!--end::Menu item-->
+                                                                                <!--begin::Menu item-->
+                                                                                <div class="menu-item px-3">
+                                                                                    <button id="removeButton-{{ comment.id }}" href="#" class="sendData deleteData btn badge badge-dark" data-table="comment" data-field="remove" data-value="1" data-id="{{ comment.id }}">حذف کردن</button>
+                                                                                </div>
+                                                                                <div class="menu-item px-3">
+                                                                                    {% if comment.published == 0 %}
+                                                                                        <button id="publishButton-{{ comment.id }}" href="#" class="btn badge badge-light-success sendData" data-table="comment" data-field="published" data-value="1" data-id="{{ comment.id }}">منتشر کردن</button>
+                                                                                    {% elseif comment.published == 1 %}
+                                                                                        <button id="publishButton-{{ comment.id }}" href="#" class="btn badge badge-danger sendData" data-table="comment" data-field="published" data-value="0" data-id="{{ comment.id }}">کنارگذاشتن</button>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                                <!--end::Menu item-->
+                                                                        </div>
+                                                                        <!--end::Menu-->
+                                                                    </td>
+                                                                </tr>
+                                                        {% endfor %}
+
+                                                    </tbody>
+                                            </table>
+                                            <!--end::Table-->
+                                    </div>
+                                    <!--end::کارت body-->
+                            </div>
+                            <!--end::محصولات-->
+                    </div>
+                    <!--end::Container-->
+            </div>
+            <!--end::Post-->
+    </div>
+{% endblock %}

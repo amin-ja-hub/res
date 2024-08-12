@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sefareshat{% endblock %}
+
+{% block body %}
+    <h1>Sefareshat</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ sefareshat.id }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ sefareshat.price }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ sefareshat.status }}</td>
+            </tr>
+            <tr>
+                <th>Cdate</th>
+                <td>{{ sefareshat.cdate ? sefareshat.cdate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>PaymentStatus</th>
+                <td>{{ sefareshat.paymentStatus }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_sefareshat_index') }}">back to list</a>
+
+    <a href="{{ path('app_sefareshat_edit', {'id': sefareshat.id}) }}">edit</a>
+
+    {{ include('sefareshat/_delete_form.html.twig') }}
+{% endblock %}
