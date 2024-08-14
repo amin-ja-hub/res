@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Barchasb;
 use App\Service\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
+
 #[Route('/admin/product')]
 class ProductController extends AbstractController
 {
@@ -103,36 +104,6 @@ class ProductController extends AbstractController
             'form' => $form->createView(),
             'barchasbs' => $barchasbs,
         ]);
-    }
-
-    #[Route('/upload', name: 'file_upload', methods: ['GET', 'POST'])]
-    public function upload(Request $request): JsonResponse
-    {
-
-        $uploadedFile = $request->files->get('html-file');
-
-        if (!$uploadedFile) {
-            return new JsonResponse(['error' => 'No file uploaded'], JsonResponse::HTTP_BAD_REQUEST);
-        }
-
-        // Generate a unique name for the file
-        $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-        $fileName = $safeFilename.'-'.uniqid().'.'.$uploadedFile->guessExtension();
-        $fileDir = $this->getParameter('kernel.project_dir') . '/public/uploads/html/';
-
-        // Move the file to the directory where files are stored
-        try {
-            $uploadedFile->move(
-                $fileDir,
-                $fileName
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'Error uploading file'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        // Optionally, return a response with the file path or any other data
-        return new JsonResponse(['message' => 'File uploaded successfully', 'path' => '/uploads/html/' . $fileName]);
     }
 
     #[Route('/{id}', name: 'app_product_show', methods: ['GET'])]

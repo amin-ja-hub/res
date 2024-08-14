@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Wooder - Carpentry HTML Template | Home Page 01</title>
-<!-- Stylesheets -->
-<link href="{{ asset('front/css/bootstrap.css')}}" rel="stylesheet">
-<link href="{{ asset('front/css/style.css')}}" rel="stylesheet">
-<link href="{{ asset('front/css/responsive.css')}}" rel="stylesheet">
-<!--Color Switcher Mockup-->
-<link href="{{ asset('front/css/color-switcher-design.css"')}} rel="stylesheet">
-<!--Color Themes-->
-<link id="theme-color-file" href="{{ asset('front/css/color-themes/default-theme.css')}}" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Wooder - Carpentry HTML Template | Home Page 01</title>
+    <!-- Stylesheets -->
+    <link href="{{ asset('front/css/bootstrap.css')}}" rel="stylesheet">
+    <link href="{{ asset('front/css/style.css')}}" rel="stylesheet">
+    <link href="{{ asset('front/css/responsive.css')}}" rel="stylesheet">
+    <!--Color Switcher Mockup-->
+    <link href="{{ asset('front/css/color-switcher-design.css"')}} rel="stylesheet">
+    <!--Color Themes-->
+    <link id="theme-color-file" href="{{ asset('front/css/color-themes/default-theme.css')}}" rel="stylesheet">
 
-<link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" type="image/x-icon">
-<link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/x-icon">
 
-<!-- Responsive -->
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-<!--[if lt IE 9]><script src="{{ asset('front/https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js') }}"></script><![endif]-->
-<!--[if lt IE 9]><script src="{{ asset('front/js/respond.js') }}"></script><![endif]-->
+    <!-- Responsive -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!--[if lt IE 9]><script src="{{ asset('front/https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js') }}"></script><![endif]-->
+    <!--[if lt IE 9]><script src="{{ asset('front/js/respond.js') }}"></script><![endif]-->
 </head>
 
 <body>
@@ -89,31 +89,7 @@
                         <nav class="main-menu navbar-expand-md navbar-light">
                             <div class="collapse navbar-collapse clearfix" id="navbarSupportedContent">
                                 <ul class="navigation clearfix">
-                                    <li class="current dropdown"><a href="index.html">Home</a>
-                                        <ul>
-                                            <li class="dropdown"><a href="index.html#">Header Styles</a>
-                                                <ul>
-                                                    <li><a href="index.html">Header Style One</a></li>
-                                                    <li><a href="index-2.html">Header Style Two</a></li>
-                                                    <li><a href="index-3.html">Header Style Three</a></li>
-                                                    <li><a href="index-4.html">Header Style Four</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="index.html">Home Style One</a></li>
-                                            <li><a href="index-2.html">Home Style Two</a></li>
-                                            <li><a href="index-3.html">Home Style Three</a></li>
-                                            <li><a href="index-4.html">Home One Pager</a></li>
-                                            <li><a href="index-5.html">Home Video Banner</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="dropdown"><a href="about.html">About</a>
-                                        <ul>
-                                            <li><a href="about.html">About Us</a></li>
-                                            <li><a href="faqs.html">FAQ's</a></li>
-                                            <li><a href="team.html">Team</a></li>
-                                            <li><a href="pricing.html">Pricing</a></li>
-                                            <li><a href="coming-soon.html">Coming Soon</a></li>
-                                        </ul>
+                                    <li><a href="index.html">Home</a>
                                     </li>
                                     <li class="dropdown"><a href="services.html">Services</a>
                                         <ul>
@@ -150,6 +126,15 @@
                                         </ul>
                                     </li>
                                     <li><a href="contact.html">Contact</a></li>
+                                    <li class="dropdown"><a href="about.html">About</a>
+                                        <ul>
+                                            <li><a href="about.html">About Us</a></li>
+                                            <li><a href="faqs.html">FAQ's</a></li>
+                                            <li><a href="team.html">Team</a></li>
+                                            <li><a href="pricing.html">Pricing</a></li>
+                                            <li><a href="coming-soon.html">Coming Soon</a></li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </div>
                         </nav>
@@ -312,24 +297,22 @@
             <div class="carousel-outer">
                 <!-- Services Carousel -->
                 <div class="services-carousel owl-carousel owl-theme">
-
-{% for item in findEntitiesWithCriteria('App\\Entity\\Product', 5, {'published': '1'}) %}
-                    <div class="service-block">
-                        <div class="inner-box">
-                            <div class="image-box">
-                                <figure class="image"><a href="service-detail.html"><img src="{{ asset('front/images/resource/service-1.jpg') }}" alt=""></a></figure>
-                            </div>
-                            <div class="lower-content">
-                                <h4><a href="service-detail.html">{{ item.title }}</a></h4>
-                                <div class="text">Professionals work with a variety of all materials, in a variety of settings–indoor and outdoor.</div>
-                                <div class="text">Professionals</div>
-                                <div class="btn-box"><a href="{{ path('app_user_information_new', {'variable' : 'a'}) }}" class="read-more">خرید<span class="fa fa-arrow-right"></span></a></div>
-                                <div class="btn-box"><a href="{{ path('app_user_information_new') }}" class="read-more">خرید<span class="fa fa-arrow-right"></span></a></div>
-                            </div>
-                        </div>
-                    </div>
-{% endfor %}
-
+                    {% for item in findEntitiesWithCriteria('App\\Entity\\Product', 5, {'published': '1'}) %}
+                                        <div class="service-block">
+                                            <div class="inner-box">
+                                                <div class="image-box">
+                                                    <figure class="image"><a href="service-detail.html"><img src="{{ item.Image.path ~ '/770x350_' ~ item.Image.name ~ '.webp' }}" alt=""></a></figure>
+                                                </div>
+                                                <div class="lower-content">
+                                                    <h4><a href="service-detail.html">{{ item.title }}</a></h4>
+                                                    <div class="text">Professionals work with a variety of all materials, in a variety of settings–indoor and outdoor.</div>
+                                                    <div class="text">Professionals</div>
+                                                    <div class="btn-box"><a href="{{ path('app_user_information_new', {'variable' : 'a'}) }}" class="read-more">خرید<span class="fa fa-arrow-right"></span></a></div>
+                                                    <div class="btn-box"><a href="{{ path('app_user_information_new') }}" class="read-more">خرید<span class="fa fa-arrow-right"></span></a></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                    {% endfor %}
                 </div>
 
             </div>

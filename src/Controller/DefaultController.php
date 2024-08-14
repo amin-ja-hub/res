@@ -5,7 +5,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Knp\Snappy\Pdf; // این خط را اضافه کنید
 
 class DefaultController extends AbstractController
 {
@@ -14,45 +13,19 @@ class DefaultController extends AbstractController
     {
         return $this->render('base.front.twig', [
             'controller_name' => 'HomeController',
-
         ]);
     }
 
-    #[Route('/test-pdf', name: 'test_pdf')]
-    public function generatePdf(Pdf $knpSnappyPdf): Response
+    #[Route('/products', name: 'products_shoe')]
+    public function Products(EntityManagerInterface $entityManager): Response
     {
-        // محتوای HTML ساده برای تست
-        $html = '
-            <!DOCTYPE html>
-            <html dir="rtl" lang="fa">
-            <head>
-                <meta charset="UTF-8">
-                <title>تست PDF</title>
-                <style>
-                    body {
-                        font-family: "DejaVu Sans", sans-serif;
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>سلام دنیا</h1>
-                <p>این یک متن تستی برای بررسی پشتیبانی از زبان فارسی است.</p>
-            </body>
-            </html>
-        ';
+        $products = $entityManager
+            ->getRepository(\App\Entity\Product::class) // Fully qualified class name
+            ->findBy(['published' => 1]); // Find products where 'published' is 1
 
-        // تولید فایل PDF
-        $pdfContent = $knpSnappyPdf->getOutputFromHtml($html);
-
-        // بازگرداندن PDF به عنوان پاسخ HTTP
-        return new Response(
-            $pdfContent,
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="test.pdf"',
-            ]
-        );
+        return $this->render('default/front/product/list.html.twig', [
+            'products' => $products,
+        ]);
     }
 
 }

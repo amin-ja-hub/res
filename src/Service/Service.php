@@ -78,31 +78,34 @@ class Service
                     $fileDir = $projectDir . '/public/uploads/article/' . $id;
                     $FileEntity->setPath('/uploads/article/' . $id);
                     $sizes = [
-                        ['width' => 800, 'height' => 600],
-                        ['width' => 400, 'height' => 300],
+                        ['width' => 770, 'height' => 350],
+                        ['width' => 570, 'height' => 300],
+                        ['width' => 85, 'height' => 85],
                     ];
                     break;
                 case 2:
                     $fileDir = $projectDir . '/public/uploads/category/' . $id;
                     $FileEntity->setPath('/uploads/category/' . $id);
                     $sizes = [
-                        ['width' => 1024, 'height' => 768],
-                        ['width' => 512, 'height' => 384],
+                        ['width' => 770, 'height' => 350],
+                        ['width' => 570, 'height' => 300],
+                        ['width' => 85, 'height' => 85],
                     ];
                     break;
                 case 3:
                     $fileDir = $projectDir . '/public/uploads/product/' . $id;
                     $FileEntity->setPath('/uploads/product/' . $id);
                     $sizes = [
-                        ['width' => 1200, 'height' => 900],
-                        ['width' => 600, 'height' => 450],
+                        ['width' => 770, 'height' => 350],
+                        ['width' => 570, 'height' => 300],
+                        ['width' => 85, 'height' => 85],
                     ];
                     break;
                 case 4:
                     $fileDir = $projectDir . '/public/uploads/user/' . $id;
                     $FileEntity->setPath('/uploads/user/' . $id);
                     $sizes = [
-                        ['width' => 400, 'height' => 400],
+                        ['width' => 300, 'height' => 300],
                         ['width' => 200, 'height' => 200],
                     ];
                     break;
