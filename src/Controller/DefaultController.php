@@ -45,30 +45,16 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    #[Route('/products', name: 'product_show')]
-    public function Products(EntityManagerInterface $entityManager, Request $request): Response
+    #[Route('/products', name: 'products_shoe')]
+    public function Products(EntityManagerInterface $entityManager): Response
     {
-        $page = $request->query->getInt('page', 1);
-        $limit = 1;
-        $offset = ($page - 1) * $limit;
-
-        $query = $entityManager
-            ->getRepository(\App\Entity\Product::class)
-            ->createQueryBuilder('p')
-            ->where('p.published = :published')
-            ->setParameter('published', 1)
-            ->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->getQuery();
-
-        $paginator = new Paginator($query, $fetchJoinCollection = true);
-        $totalItems = count($paginator);
-        $totalPages = ceil($totalItems / $limit);
+        $products = $entityManager
+            ->getRepository(\App\Entity\Product::class) // Fully qualified class name
+            ->findBy(['published' => 1]); // Find products where 'published' is 1
 
         return $this->render('default/front/product/list.html.twig', [
-            'products' => $paginator,
-            'totalPages' => $totalPages,
-            'currentPage' => $page,
+            'products' => $products,
         ]);
     }
+    
 }
