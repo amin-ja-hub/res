@@ -25,13 +25,13 @@
                                     </div>
                                     <div class="lower-content">
                                         <ul class="post-info">
-                                            <li><span class="far fa-user"></span> رزومه ساز</li>
-                                            <li><a href="blog.html#"><span class="far fa-comments"></span> Comment 03</a></li>
-                                            <li></span> January 17, 2019</li>
+                                            <li><span class="far fa-user"></span>ادمین</li>
+                                            <li><a href="blog.html#"><span class="far fa-list-alt"></span>{{ item.Category.title }}</a></li>
+                                            <li><span class="far fa-calendar"></span> {{ item.cdate|localizeddatetr('custom', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', null) }}</li>
                                         </ul>
                                         <h4><a href="blog-detail.html">{{ item.title }}</a></h4>
                                         <div class="text">{{ item.metadesc }}</div>
-                                        <div class="btn-box"><a href="blog.html#" class="read-more">Read More <span class="fa fa-arrow-right"></span></a></div>
+                                        <div class="btn-box"><a href="blog.html#" class="read-more">مشاهده ی بیشتر<span class="fa fa-arrow-right"></span></a></div>
                                     </div>
                                 </div>
                             </div>

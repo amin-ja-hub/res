@@ -147,11 +147,21 @@
                                                     <div class="card-body pt-0">
                                                             <!--begin::Input group-->
                                                             <!--begin::Tags-->
+                                                            <label class="form-label">دسته بندی برای</label>
+                                                            <!--end::Tags-->
+                                                            <!--begin::انتخاب2-->
+                                                            <select name="categorytype" class="form-select "  data-placeholder="انتخاب">
+                                                                <option value="1">محصولات</option>
+                                                                <option value="2">مقالات</option>
+                                                            </select>
+                                                            <!--end::انتخاب2-->
+                                                            <!--begin::Tags-->
                                                             <label class="form-label">دسته بندی ها</label>
                                                             <!--end::Tags-->
                                                             <!--begin::انتخاب2-->
                                                             <select name="category1" class="form-select "  data-placeholder="انتخاب">
-                                                                {% for category in getCategory() %}
+                                                                    <option value="">انتخاب کنید</option>
+                                                                {% for category in getCategory(null) %}
                                                                     <option value="{{ category.id }}">{{ category.title }}</option>
                                                                 {% endfor %}
                                                             </select>

@@ -45,8 +45,9 @@ class CategoryController extends AbstractController
             $category->setPublished($formData['publish']);
             $category->setMetadesc($formData['metadesc']);
             $category->setCdate(new \DateTime());
-            $category->setType('1');
+            $category->setType($formData['categorytype']);
             $category->setUrl($formData['url']);
+
 
             // Handle optional fields like category
             if (isset($formData['category1'])) {
@@ -135,7 +136,7 @@ public function edit(Request $request, EntityManagerInterface $entityManager, Se
         $category->setPublished($formData['publish']);
         $category->setMetadesc($formData['metadesc']);
         $category->setCdate(new \DateTime());
-        $category->setType('1');
+        $category->setType($formData['categorytype']);
         $category->setUrl($formData['url']);
 
         // Handle optional fields like category

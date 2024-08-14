@@ -51,7 +51,6 @@ class ProductController extends AbstractController
             $product->setUrl($formData['url']);
             $product->setPrice($formData['price']);
             $product->setOrder($formData['order']);
-            $product->setHtmlFile($formData['filePath']);
             // Handle optional fields like category
             if (isset($formData['category'])) {
                 $category = $entityManager->getRepository('App\Entity\Category')->find($formData['category']);

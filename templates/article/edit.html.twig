@@ -113,10 +113,10 @@
                                                             <!--end::Tags-->
                                                             <!--begin::انتخاب2-->
                                                             <select name="category" class="form-select mb-2" data-control="select2" data-placeholder="انتخاب ">
-{% if article.category is not null %}
-    <option selected="" value="{{ article.category.id }}">{{ article.category.title }}</option>
-{% endif %}
-                                                                {% for category in getCategory()  %}
+                                                                {% if article.category is not null %}
+                                                                    <option selected="" value="{{ article.category.id }}">{{ article.category.title }}</option>
+                                                                {% endif %}
+                                                                {% for category in getCategory(2)  %}
                                                                     <option value="{{ category.id }}">{{ category.title }}</option>
                                                                 {% endfor %}
                                                             </select>

@@ -41,13 +41,35 @@ class Service
         return $query->getResult();
     }
 
-    public function getCategory()
+    public function getCategory($type)
     {
-        $dql = "SELECT c FROM App\Entity\Category c WHERE c.published = :published ORDER BY c.id ASC";
+        // Base DQL query
+        $dql = "SELECT c FROM App\Entity\Category c WHERE c.published = :published";
+
+        // Check if type is provided
+        if ($type !== null) {
+            // Append the type condition to the DQL if type is not null
+            $dql .= " AND c.type = :type";
+        }
+
+        // Add ordering
+        $dql .= " ORDER BY c.id ASC";
+
+        // Create the query
         $query = $this->em->createQuery($dql);
+
+        // Set the published parameter
         $query->setParameter('published', '1'); // Assuming you want to fetch published categories
+
+        // Set the type parameter if it's not null
+        if ($type !== null) {
+            $query->setParameter('type', $type);
+        }
+
+        // Execute and return the result
         return $query->getResult();
     }
+
     //type 1 == article
     //type 2 == category
     //type 3 == product

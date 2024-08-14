@@ -38,27 +38,32 @@ class TwigExtension extends AbstractExtension
         return $functions;
     }
 
-    public function persiandatetimeFilter(Environment $env, $date, $dateFormat = 'medium', $timeFormat = 'medium', $locale = null, $timezone = null, $format = null)
-    {
-        $date = twig_date_converter($env, $date, $timezone);
+public function persiandatetimeFilter(Environment $env, $date, $dateFormat = 'medium', $timeFormat = 'medium', $locale = null, $timezone = null, $format = null)
+{
+    $date = twig_date_converter($env, $date, $timezone);
 
-        $formatValues = [
-            'none'   => IntlDateFormatter::NONE,
-            'short'  => IntlDateFormatter::SHORT,
-            'medium' => IntlDateFormatter::MEDIUM,
-            'long'   => IntlDateFormatter::LONG,
-            'full'   => IntlDateFormatter::FULL,
-        ];
+    $formatValues = [
+        'none'   => IntlDateFormatter::NONE,
+        'short'  => IntlDateFormatter::SHORT,
+        'medium' => IntlDateFormatter::MEDIUM,
+        'long'   => IntlDateFormatter::LONG,
+        'full'   => IntlDateFormatter::FULL,
+        'custom' => 'd MMMM yyyy'  // Custom format for Persian date
+    ];
 
-        $formatter = IntlDateFormatter::create(
-            $locale,
-            $formatValues[$dateFormat],
-            $formatValues[$timeFormat],
-            $date->getTimezone()->getName(),
-            IntlDateFormatter::TRADITIONAL,
-            $format
-        );
+    // If a specific format is provided, use it; otherwise, use the one from the formatValues array
+    $format = $format ?? $formatValues[$dateFormat];
 
-        return $formatter->format($date->getTimestamp());
-    }
+    $formatter = IntlDateFormatter::create(
+        $locale ?? 'fa_IR@calendar=persian',
+        IntlDateFormatter::FULL,
+        IntlDateFormatter::NONE,
+        $date->getTimezone()->getName(),
+        IntlDateFormatter::TRADITIONAL,
+        $format
+    );
+
+    return $formatter->format($date->getTimestamp());
+}
+
 }
