@@ -70,7 +70,7 @@ class CategoryController extends AbstractController
                         $barchasb->setTitle($tagName);
                         $barchasb->setCdate(new \DateTime());
                         $barchasb->setPublished(1);
-                        $barchasb->setType(1);
+                        $barchasb->setType(3);
                         $entityManager->persist($barchasb);
                     }
 
@@ -161,7 +161,7 @@ public function edit(Request $request, EntityManagerInterface $entityManager, Se
                     $barchasb->setTitle($tagName);
                     $barchasb->setCdate(new \DateTime());
                     $barchasb->setPublished(1);
-                    $barchasb->setType(1);
+                    $barchasb->setType(3);
                     $entityManager->persist($barchasb);
                 }
 

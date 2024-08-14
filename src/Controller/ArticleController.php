@@ -69,7 +69,7 @@ class ArticleController extends AbstractController
                         $barchasb->setTitle($tagName);
                         $barchasb->setCdate(new \DateTime());
                         $barchasb->setPublished(1);
-                        $barchasb->setType(1);
+                        $barchasb->setType(2);
                         $entityManager->persist($barchasb);
                     }
 
@@ -152,7 +152,7 @@ class ArticleController extends AbstractController
                         $barchasb->setTitle($tagName);
                         $barchasb->setCdate(new \DateTime());
                         $barchasb->setPublished(1);
-                        $barchasb->setType(1);
+                        $barchasb->setType(2);
                         $entityManager->persist($barchasb);
                     }
 
