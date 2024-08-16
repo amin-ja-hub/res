@@ -45,7 +45,7 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    #[Route('/products', name: 'products_shoe')]
+    #[Route('/products', name: 'products_show')]
     public function Products(EntityManagerInterface $entityManager): Response
     {
         $products = $entityManager
@@ -56,5 +56,22 @@ class DefaultController extends AbstractController
             'products' => $products,
         ]);
     }
-    
+
+    #[Route('/products/{url}', name: 'product_show')]
+    public function product(EntityManagerInterface $entityManager, string $url): Response
+    {
+        // Fetch the product using the URL
+        $product = $entityManager->getRepository(\App\Entity\Product::class)->findOneBy(['url' => $url]);
+
+        // If no product is found, return a 404 response
+        if (!$product) {
+            throw $this->createNotFoundException('The product does not exist');
+        }
+
+        // Render the product template with the product data
+        return $this->render('default/front/product/show.html.twig', [
+            'product' => $product,
+        ]);
+    }
+
 }

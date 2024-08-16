@@ -49,8 +49,10 @@ class ProductController extends AbstractController
             $product->setCdate(new \DateTime());
             $product->setType('1');
             $product->setUrl($formData['url']);
-            $product->setPrice($formData['price']);
-            $product->setOrder($formData['order']);
+            $price = $formData['price'];
+            $product->setPrice(is_numeric($price) ? (int)$price : null);
+            $order = $formData['order'];
+            $product->setPrice(is_numeric($order) ? (int)$order : null);
             // Handle optional fields like category
             if (isset($formData['category'])) {
                 $category = $entityManager->getRepository('App\Entity\Category')->find($formData['category']);
@@ -113,23 +115,90 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request);
+#[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
+public function edit(Request $request, Product $product, EntityManagerInterface $entityManager, Service $service): Response
+{
+    $form = $this->createForm(ProductType::class, $product);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+    if ($form->isSubmitted() && $form->isValid()) {
+        $formData = $request->request->all();
 
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+        // Update required fields
+        $product->setTitle($formData['title']);
+        $product->setPublished($formData['publish']);
+        $product->setMetadesc($formData['metadesc']);
+        $product->setText($formData['text']);
+        $product->setUrl($formData['url']);
+        $price = $formData['price'];
+        $product->setPrice(is_numeric($price) ? (int)$price : null);
+        $order = $formData['order'];
+        $product->setPrice(is_numeric($order) ? (int)$order : null);
+
+        // Handle optional fields like category
+        if (isset($formData['category'])) {
+            $category = $entityManager->getRepository('App\Entity\Category')->find($formData['category']);
+            $product->setCategory($category);
         }
 
-        return $this->render('product/edit.html.twig', [
-            'product' => $product,
-            'form' => $form,
-        ]);
+        // Handle tags (keywords)
+            // Handle tags (keywords)
+            if (isset($formData['keywords'])) {
+                $tags = $formData['keywords'];
+
+                // Clear existing tags to replace with new ones
+                foreach ($product->getBarchasbs() as $barchasb) {
+                    $product->removeBarchasb($barchasb);
+                }
+
+                foreach ($tags as $tagName) {
+                    $barchasbRepository = $entityManager->getRepository(Barchasb::class);
+                    $barchasb = $barchasbRepository->findOneBy(['title' => $tagName]);
+
+                    if (!$barchasb) {
+                        $barchasb = new Barchasb();
+                        $barchasb->setTitle($tagName);
+                        $barchasb->setCdate(new \DateTime());
+                        $barchasb->setPublished(1);
+                        $barchasb->setType(2);
+                        $entityManager->persist($barchasb);
+                    }
+
+                    $product->addBarchasb($barchasb);
+                }
+            } else {
+                // Clear all tags if none provided
+                foreach ($product->getBarchasbs() as $barchasb) {
+                    $product->removeBarchasb($barchasb);
+                }
+            }
+
+        $entityManager->persist($product);
+        $entityManager->flush();
+
+        // Handle file upload
+        if ($request->files->get('file') != null) {
+            $file = $request->files->get('file');
+            $fileId = $service->uploadFile(3, $file, $product->getId(), 'mainpic');
+            $file = $entityManager->getRepository('App\Entity\File')->find($fileId);
+            $product->setImage($file);
+            $entityManager->persist($product);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    // Fetch Barchasb entities where type = 1
+    $barchasbs = $entityManager->getRepository(Barchasb::class)->findBy(['type' => 1]);
+
+    return $this->render('product/edit.html.twig', [
+        'product' => $product,
+        'form' => $form->createView(),
+        'barchasbs' => $barchasbs,
+    ]);
+}
+
 
     #[Route('/{id}', name: 'app_product_delete', methods: ['POST'])]
     public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response

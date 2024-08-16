@@ -50,8 +50,8 @@
                                                     <!--begin::کارت body-->
                                                     <div class="card-body text-center pt-0">
                                                             <!--begin::Image input-->
-                                                            <!--begin::Image input placeholder-->
-                                                            <style>.image-input-placeholder { background-image: url('{% if article.image is not null %}{{ article.image.path~'/'~article.image.name }}{% endif %}'); }</style>
+                                                            <!--begin::Image input placeholder-->{% set img = article.Image is not null ? article.Image.path ~ '/85x85_' ~ article.Image.name ~ '.webp' : 'a' %}
+                                                            <style>.image-input-placeholder { background-image: url({{ asset(img) }}); }  [data-bs-theme="dark"] .image-input-placeholder { background-image: url({{ asset(img) }}); }</style>
                                                             <!--end::Image input placeholder-->
                                                             <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true">
                                                                     <!--begin::نمایش existing avatar-->

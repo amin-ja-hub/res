@@ -1,148 +1,167 @@
-{#    {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-    <form action="{{ path('app_login') }}" method="post">
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password">
-        <button type="submit">Login</button>
-    </form>#}
-<!DOCTYPE html>
-<html lang="fa">
-
-<head>
-    <title>ODDO - قالب HTML فرم ثبت نام و ورود اُددو</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <!-- External CSS libraries -->
-    <link type="text/css" rel="stylesheet" href="{{ asset('RegisterLogin/assets/css/bootstrap.min.css') }}">
-    <link type="text/css" rel="stylesheet" href="{{ asset('RegisterLogin/assets/fonts/font-awesome/css/font-awesome.min.css') }}">
-    <link type="text/css" rel="stylesheet" href="{{ asset('RegisterLogin/assets/fonts/flaticon/font/flaticon.css') }}">
-
-    <!-- Favicon icon -->
-    <link rel="shortcut icon" href="{{ asset('RegisterLogin/assets/img/favicon.ico') }}" type="image/x-icon" >
-
-    <!-- Custom Stylesheet -->
-    <link type="text/css" rel="stylesheet" href="{{ asset('RegisterLogin/assets/css/style.css') }}">
-    <style>
-        /* Style the unordered list that contains error messages */
-        .password-error-container ul {
-            list-style-type: none; /* Remove bullet points */
-            padding: 0; /* Remove default padding */
-            margin: 0; /* Remove default margin */
-        }
-
-        /* Style the list items that contain error messages */
-        .password-error-container ul li {
-            color: red; /* Change text color */
-            font-weight: bold; /* Make text bold */
-            margin-top: 5px; /* Add space above each error message */
-            font-size: 0.9em; /* Adjust font size */
-        }
-        .password-error-container ul li {
-            color: red; /* Change text color */
-            font-weight: bold; /* Make text bold */
-            margin-top: 5px; /* Add space above each error message */
-            font-size: 0.9em; /* Adjust font size */
-        }
-        .erorr{
-            color: red;
-        }
-    </style>
-
-</head>
-<body id="top" class="login-3-bodycolor" dir="rtl">
-<div class="page_loader"></div>
-
-<!-- Login 3 start -->
-<div class="login-3">
-    <div class="login-3-inner">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-info">
-                        <div class="form-section align-self-center">
-                            <div class="btn-section clearfix">
-                                <a href="{{ path('app_login') }}" class="link-btn active btn-1  active-bg">ورود</a>
-                                <a href="{{ path('app_register') }}" class="link-btn btn-2 default-bg">ثبت نام</a>
-                            </div>
-                            <div class="logo">
-                                <a href="login-3.html">
-                                    <img src="{{ asset('RegisterLogin/assets/img/logos/logo-2.png') }}" alt="logo">
-                                </a>
-                            </div>
-                            <h1>خوش آمدید!</h1>
-                            <h3>ورود به حساب کاربری</h3>
-                            <div class="clearfix"></div>
-
-    <form action="{{ path('app_login') }}" method="post">
-<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                                <div class="form-group">
-    {% if error %}
-        <div class="erorr">نام کاربری یا رمز ورود معتبر نمی باشد.</div>
-    {% endif %}
-                                    <label class="form-label">نام کاربری</label>
-                                    <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}">
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="form-label">رمز عبور</label>
-                                    <input class="form-control" type="password" id="password" name="_password">
-                                </div>
-                                <div class="form-group clearfix">
-                                    <button type="submit" class="btn btn-primary btn-lg btn-theme">ثبت نام</button>
-                                </div>
-                            </form>
-                            <p>راهنما و پشتیبانی</p>
-                            <div class="social-list">
-                                <a href="register-3.html#">
-                                    <i class="fa fa-facebook"></i>
-                                </a>
-                                <a href="register-3.html#">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                                <a href="register-3.html#">
-                                    <i class="fa fa-google"></i>
-                                </a>
-                                <a href="register-3.html#">
-                                    <i class="fa fa-linkedin"></i>
-                                </a>
-                                <a href="register-3.html#">
-                                    <i class="fa fa-pinterest"></i>
-                                </a>
-                                <a href="register-3.html#">
-                                    <i class="fa fa-youtube"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+<!--begin::کناری Toolbarl-->
+<div class="aside-toolbar flex-column-auto" id="kt_aside_toolbar">
+        <!--begin::کناری user-->
+        <!--begin::user-->
+        <div class="aside-user d-flex align-items-sm-center justify-content-center py-5">
+                <!--begin::Symbol-->
+                <div class="symbol symbol-50px">
+                        <img src="https://metronictheme.job100.ir/rtl/metronic8/demo8/dist/assets/media/avatars/300-1.jpg" alt="" />
                 </div>
-            </div>
+                <!--end::Symbol-->
+                <!--begin::Wrapper-->
+                <div class="aside-user-info flex-row-fluid flex-wrap ms-5">
+                        <!--begin::Section-->
+                        <div class="d-flex">
+                                <!--begin::Info-->
+                                <div class="flex-grow-1 me-2">
+                                        <!--begin::کاربرname-->
+                                        <span class="text-white text-hover-primary fs-6 fw-bold">{{ app.user.fullname }}</span>
+                                        <!--end::کاربرname-->
+                                        <!--begin::توضیحات-->
+                                        <span class="text-gray-600 fw-semibold d-block fs-8 mb-1">ادمین سایت</span>
+                                        <!--end::توضیحات-->
+                                </div>
+                                <!--end::Info-->
+                                <!--begin::کاربر menu-->
+                                <div class="me-n2">
+                                        <!--begin::Actions-->
+                                        <a href="index.html#" class="btn btn-icon btn-sm btn-active-color-primary mt-n2" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-overflow="true">
+                                                <i class="ki-duotone ki-setting-2 text-muted fs-1">
+                                                        <span class="path1"></span>
+                                                        <span class="path2"></span>
+                                                </i>
+                                        </a>
+                                        <!--begin::کاربر account menu-->
+                                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-color fw-semibold py-4 fs-6 w-275px" data-kt-menu="true">
+                                                <!--begin::Menu item-->
+                                                <div class="menu-item px-3">
+                                                        <div class="menu-content d-flex align-items-center px-3">
+                                                                <!--begin::Avatar-->
+                                                                <div class="symbol symbol-50px me-5">
+                                                                        <img alt="Logo" src="{% if app.user.image is not null %}{{ asset(app.user.image.path ~'/'~app.user.image.name) }}{% else %}{{ asset('panel/assets/media/images/not-found.png') }} {% endif %}" />
+                                                                </div>
+                                                                <!--end::Avatar-->
+                                                                <div class="menu-item px-5">
+                                                                        <a href="{{ path('app_user_edit', {'id': app.user.id}) }}" class="menu-link px-5">پروفایل من</a>
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                                <!--end::Menu item-->
+                                                <!--begin::Menu separator-->
+                                                <div class="separator my-2"></div>
+                                                <!--end::Menu separator-->
+                                                <!--begin::Menu item-->
+                                                <div class="menu-item px-5">
+                                                        <a href="{{ path('app_logout') }}" class="menu-link px-5">خروج</a>
+                                                </div>
+                                                <!--end::Menu item-->
+                                        </div>
+                                        <!--end::کاربر account menu-->
+                                        <!--end::Actions-->
+                                </div>
+                                <!--end::کاربر menu-->
+                        </div>
+                        <!--end::Section-->
+                </div>
+                <!--end::Wrapper-->
         </div>
-    </div>
+        <!--end::user-->
+        <!--end::کناری user-->
 </div>
-<!-- Login 3 end -->
-
-<!-- Ripple background start -->
-<div class="ripple-background">
-    <div class="circle xxlarge shade1"></div>
-    <div class="circle xlarge shade2"></div>
-    <div class="circle large shade3"></div>
-    <div class="circle mediun shade4"></div>
-    <div class="circle small shade5"></div>
+<!--end::کناری Toolbarl-->
+<!--begin::کناری menu-->
+<div class="aside-menu flex-column-fluid">
+        <!--begin::کناری Menu-->
+        <div class="hover-scroll-overlay-y mx-3 my-5 my-lg-5" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="{default: '#kt_aside_toolbar, #kt_aside_footer', lg: '#kt_header, #kt_aside_toolbar, #kt_aside_footer'}" data-kt-scroll-wrappers="#kt_aside_menu" data-kt-scroll-offset="5px">
+                <!--begin::Menu-->
+                <div class="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500" id="#kt_aside_menu" data-kt-menu="true">
+                        <!--begin:Menu item-->
+                        <div class="menu-item pt-5">
+                                <!--begin:Menu content-->
+                                <div class="menu-content">
+                                        <span class="menu-heading fw-bold text-uppercase fs-7">صفحات</span>
+                                </div>
+                                <!--end:Menu content-->
+                        </div>
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ path('app_article_new') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <h3 class="menu-title">رزومه های من</h3>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ path('app_article_new') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <h3 class="menu-title">افزودن رزومه</h3>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ path('app_article_new') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <h3 class="menu-title">پرداخت ها</h3>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ path('app_article_new') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <h3 class="menu-title">قالب های ما</h3>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ path('app_article_new') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <h3 class="menu-title">خروج از حساب کاربری</h3>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <!--end:Menu item-->
+                </div>
+                <!--end::Menu-->
+        </div>
+        <!--end::کناری Menu-->
 </div>
-<!-- Ripple background end -->
-
-<!-- External JS libraries -->
-<script src="{{ asset('RegisterLogin/assets/js/jquery-3.6.0.min.js') }}"></script>
-<script src="{{ asset('RegisterLogin/assets/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('RegisterLogin/assets/js/jquery.validate.min.js') }}"></script>
-<script src="{{ asset('RegisterLogin/assets/js/app.js') }}"></script>
-<!-- Custom JS Script -->
-
-</body>
-
-</html>
-
-
+<!--end::کناری menu-->
+<!--begin::Footer-->
+<div class="aside-footer flex-column-auto py-5" id="kt_aside_footer">
+        <a href="https://preview.keenthemes.com/html/metronic/docs" class="btn btn-flex btn-custom btn-primary w-100" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss-="click" title="200+ in-house کامپوننت ها and 3rd-party plugins">
+                <span class="btn-label">اسناد و کامپوننت ها</span>
+                <i class="ki-duotone ki-document ms-2 fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                </i>
+        </a>
+</div>
+<!--end::Footer-->

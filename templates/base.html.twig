@@ -34,7 +34,7 @@
                             <!--begin::کناری-->
                             <div id="kt_aside" class="aside" data-kt-drawer="true" data-kt-drawer-name="aside" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'200px', '300px': '250px'}" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_aside_mobile_toggle">
                                 {% if app.user.role == 0 %}
-                                    {% include 'default/include/admin.html.twig' %}
+                                    {% include 'default/include/sidebar/user.html.twig' %}
                                 {% elseif app.user.role ==1 %}
                                     {% include 'default/include/sidebar/admin.html.twig' %}
                                 {% elseif app.user.role ==2 %}

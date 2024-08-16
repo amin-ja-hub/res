@@ -42,7 +42,6 @@ class ArticleController extends AbstractController
 
             // Handle required fields like title, publish, metadesc, text, etc.
             $article->setTitle($formData['title']);
-            $article->setPublished($formData['publish']);
             $article->setMetadesc($formData['metadesc']);
             $article->setText($formData['text']);
             $article->setCdate(new \DateTime());

@@ -151,7 +151,7 @@
                                                             <!--end::Tags-->
                                                             <!--begin::انتخاب2-->
                                                             <select name="category1" class="form-select "  data-placeholder="انتخاب">
-                                                                {% for category in getCategory() %}
+                                                                {% for category in getCategory(null) %}
                                                                     <option value="{{ category.id }}">{{ category.title }}</option>
                                                                 {% endfor %}
                                                             </select>
