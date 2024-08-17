@@ -14,47 +14,75 @@ use App\Service\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Sefareshat;
 use App\Entity\Product;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Twig\Environment;
 
 #[Route('/user')]
 class UserInformationController extends AbstractController
 {
-#[Route('/profile', name: 'app_user_information_index', methods: ['GET'])]
-public function index(EntityManagerInterface $entityManager): Response
-{
-    $user = $this->getUser();
-    $userId = $user->getId();
+    #[Route('/profile', name: 'app_user_information_index', methods: ['GET'])]
+    public function index(EntityManagerInterface $entityManager): Response
+    {
+        // Get the current logged-in user
+        $user = $this->getUser();
 
-    $userInformationRepository = $entityManager->getRepository(UserInformation::class);
-    $sefareshatRepository = $entityManager->getRepository(Sefareshat::class);
-    $productRepository = $entityManager->getRepository(Product::class);
+        if (!$user) {
+            throw $this->createAccessDeniedException('You must be logged in to view this page.');
+        }
 
-    // Fetch UserInformation and all published products
-    $userInformations = $userInformationRepository->findBy(['User' => $userId]);
-    $products = $productRepository->findBy(['published' => 1]);
+        // Repositories
+        $userInformationRepository = $entityManager->getRepository(UserInformation::class);
+        $sefareshatRepository = $entityManager->getRepository(Sefareshat::class);
+        $productRepository = $entityManager->getRepository(Product::class);
 
-    // Fetch purchased products for the user
-    $purchasedProducts = $sefareshatRepository->createQueryBuilder('s')
-        ->where('s.user = :user')
-        ->andWhere('s.product IN (:productIds)')
-        ->setParameter('user', $user)
-        ->setParameter('productIds', [1, 2])
-        ->getQuery()
-        ->getResult();
+        // Fetch user information
+        $userInformations = $userInformationRepository->findBy(['User' => $user->getId()]);
 
-    // Track purchased products
-    $hasPurchasedProduct1 = false;
-    $hasPurchasedProduct2 = false;
+        // Fetch purchased products for the user
+        $purchasedProducts = $sefareshatRepository->createQueryBuilder('s')
+            ->leftJoin('s.product', 'p')
+            ->where('s.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
 
-    foreach ($purchasedProducts as $purchasedProduct) {
-        $productId = $purchasedProduct->getProduct()->getId();
-        $hasPurchasedProduct1 |= ($productId == 1);
-        $hasPurchasedProduct2 |= ($productId == 2);
+        // Prepare a list of purchased product IDs
+        $purchasedProductIds = array_map(function ($purchase) {
+            return $purchase->getProduct()->getId();
+        }, $purchasedProducts);
+
+        // Fetch all published products
+        $products = $productRepository->findBy(['published' => 1]);
+
+        // Prepare results array
+        $results = array_map(function (UserInformation $userInformation) use ($products, $purchasedProductIds) {
+            // Calculate profile completion percentage
+            $completion = $this->calculateCompletionPercentage($userInformation);
+
+            // Check purchase status for each product
+            $productPurchases = array_map(function (Product $product) use ($purchasedProductIds) {
+                return [
+                    'product' => $product,
+                    'hasPurchased' => in_array($product->getId(), $purchasedProductIds),
+                ];
+            }, $products);
+
+            return [
+                'userInformation' => $userInformation,
+                'completion' => $completion,
+                'productPurchases' => $productPurchases,
+            ];
+        }, $userInformations);
+
+        return $this->render('user_information/index.html.twig', [
+            'results' => $results,
+        ]);
     }
 
-    // Map user information to the results array
-    $results = array_map(function($userInformation) use ($products, $hasPurchasedProduct1, $hasPurchasedProduct2, $sefareshatRepository, $user) {
-        // Calculate completion percentage
-        $completion = min(array_sum(array_map(fn($field) => !empty($field) ? 5 : 0, [
+    private function calculateCompletionPercentage(UserInformation $userInformation): int
+    {
+        // Base fields completion
+        $baseFields = [
             $userInformation->getFullName(),
             $userInformation->getDesignation(),
             $userInformation->getAddress(),
@@ -62,36 +90,28 @@ public function index(EntityManagerInterface $entityManager): Response
             $userInformation->getEmail(),
             $userInformation->getImage(),
             $userInformation->getName(),
-        ])) + array_sum(array_map(function($section) {
-            $weights = [
-                'درباره من' => [6, 7],
-                'تجربیات' => [5, 5, 2, 2, 1],
-                'تحصیلات' => [5, 5, 2, 2, 1],
-                'توانایی ها' => [5, 5, 1],
-                'شبکه های اجتماعی' => [5, 5, 1],
-            ];
-            return array_sum(array_map(fn($weight, $field) => $field ? $weight : 0, $weights[$section->getType()], [
+        ];
+
+        $baseCompletion = array_sum(array_map(fn($field) => !empty($field) ? 5 : 0, $baseFields));
+
+        // Section weights (assuming weights are per section)
+        $sectionWeights = [
+            'درباره من' => [6, 7],
+            'تجربیات' => [5, 5, 2, 2, 1],
+            'تحصیلات' => [5, 5, 2, 2, 1],
+            'توانایی ها' => [5, 5, 1],
+            'شبکه های اجتماعی' => [5, 5, 1],
+        ];
+
+        $sectionCompletion = array_sum(array_map(function ($section) use ($sectionWeights) {
+            return array_sum(array_map(fn($weight, $field) => $field ? $weight : 0, $sectionWeights[$section->getType()], [
                 $section->getDescription(), $section->getShtype(), $section->getTitle(),
                 $section->getStart(), $section->getEnd(),
             ]));
-        }, $userInformation->getSections()->toArray())), 100);
+        }, $userInformation->getSections()->toArray()));
 
-        // Check purchase status for each product
-        $productPurchases = array_map(function($product) use ($hasPurchasedProduct1, $hasPurchasedProduct2, $sefareshatRepository, $user) {
-            $isPurchased = $hasPurchasedProduct1 || $product->getId() == 2 ||
-                           count($sefareshatRepository->findBy(['user' => $user, 'product' => $product])) > 0;
-            return [
-                'product' => $product,
-                'hasPurchased' => $isPurchased,
-            ];
-        }, $products);
-
-        return compact('userInformation', 'completion', 'hasPurchasedProduct1', 'productPurchases');
-    }, $userInformations);
-
-    return $this->render('user_information/index.html.twig', compact('results'));
-}
-
+        return min($baseCompletion + $sectionCompletion, 100);
+    }
 
     #[Route('/information/new/{variable}', defaults: ["variable" => '1'], name: 'app_user_information_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, Service $service, string $variable): Response
@@ -104,6 +124,7 @@ public function index(EntityManagerInterface $entityManager): Response
             $user = $this->getUser();
             $userInformation->setUser($user);
             $userInformation->setProduct($variable);
+            $userInformation->setCdate(new \DateTime());
             $formData = $request->request->all();
             $file = $request->files->get('file');
             $this->handleUserInformationData($userInformation, $formData, $entityManager, $file, $service, true);
@@ -123,56 +144,29 @@ public function index(EntityManagerInterface $entityManager): Response
     }
 
     #[Route('/information/res/{id}/{temp}', name: 'app_user_information_show', methods: ['GET'])]
-    public function show(UserInformation $userInformation, string $temp, EntityManagerInterface $entityManager, Service $service): Response
+    public function show(UserInformation $userInformation, string $temp, EntityManagerInterface $entityManager): Response
     {
-        $user = $this->getUser();
-        $sefareshatRepository = $entityManager->getRepository(Sefareshat::class);
-        $productRepository = $entityManager->getRepository(Product::class);
+        $data = $this->getUserInformationData($userInformation, $temp, $entityManager);
 
-        // Find all products
-        $products = $productRepository->findAll();
-        $hasPurchasedProduct = false;
+        return $this->render("user_information/show/{$temp}.html.twig", [
+            'info' => $userInformation,
+            'type' => $data['sectionsWithType'],
+            'buy' => $data['hasPurchasedProduct'],
+        ]);
+    }
 
-        foreach ($products as $product) {
-            // Product with ID 2 is free
-            if ($product->getId() == 2 && $product->getHtmlFile() === $temp) {
-                $hasPurchasedProduct = true;
-                break; // Free product, no need to check further
-            }
+    #[Route('/information/pdf/{id}/{temp}', name: 'app_user_information_generate_pdf', methods: ['GET'])]
+    public function generatePdf(UserInformation $userInformation, string $temp, EntityManagerInterface $entityManager, Service $service, Environment $twig): Response
+    {
+        $data = $this->getUserInformationData($userInformation, $temp, $entityManager);
 
-            // Check if the user has purchased this product
-            $purchasedProducts = $sefareshatRepository->createQueryBuilder('s')
-                ->where('s.user = :user')
-                ->andWhere('s.product = :product')
-                ->setParameter('user', $user)
-                ->setParameter('product', $product)
-                ->getQuery()
-                ->getResult();
-
-            // If the user has purchased product ID 1, grant access to all products
-            if (count($purchasedProducts) > 0) {
-                if ($product->getId() == 1 || $product->getHtmlFile() === $temp) {
-                    $hasPurchasedProduct = true;
-                    break; // If product ID 1 is purchased, all products are accessible
-                }
-            }
-        }
-
-        $sectionsWithType = [];
-        foreach ($userInformation->getSections() as $section) {
-            if ($section->getShtype()) {
-                $sectionsWithType[] = $section;
-            }
-        }
-
-        // Determine whether to generate and return a PDF or just render the HTML
-        if ($hasPurchasedProduct) {
-            $htmlContent = $this->renderView("user_information/show/{$temp}.html.twig", [
+        if ($data['hasPurchasedProduct']) {
+            $template = $twig->load("user_information/show/{$temp}.html.twig");
+            $htmlContent = $template->renderBlock('pdf_content', [
                 'info' => $userInformation,
-                'type' => $sectionsWithType,
+                'type' => $data['sectionsWithType'],
             ]);
 
-            // Generate the PDF using PdfService
             $pdfContent = $service->generatePdf($htmlContent);
 
             return new Response(
@@ -184,12 +178,56 @@ public function index(EntityManagerInterface $entityManager): Response
                 ]
             );
         } else {
-            return $this->render("user_information/show/{$temp}.html.twig", [
+            // Return a different Twig template if the user hasn't purchased the product
+            return $this->render('user_information/not_purchased.html.twig', [
                 'info' => $userInformation,
-                'type' => $sectionsWithType,
-                'buy' => $hasPurchasedProduct,
+                'temp' => $temp,
             ]);
         }
+    }
+
+    private function getUserInformationData(UserInformation $userInformation, string $temp, EntityManagerInterface $entityManager): array
+    {
+        $user = $this->getUser();
+        $sefareshatRepository = $entityManager->getRepository(Sefareshat::class);
+        $productRepository = $entityManager->getRepository(Product::class);
+
+        $hasPurchasedProduct = false;
+        $products = $productRepository->findAll();
+
+        foreach ($products as $product) {
+            if ($product->getId() == 2 && $product->getHtmlFile() === $temp) {
+                $hasPurchasedProduct = true;
+                break;
+            }
+
+            $purchasedProducts = $sefareshatRepository->createQueryBuilder('s')
+                ->where('s.user = :user')
+                ->andWhere('s.product = :product')
+                ->setParameter('user', $user)
+                ->setParameter('product', $product)
+                ->getQuery()
+                ->getResult();
+
+            if (count($purchasedProducts) > 0) {
+                if ($product->getId() == 1 || $product->getHtmlFile() === $temp) {
+                    $hasPurchasedProduct = true;
+                    break;
+                }
+            }
+        }
+
+        $sectionsWithType = [];
+        foreach ($userInformation->getSections() as $section) {
+            if ($section->getShtype()) {
+                $sectionsWithType[] = $section;
+            }
+        }
+
+        return [
+            'hasPurchasedProduct' => $hasPurchasedProduct,
+            'sectionsWithType' => $sectionsWithType,
+        ];
     }
 
     #[Route('/information/{id}/edit', name: 'app_user_information_edit', methods: ['GET', 'POST'])]
@@ -199,6 +237,7 @@ public function index(EntityManagerInterface $entityManager): Response
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $userInformation->setUdate(new \DateTime());
             $formData = $request->request->all();
             $file = $request->files->get('file');
             $this->handleUserInformationData($userInformation, $formData, $entityManager, $file, $service);

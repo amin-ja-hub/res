@@ -17,99 +17,120 @@
                     <div id="kt_content_container" class="container-xxl">
                             <!--begin::محصولات-->
                                     <!--begin::کارت body-->
-                        {% for result in results %}
-                            <div class="card card-flush">
+{% for result in results %}
+<div class="card shadow-sm mb-4 border-0">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="mb-1">
+                    <i class="bi bi-person-badge-fill text-primary me-2"></i>
+                    عنوان رزومه:
+                    <span class="badge bg-primary rounded-pill px-3 py-2">{{ result.userInformation.name }}</span>
+                </h5>
+                <div class="small text-muted">
+                    <i class="bi bi-calendar-event me-1"></i>
+                    آخرین به‌روزرسانی: {{ result.userInformation.udate|localizeddatetr('custom', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', null) }}
+                </div>
+            </div>
+            <div>
+                <a href="{{ path('app_user_information_edit', {'id': result.userInformation.id}) }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-pencil-fill me-1"></i> ویرایش
+                </a>
+            </div>
+        </div>
 
-                                <div class="card-body">
-                                    <div class="d-flex">
-                                        <h3 class="px-3">عنوان رزومه: <span class="bg-primary rounded">{{ result.userInformation.name }}</span></h3>
-                                        <h3 class="px-3" style="width: 60%;">
-                                            اطلاعات تکمیل شده : <span class="bg-success rounded">%{{ result.completion }}</span>
-                                        {% if result.completion != 100 %}
-                                            <!-- Show edit button if not complete -->
-                                            <a href="{{ path('app_user_information_edit', {'id': result.userInformation.id}) }}" class="btn btn-info py-0">تکمیل کردن اطلاعات</a>
-                                        {% else %}
-                                            <!-- When completion is 100%, handle product-related checks -->
-                                            {% if result.userInformation.product %}
-                                                {% if result.hasPurchasedProduct1 %}
-                                                <a href="{{ path('app_user_information_show', {'id': result.userInformation.id, 'temp': result.userInformation.product.htmlfile }) }}" class=" p-0">
-                                                     بازدید
-                                                </a>
-                                                {% else %}
-                                                    <span class="ps-5"> قالب انتخابی شما خریداری نشده</span>
-                                                    <a href="#">خرید قالب</a>
-                                                {% endif %}
-                                                <!-- Product is associated -->
+        <!-- Completion Status -->
+        <div class="mb-4">
+            <h6 class="mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                اطلاعات تکمیل شده:
+                <span class="badge bg-success rounded-pill px-3 py-2">%{{ result.completion }}</span>
+            </h6>
 
-                                            {% else %}
-                                                <!-- No product associated -->
-                                                <span class="text-muted p-1">قالب رزومه ی خود را انتخاب کنید.</span>
-                                            {% endif %}
-                                        {% endif %}
+            {% if result.completion == 100 %}
+                {% set hasPurchased = result.productPurchases|filter(productPurchase => productPurchase.product.id == result.userInformation.product.id and productPurchase.hasPurchased)|length > 0 %}
 
-                                    </h3>
-                                        <h3>
-                                            <a class="" href="{{ path('app_user_information_edit', {'id': result.userInformation.id}) }}">ویرایش </a>
-                                        </h3>
-                                    </div>
+                {% if not hasPurchased %}
+                    <div class="alert alert-warning d-flex align-items-center" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>قالب انتخابی شما خریداری نشده</div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info d-flex align-items-center" role="alert">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <div>با تکمیل و به ‌روزرسانی رزومه خود، احتمال قبولی در مصاحبه‌های شغلی افزایش می‌یابد.</div>
+                </div>
+            {% endif %}
+        </div>
 
-                                    <div class="d-flex">
-                                        <div style="width: 85%;" class="progress h-45px">
-                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ result.completion }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ result.completion }}%">
-                                                {{ result.completion }}%
-                                            </div>
-                                        </div>
-                                        <!--end::Menu-->
-                                        <div class="dropdown">
-                                            <button class="btn btn-secondary dropdown-toggle ms-3" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                                انتخاب قالب
-                                            </button>
-                                            <ul class="dropdown-menu overflow-y-auto h-250px" aria-labelledby="dropdownMenuButton1">
-                                                {% for productPurchase in result.productPurchases %}
-                                                    <li class="d-flex align-items-center p-2">
-                                                        <div style="flex-grow: 1;">
-                                                            <div><span>قالب:{{ productPurchase.product.title }}</span></div>
-                                                            <a href="{{ path('app_user_information_show', {'id': result.userInformation.id, 'temp': productPurchase.product.HtmlFile }) }}" class="btn btn-primary">پیشنمایش</a>
-                                                            {% if productPurchase.hasPurchased %}
-                                                                <div class="text-success">شما این محصول را خریداری کرده‌اید</div>
-                                                            {% else %}
-                                                                <div class="text-danger">شما این محصول را خریداری نکرده‌اید</div>
-                                                            {% endif %}
-                                                        </div>
-                                                        {% if productPurchase is not null and productPurchase is iterable and productPurchase.product is not null and productPurchase.product.Image is not null %}
-                                                            <img src="{{ productPurchase.product.Image.path ~ '/'~ productPurchase.product.Image.name ~ '.'~ productPurchase.product.Image.format }}" alt="Image {{ loop.index }}" class="ms-3" style="flex-shrink: 0 ; width: 120px">
-                                                        {% else %}
-                                                            {# Handle the case where productPurchase is not an object, or other attributes are missing #}
-                                                            <p>Image not available</p>
-                                                        {% endif %}
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                    </div>
-{% if result.completion != 100 %}
-    <!-- Show edit button if not complete -->
-    <span class="text-info p-0"><i class="bi bi-info-circle"></i> با تکمیل و به ‌روزرسانی رزومه خود، احتمال قبولی در مصاحبه‌های شغلی افزایش می‌یابد.</span>
-{% else %}
-    <!-- When completion is 100%, handle product-related checks -->
-    {% set hasProduct = result.userInformation.product %}
-    {% set purchased = result.hasPurchasedProduct1 %}
-    {% if hasProduct %}
-        <!-- Product is associated -->
-        <span class="text-muted p-1">
-            {{ purchased ? 'تبریک میگم رزومه شما تکمیل و آماده دریافت میباشد.' : 'تبریک میگم رزومه شما تکمیل لطفا قالب انتخابی را خریداری کنید' }}
-        </span>
-    {% else %}
-        <!-- No product associated -->
-        <span class="text-muted p-1">تبریک میگم رزومه شما تکمیل و آماده دریافت میباشد.</span>
-    {% endif %}
-        <a href="{{ path('app_user_information_show', {'id': result.userInformation.id, 'temp': 'show' }) }}" class="btn btn-primary p-1">
-            pdf
-        </a>
-{% endif %}
-                                </div>
-                            </div>
-                        {% endfor %}
+        <!-- Progress Bar -->
+        <div class="progress mb-4" style="height: 25px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ result.completion }}%;" aria-valuenow="{{ result.completion }}" aria-valuemin="0" aria-valuemax="100">
+                {{ result.completion }}%
+            </div>
+        </div>
+
+        <!-- Product and Template Selection -->
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                {% if result.completion == 100 and result.userInformation.product %}
+                    <a href="{{ path('app_user_information_show', {'id': result.userInformation.id, 'temp': result.userInformation.product.htmlfile }) }}" class="btn btn-primary">
+                        <i class="bi bi-eye-fill me-1"></i> مشاهده رزومه
+                    </a>
+
+                    {% set templatePurchased = result.productPurchases|filter(productPurchase => productPurchase.product.id == result.userInformation.product.id and productPurchase.hasPurchased)|length > 0 %}
+
+                    {% if templatePurchased %}
+                        <a href="{#{{ path('app_user_information_pdf', {'id': result.userInformation.id, 'temp': result.userInformation.product.htmlfile }) }}#}" class="btn btn-success ms-2">
+                            <i class="bi bi-file-earmark-arrow-down-fill me-1"></i> دانلود PDF
+                        </a>
+                    {% else %}
+                        <a href="{#{{ path('app_product_buy', {'id': result.userInformation.product.id}) }}#}" class="btn btn-warning ms-2">
+                            <i class="bi bi-cart-fill me-1"></i> خرید قالب
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ path('app_user_information_edit', {'id': result.userInformation.id}) }}" class="btn btn-info">
+                        <i class="bi bi-pencil-fill me-1"></i> تکمیل اطلاعات
+                    </a>
+                {% endif %}
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-grid-fill me-1"></i> انتخاب قالب
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end overflow-auto" style="max-height: 250px;" aria-labelledby="dropdownMenuButton1">
+                    {% for productPurchase in result.productPurchases %}
+                    <li class="d-flex align-items-center p-2">
+                        <div class="flex-grow-1">
+                            <div><i class="bi bi-file-earmark me-1"></i> قالب: {{ productPurchase.product.title }}</div>
+                            {% if productPurchase.product.htmlFile %}
+                                <a href="{{ path('app_user_information_show', {'id': result.userInformation.id, 'temp': productPurchase.product.htmlFile }) }}" class="btn btn-primary mt-2">
+                                    <i class="bi bi-eye me-1"></i> پیشنمایش
+                                </a>
+                            {% endif %}
+                            {% if productPurchase.hasPurchased %}
+                                <div class="text-success mt-2"><i class="bi bi-check-circle-fill me-1"></i> شما این محصول را خریداری کرده‌اید</div>
+                            {% else %}
+                                <div class="text-danger mt-2"><i class="bi bi-x-circle-fill me-1"></i> شما این محصول را خریداری نکرده‌اید</div>
+                            {% endif %}
+                        </div>
+                        {% if productPurchase.product.image %}
+                            <img src="{{ productPurchase.product.image.path ~ '/' ~ productPurchase.product.image.name ~ '.' ~ productPurchase.product.image.format }}" alt="Image {{ loop.index }}" class="ms-3" style="width: 120px; flex-shrink: 0;">
+                        {% else %}
+                            <p>Image not available</p>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
                                     <!--end::کارت body-->
                             <!--end::محصولات-->
                     </div>

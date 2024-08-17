@@ -61,40 +61,47 @@
                         <div class="tab-content-container">
                             <div class="tab-content" id="Step1">
                                 <div class="row">
-                                    <div class="col-8">
-                                        <div class="col-12">
-                                            <label for="full_name" class="form-label">نام و نام خانوادگی:</label>
-                                            <input type="text" id="full_name" name="full_name" class="form-control" value="{{ userInformation.fullname }}" placeholder="نام و نام خانوادگی">
-                                            <div class="text-muted fs-7">نام و نام خانوادگی خود را به صورت کامل وارد کنید.</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <label for="designation" class="form-label">شغل:</label>
-                                                <input type="text" id="designation" name="designation" class="form-control" value="{{ userInformation.designation }}" placeholder="برای مثال:گرافیست">
-                                                <div class="text-muted fs-7">شغل خود را وارد کنید.</div>
-                                            </div>
-                                            <div class="col-6">
-                                                <label for="address" class="form-label">آدرس:</label>
-                                                <input type="text" id="address" name="address" class="form-control" placeholder="برای مثال: ایران - تهران" value="{{ userInformation.address }}">
-                                                <div class="text-muted fs-7">آدرس حدودی خود را وارد کنید.</div>
-                                            </div>
-                                            <div class="col-6">
-                                                <label for="phone" class="form-label">تلفن:</label>
-                                                <input type="text" id="phone" name="phone" class="form-control" dir="rtl" placeholder="برای مثال: 09123456789" value="{{ userInformation.phone }}">
-                                                <div class="text-muted fs-7">شماره تماس حود را وارد کنید.</div>
-                                            </div>
-                                            <div class="col-6">
-                                                <label for="email" class="form-label">ایمیل:</label>
-                                                <input type="text" id="email" name="email" class="form-control" placeholder="برای مثال: example@example" value="{{ userInformation.email }}" >
-                                                <div class="text-muted fs-7">ایمیل خود را وارد کنید.</div>
+                                    <div class="col-lg-8">
+                                        <div class="card mb-4 shadow-sm">
+                                            <div class="card-body">
+                                                <h4 class="card-title mb-4">اطلاعات شخصی</h4>
+                                                <form>
+                                                    <div class="mb-3">
+                                                        <label for="full_name" class="form-label">نام و نام خانوادگی:</label>
+                                                        <input type="text" id="full_name" name="full_name" class="form-control" value="{{ userInformation.fullname }}" placeholder="نام و نام خانوادگی">
+                                                        <div class="form-text">نام و نام خانوادگی خود را به صورت کامل وارد کنید.</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="designation" class="form-label">شغل:</label>
+                                                            <input type="text" id="designation" name="designation" class="form-control" value="{{ userInformation.designation }}" placeholder="برای مثال: گرافیست">
+                                                            <div class="form-text">شغل خود را وارد کنید.</div>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="address" class="form-label">آدرس:</label>
+                                                            <input type="text" id="address" name="address" class="form-control" placeholder="برای مثال: ایران - تهران" value="{{ userInformation.address }}">
+                                                            <div class="form-text">آدرس حدودی خود را وارد کنید.</div>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="phone" class="form-label">تلفن:</label>
+                                                            <input type="text" id="phone" name="phone" class="form-control" dir="rtl" placeholder="برای مثال: 09123456789" value="{{ userInformation.phone }}">
+                                                            <div class="form-text">شماره تماس خود را وارد کنید.</div>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="email" class="form-label">ایمیل:</label>
+                                                            <input type="email" id="email" name="email" class="form-control" placeholder="برای مثال: example@example.com" value="{{ userInformation.email }}">
+                                                            <div class="form-text">ایمیل خود را وارد کنید.</div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Add more form fields here if needed -->
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <!--begin::کناری column-->
-                                        <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
+                                        <div class="card mb-4 shadow-sm">
                                                 <!--begin::Thumbnail settings-->
-                                                <div class="card card-flush py-4">
                                                         <!--begin::کارت header-->
                                                         <div class="card-header">
                                                                 <!--begin::کارت title-->
@@ -149,7 +156,6 @@
                                                                 <!--end::توضیحات-->
                                                         </div>
                                                         <!--end::کارت body-->
-                                                </div>
                                                 <!--end::Thumbnail settings-->
                                         </div>
                                         <!--end::کناری column-->

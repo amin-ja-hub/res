@@ -48,6 +48,11 @@ class UserInformation
     #[ORM\ManyToOne]
     private ?User $User = null;
 
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $cdate = null;
+
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $udate = null;
 
     public function __construct()
     {
@@ -195,6 +200,30 @@ class UserInformation
     public function setProduct(?Product $product): static
     {
         $this->product = $product;
+
+        return $this;
+    }
+
+    public function getCdate(): ?\DateTimeInterface
+    {
+        return $this->cdate;
+    }
+
+    public function setCdate(?\DateTimeInterface $cdate): static
+    {
+        $this->cdate = $cdate;
+
+        return $this;
+    }
+
+    public function getUdate(): ?\DateTimeInterface
+    {
+        return $this->udate;
+    }
+
+    public function setUdate(?\DateTimeInterface $udate): static
+    {
+        $this->udate = $udate;
 
         return $this;
     }

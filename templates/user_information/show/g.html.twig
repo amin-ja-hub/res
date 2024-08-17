@@ -1,5 +1,6 @@
 {# templates/user/show.html.twig #}
-
+{% extends "base.html.twig" %}
+{% block body %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -459,3 +460,6 @@ body {
 
 </body>
 </html>
+{% endblock %}
+{% block pdf_content %}<h1>amin</h1>{% endblock %}
+
