@@ -297,24 +297,22 @@
                     <div class="carousel-outer">
                         <!-- Services Carousel -->
                         <div class="services-carousel owl-carousel owl-theme">
-                            {% for item in findEntitiesWithCriteria('App\\Entity\\Product', 5, {'published': '1'}) %}
-                                                <div class="service-block">
-                                                    <div class="inner-box">
-                                                        <div class="image-box">
-                                                            <figure class="image"><a href="service-detail.html"><img src="{{ item.Image.path ~ '/770x350_' ~ item.Image.name ~ '.webp' }}" alt=""></a></figure>
-                                                        </div>
-                                                        <div class="lower-content">
-                                                            <h4><a href="service-detail.html">{{ item.title }}</a></h4>
-                                                            <div class="text">Professionals work with a variety of all materials, in a variety of settings–indoor and outdoor.</div>
-                                                            <div class="text">Professionals</div>
-                                                            <div class="btn-box"><a href="{{ path('app_user_information_new', {'variable' : 'a'}) }}" class="read-more">خرید<span class="fa fa-arrow-right"></span></a></div>
-                                                            <div class="btn-box"><a href="{{ path('app_user_information_new') }}" class="read-more">خرید<span class="fa fa-arrow-right"></span></a></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                            {% for item in findEntitiesWithCriteria('App\\Entity\\Product', 10, {'published': '1'}) %}
+                                <div class="service-block">
+                                    <div class="inner-box">
+                                        <div class="image-box">
+                                            <figure class="image"><a href="service-detail.html"><img src="{{ item.Image.path ~ '/770x350_' ~ item.Image.name ~ '.webp' }}" alt=""></a></figure>
+                                        </div>
+                                        <div class="lower-content">
+                                            <h4><a href="service-detail.html">{{ item.title }}</a></h4>
+                                            <div class="text rtl">{{ item.metadesc|length > 65 ? item.metadesc|slice(0, 65)|trim('.', 'right') ~ '...' : item.metadesc }}
+                                            </div>
+                                            <div class="btn-box"><a href="{{ path('app_user_information_new', {'variable' : 'a'}) }}" class="read-more">خرید<span class="fa fa-arrow-right"></span></a></div>
+                                        </div>
+                                    </div>
+                                </div>
                             {% endfor %}
                         </div>
-
                     </div>
                 </div>
             </section>

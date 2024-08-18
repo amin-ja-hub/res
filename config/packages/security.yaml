@@ -19,7 +19,7 @@ security:
             form_login:
                 login_path: app_login
                 check_path: app_login
-                default_target_path: app_register
+                default_target_path: app_user_information_index
 
                 enable_csrf: true
             logout:

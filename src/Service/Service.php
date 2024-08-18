@@ -240,14 +240,15 @@ class Service
         imagedestroy($image);
     }
 
-    public function findEntitiesWithCriteria(string $entityClass, int $count, array $criteria = []): array
+    public function findEntitiesWithCriteria(string $entityClass, int $count, array $criteria = [], string $orderByField = 'id'): array
     {
         $queryBuilder = $this->em->createQueryBuilder();
 
         $queryBuilder
             ->select('e')
             ->from($entityClass, 'e')
-            ->setMaxResults($count);
+            ->setMaxResults($count)
+            ->orderBy("e.$orderByField", 'DESC'); // Ordering by the field in descending order
 
         foreach ($criteria as $field => $value) {
             $queryBuilder->andWhere("e.$field = :$field")
