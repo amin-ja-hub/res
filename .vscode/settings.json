@@ -1,5 +1,5 @@
 {
-    "files.associations": {
-        "*.twig": "html"
+    "emmet.includeLanguages": {
+        "twig": "html"
     }
 }

@@ -16,7 +16,7 @@
                                 <div class="inner-box">
                                     <div class="image-box">
                                         <figure class="image">
-                                            <a href="blog-detail.html">
+                                            <a href="{{ path('article_show', {'url' :item.url}) }}">
                                                {% if item.Image is not null and item.Image.path is not null and item.Image.name is not null %}
                                                     <img src="{{ item.Image.path ~ '/770x350_' ~ item.Image.name ~ '.webp' }}" alt="">
                                                 {% endif %}
@@ -26,7 +26,7 @@
                                     <div class="lower-content">
                                         <ul class="post-info">
                                             <li><span class="far fa-user"></span>ادمین</li>
-                                            <li><a href="blog.html#"><span class="far fa-list-alt"></span>{{ item.Category.title }}</a></li>
+                                            <li><a href="{{ path('articles_by_item', { item: 'category', itemtitle: item.Category.title }) }}"><span class="far fa-list-alt"></span>{{ item.Category.title }}</a></li>
                                             <li><span class="far fa-calendar"></span> {{ item.cdate|localizeddatetr('custom', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', null) }}</li>
                                         </ul>
                                         <h4><a href="blog-detail.html">{{ item.title }}</a></h4>
@@ -40,13 +40,13 @@
                         <div class="styled-pagination text-center">
                             <ul class="clearfix">
                                 {% if currentPage > 1 %}
-                                    <li class="prev-post"><a href="{{ path('article_show', {page: currentPage - 1}) }}"><span class="flaticon-back-1"></span></a></li>
+                                    <li class="prev-post"><a href="{{ path('articles_show', {page: currentPage - 1}) }}"><span class="flaticon-back-1"></span></a></li>
                                 {% endif %}
                                 {% for i in 1..totalPages %}
-                                    <li class="{{ currentPage == i ? 'active' : '' }}"><a href="{{ path('article_show', {page: i}) }}">{{ i }}</a></li>
+                                    <li class="{{ currentPage == i ? 'active' : '' }}"><a href="{{ path('articles_show', {page: i}) }}">{{ i }}</a></li>
                                 {% endfor %}
                                 {% if currentPage < totalPages %}
-                                    <li class="next-post"><a href="{{ path('article_show', {page: currentPage + 1}) }}"><span class="flaticon-next-1"></span></a></li>
+                                    <li class="next-post"><a href="{{ path('articles_show', {page: currentPage + 1}) }}"><span class="flaticon-next-1"></span></a></li>
                                 {% endif %}
                             </ul>
                         </div>
@@ -56,104 +56,9 @@
 
                 <!--Sidebar Side-->
                 <div class="sidebar-side col-lg-4 col-md-12 col-sm-12">
-                    <aside class="sidebar">
-
-                        <!--search box-->
-                        <div class="sidebar-widget search-box">
-                            <form method="post" action="blog.html">
-                                <div class="form-group">
-                                    <input type="search" name="search-field" value="" placeholder="Search....." required="">
-                                    <button type="submit"><span class="icon fa fa-search"></span></button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Categories -->
-                        <div class="sidebar-widget blog-categories">
-                            <div class="sidebar-title"><h2>Catagories</h2></div>
-                            <ul class="cat-list">
-                                <li><a href="blog.html#">Handmade Furniture <span>(06)</span></a></li>
-                                <li><a href="blog.html#">General Carpentry <span>(02)</span></a></li>
-                                <li class="active"><a href="blog.html#">Office Renevation <span>(05)</span></a></li>
-                                <li><a href="blog.html#">Kitchen Modeling <span>(25)</span></a></li>
-                                <li><a href="blog.html#">Wooden Selves <span>(04)</span></a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Latest News -->
-                        <div class="sidebar-widget latest-news">
-                            <div class="sidebar-title"><h2>Popular Posts</h2></div>
-                            <div class="widget-content">
-                                <article class="post">
-                                    <div class="post-thumb"><a href="blog-detail.html"><img src="images/resource/post-thumb-3.jpg" alt=""></a></div>
-                                    <h3><a href="blog-detail.html">Tip For Wood Painting <br> For Long Time Safety.</a></h3>
-                                    <div class="post-info">February 14, 2020</div>
-                                </article>
-
-                                <article class="post">
-                                    <div class="post-thumb"><a href="blog-detail.html"><img src="images/resource/post-thumb-4.jpg" alt=""></a></div>
-                                    <h3><a href="blog-detail.html">Approach to make <br>your front entryway.</a></h3>
-                                    <div class="post-info">February 14, 2020</div>
-                                </article>
-
-                                <article class="post">
-                                    <div class="post-thumb"><a href="blog-detail.html"><img src="images/resource/post-thumb-5.jpg" alt=""></a></div>
-                                    <h3><a href="blog-detail.html">5 way to modified <br> your kitchen.</a></h3>
-                                    <div class="post-info">January 22, 2020</div>
-                                </article>
-                            </div>
-                        </div>
-
-                        <!--Footer Column-->
-                        <div class="sidebar-widget instagram-widget">
-                            <div class="sidebar-title"><h2>Gallery</h2></div>
-                            <div class="widget-content">
-                                <div class="link-box"><a href="blog.html#"><span class="fab fa-instagram"></span></a></div>
-                                <div class="outer clearfix">
-                                    <figure class="image">
-                                        <a href="images/gallery/1.jpg" class="lightbox-image" title="Image Title Here"><img src="images/resource/gw-1.jpg" alt=""></a>
-                                    </figure>
-
-                                    <figure class="image">
-                                        <a href="images/gallery/2.jpg" class="lightbox-image" title="Image Title Here"><img src="images/resource/gw-2.jpg" alt=""></a>
-                                    </figure>
-
-                                    <figure class="image">
-                                        <a href="images/gallery/3.jpg" class="lightbox-image" title="Image Title Here"><img src="images/resource/gw-3.jpg" alt=""></a>
-                                    </figure>
-
-                                    <figure class="image">
-                                        <a href="images/gallery/4.jpg" class="lightbox-image" title="Image Title Here"><img src="images/resource/gw-4.jpg" alt=""></a>
-                                    </figure>
-
-                                    <figure class="image">
-                                        <a href="images/gallery/5.jpg" class="lightbox-image" title="Image Title Here"><img src="images/resource/gw-5.jpg" alt=""></a>
-                                    </figure>
-
-                                    <figure class="image">
-                                        <a href="images/gallery/1.jpg" class="lightbox-image" title="Image Title Here"><img src="images/resource/gw-6.jpg" alt=""></a>
-                                    </figure>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tags -->
-                        <div class="sidebar-widget tags">
-                            <div class="sidebar-title"><h2>Tag Cloud</h2></div>
-                            <ul class="tag-list clearfix">
-                                <li><a href="blog.html#">Marketing</a></li>
-                                <li><a href="blog.html#">Renovation</a></li>
-                                <li><a href="blog.html#">Table</a></li>
-                                <li><a href="blog.html#">Chairs</a></li>
-                                <li><a href="blog.html#">Wooden</a></li>
-                                <li><a href="blog.html#">Carpentry</a></li>
-                                <li><a href="blog.html#">Handyman</a></li>
-                                <li><a href="blog.html#">Repairing</a></li>
-                                <li><a href="blog.html#">Furnitures</a></li>
-                            </ul>
-                        </div>
-                    </aside>
+                    {{ include('default/front/article/sidebar.twig') }}
                 </div>
+
             </div>
         </div>
     </div>

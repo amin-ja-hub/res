@@ -319,6 +319,47 @@
             </section>
             <!-- End service Section -->
 
+            <!-- Services Section -->
+            <section class="services-section">
+                <div class="auto-container">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-12">
+                            <div class="sec-title">
+                                <h2>Our Services</h2>
+                                <div class="text">What We Provide For You check now and deside it<br> do you want now this</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <div class="right-btn text-right">
+                                <a href="about.html" class="theme-btn btn-style-two"><span class="btn-title">All Services</span></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-outer">
+                        <!-- Services Carousel -->
+                        <div class="services-carousel owl-carousel owl-theme">
+                            {% for item in findEntitiesWithCriteria('App\\Entity\\Article', 10, {'published': '1'}) %}
+                                <div class="service-block">
+                                    <div class="inner-box">
+                                        <div class="image-box">
+                                            <figure class="image"><a href="service-detail.html"><img src="{{ item.Image.path ~ '/770x350_' ~ item.Image.name ~ '.webp' }}" alt=""></a></figure>
+                                        </div>
+                                        <div class="lower-content">
+                                            <h4><a href="service-detail.html">{{ item.title }}</a></h4>
+                                            <div class="text rtl">{{ item.metadesc|length > 65 ? item.metadesc|slice(0, 65)|trim('.', 'right') ~ '...' : item.metadesc }}
+                                            </div> 
+                                            <div class="btn-box"><a href="{{ path('article_show') }}" class="btn btn-success pl-5 pr-5">مشاهده ی بیشتر</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End service Section -->
+
 
             <!-- Projects Section -->
             <section class="projects-section-two">
@@ -388,7 +429,7 @@
                                         <div class="overlay-inner">
                                             <h4>Wooden Godown</h4>
                                             <div class="icon-box">
-                                                <a href="images/gallery/2-3.jpg') }}" class="lightbox-image" data-fancybox="gallery" ><span class="icon fa fa-expand-arrows-alt"></span></a>
+                                                <a href="images/gallery/2-3.jpg'" class="lightbox-image" data-fancybox="gallery" ><span class="icon fa fa-expand-arrows-alt"></span></a>
                                                 <a href="project-detail.html"><span class="icon fa fa-search"></span></a>
                                             </div>
                                         </div>
