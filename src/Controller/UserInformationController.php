@@ -210,36 +210,47 @@ class UserInformationController extends AbstractController
         return $purchase !== null;
     }
 
+#[Route('/information/new/{variable}', defaults: ["variable" => '1'], name: 'app_user_information_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $entityManager, Service $service, string $variable): Response
+{
+    $userInformation = new UserInformation();
+    $form = $this->createForm(UserInformationType::class, $userInformation);
+    $form->handleRequest($request);
 
-    #[Route('/information/new/{variable}', defaults: ["variable" => '1'], name: 'app_user_information_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, Service $service, string $variable): Response
-    {
-        $userInformation = new UserInformation();
-        $form = $this->createForm(UserInformationType::class, $userInformation);
-        $form->handleRequest($request);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $user = $this->getUser();
+        $userInformation->setUser($user);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getUser();
-            $userInformation->setUser($user);
-            $userInformation->setProduct($variable);
-            $userInformation->setCdate(new \DateTime());
-            $formData = $request->request->all();
-            $file = $request->files->get('file');
-            $this->handleUserInformationData($userInformation, $formData, $entityManager, $file, $service, true);
-            $entityManager->persist($userInformation);
-            $entityManager->flush();
-            $id = $userInformation->getId();
-            $defaultTab = 2; // Set this to 2 or any other value based on your logic
-            return $this->redirectToRoute('app_user_information_edit', [
-                'id' => $id,
-                'Tab' => $defaultTab,
-            ]);
+        // Fetch the Product entity based on $variable
+        $product = $entityManager->getRepository(Product::class)->find($variable);
+
+        if (!$product) {
+            throw $this->createNotFoundException('Product not found');
         }
 
-        return $this->render('user_information/new.html.twig', [
-            'form' => $form->createView(),
+        $userInformation->setProduct($product);
+        $userInformation->setCdate(new \DateTime());
+
+        $formData = $request->request->all();
+        $file = $request->files->get('file');
+        $this->handleUserInformationData($userInformation, $formData, $entityManager, $file, $service, true);
+
+        $entityManager->persist($userInformation);
+        $entityManager->flush();
+
+        $id = $userInformation->getId();
+        $defaultTab = 2; // Set this to 2 or any other value based on your logic
+
+        return $this->redirectToRoute('app_user_information_edit', [
+            'id' => $id,
+            'Tab' => $defaultTab,
         ]);
     }
+
+    return $this->render('user_information/new.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
 
     #[Route('/information/{id}/edit', name: 'app_user_information_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, EntityManagerInterface $entityManager, UserInformation $userInformation, Service $service): Response
@@ -252,7 +263,7 @@ class UserInformationController extends AbstractController
             $formData = $request->request->all();
             $file = $request->files->get('file');
             $this->handleUserInformationData($userInformation, $formData, $entityManager, $file, $service);
-
+            var_dump('a');die;
             return $this->redirectToRoute('app_user_information_index');
         }
 

@@ -306,8 +306,9 @@
                                         <div class="lower-content">
                                             <h4><a href="service-detail.html">{{ item.title }}</a></h4>
                                             <div class="text rtl">{{ item.metadesc|length > 65 ? item.metadesc|slice(0, 65)|trim('.', 'right') ~ '...' : item.metadesc }}
-                                            </div>
-                                            <div class="btn-box"><a href="{{ path('app_user_information_new', {'variable' : 'a'}) }}" class="read-more">خرید<span class="fa fa-arrow-right"></span></a></div>
+                                            </div> 
+                                            <div class="btn-box"><a href="{{ path('app_user_information_new', {'variable' : item.id}) }}" class="btn btn-success pl-5 pr-5">انتخاب قالب</a></div>
+                                            <div class="btn-box"><a href="{{ path('product_show', {'url' : item.url }) }}" class="btn btn-primary pl-4 pr-4 mt-3">مشاهده ی قالب</a></div>
                                         </div>
                                     </div>
                                 </div>

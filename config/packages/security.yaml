@@ -39,6 +39,7 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/writer, roles: [ROLE_ADMIN, ROLE_WRITER] }
         - { path: ^/user, roles: [ROLE_ADMIN, ROLE_WRITER,ROLE_USER] }
+        - { path: ^/profile, roles: [ROLE_ADMIN, ROLE_WRITER,ROLE_USER] }
 
 when@test:
     security:
