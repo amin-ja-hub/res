@@ -1,31 +1,52 @@
 {% extends "base.front.twig" %}
+{% block style %}
+<style>/* Additional styles for filtering */
+    .btn-group .btn {
+        margin-right: 0.5rem;
+    }
+
+    .news-block {
+        display: none; /* Initially hide all news blocks */
+    }
+
+    .news-block.show {
+        display: block; /* Show filtered blocks */
+    }
+    .color-link{
+        color: #004bca !important;
+    }
+    .h-65px{
+        height: 65px;
+    }
+</style>
+{% endblock %}
 {% block body %}
+
     <!-- News Section -->
     <section class="news-section">
         <div class="auto-container">
-
+            <div id="myBtnContainer" class="btn-group mb-4" role="group">
+                <button class="btn btn-primary active" data-filter="all">Show all</button>
+                {% for item in findEntitiesWithCriteria('App\\Entity\\Category', null, {'published': '1', 'type': '1'}) %}
+                    <button class="btn btn-secondary" data-filter="{{ item.title | replace({' ': '-'}) }}">{{ item.title }}</button>
+                {% endfor %}
+            </div>
             <div class="row">
                 <!-- News Block -->
                 {% for product in products %}
-                    <div class="news-block col-lg-4 col-md-6 col-sm-12">
+                    <div class="news-block col-lg-3 col-md-4 col-sm-12 {{ product.Category.title | replace({' ': '-'}) }}">
                         <div class="inner-box">
                             <div class="image-box">
                                 <figure class="image">
-                                    <a href="blog-detail.html">
+                                    <a href="{{ path('product_show', {'url': product.url}) }}">
                                         {% if product.Image is not null and product.Image.path is not null and product.Image.name is not null %}
-                                             <img src="{{ product.Image.path ~ '/770x350_' ~ product.Image.name ~ '.webp' }}" alt="">
+                                            <img style="height: 350px" class="h-350px" src="{{ product.Image.path ~ '/770x350_' ~ product.Image.name ~ '.webp' }}" alt="">
                                         {% endif %}
                                     </a>
                                 </figure>
                             </div>
-                            <div class="lower-content">
-                                <div class="post-date"><span class="far fa-calendar"></span>{{ product.cdate|localizeddatetr('custom', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', null) }}</div>
-                                <ul class="post-info">
-                                    <li><span class="far fa-user"></span> ادمین</li>
-                                    <li><span class="far fa-list-alt"></span><a href="blog-grid.html#">{{ product.Category.title }}</a></li>
-                                </ul>
-                                <h4><a href="blog-detail.html">{{ product.title }}</a></h4>
-                                <div class="btn-box"><a href="blog-grid.html#" class="read-more">Read More <span class="fa fa-arrow-right"></span></a></div>
+                            <div class="h-65px text-center">
+                                <h4><a class="color-link" href="{{ path('product_show', {'url': product.url}) }}">{{ product.title|length > 45 ? product.title|slice(0, 45)|trim('.', 'right') ~ '...' : product.title }}</a></h4>
                             </div>
                         </div>
                     </div>
@@ -34,4 +55,39 @@
         </div>
     </section>
     <!--End News Section Two -->
+
+
+{% endblock %}
+{% block js %}
+        <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnContainer = document.getElementById('myBtnContainer');
+        const buttons = btnContainer.getElementsByClassName('btn');
+        const filterDivs = document.getElementsByClassName('news-block');
+
+        function filterSelection(filter) {
+            for (const div of filterDivs) {
+                const classes = div.className.split(' ');
+                // Match against classes from the second item onwards (skipping grid classes)
+                const match = classes.slice(1).includes(filter);
+                div.style.display = (filter === 'all' || match) ? 'block' : 'none';
+            }
+        }
+
+        function handleButtonClick(event) {
+            for (const btn of buttons) {
+                btn.classList.remove('active');
+            }
+            event.currentTarget.classList.add('active');
+            filterSelection(event.currentTarget.dataset.filter);
+        }
+
+        for (const button of buttons) {
+            button.addEventListener('click', handleButtonClick);
+        }
+
+        // Initial load to show all
+        filterSelection('all');
+    });
+    </script>
 {% endblock %}

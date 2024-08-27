@@ -14,12 +14,13 @@
 
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" type="image/x-icon">
     <link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/x-icon">
-
+    {% block style %}{% endblock %}
     <!-- Responsive -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <!--[if lt IE 9]><script src="{{ asset('front/https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js') }}"></script><![endif]-->
     <!--[if lt IE 9]><script src="{{ asset('front/js/respond.js') }}"></script><![endif]-->
+    {% block jshead %}{% endblock %}
 </head>
 
 <body>
@@ -91,11 +92,11 @@
                                     <ul class="navigation clearfix">
                                         <li><a href="index.html">Home</a>
                                         </li>
-                                        <li class="dropdown"><a href="services.html">Services</a>
+                                        <li class="dropdown"><a href="{{ path('products_show') }}">رزومه</a>
                                             <ul>
-                                                <li><a href="services.html">All Services</a></li>
-                                                <li><a href="service-detail.html">General Carpentry</a></li>
-                                                <li><a href="service-detail.html">Furniture Remodeling</a></li>
+                                                <li><a href="services.html">ساخت رزومه</a></li>
+                                                <li><a href="service-detail.html">نمونه رزومه های تکمیل شده</a></li>
+                                                <li><a href="service-detail.html">قالب های رزومه</a></li>
                                                 <li><a href="service-detail.html">Hang Paintings</a></li>
                                                 <li><a href="service-detail.html">Manufactur Furniture</a></li>
                                                 <li><a href="service-detail.html">Commercial work</a></li>
@@ -108,13 +109,8 @@
                                                 <li><a href="project-detail.html">Project Detail</a></li>
                                             </ul>
                                         </li>
-                                        <li class="dropdown"><a href="blog.html">Blog</a>
-                                            <ul>
-                                                <li><a href="blog.html">Blog with Sidebar</a></li>
-                                                <li><a href="blog-grid.html">Blog Grid View</a></li>
-                                                <li><a href="blog-detail.html">Blog Detail</a></li>
-                                                <li><a href="error-page.html">404 Error</a></li>
-                                            </ul>
+                                        <li class="dropdown">
+                                            <a href="{{ path('articles_show') }}">مقالات</a>
                                         </li>
                                         <li class="dropdown"><a href="index.html#">Shop</a>
                                             <ul>
@@ -125,7 +121,7 @@
                                                 <li><a href="login.html">Registration Page</a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="contact.html">Contact</a></li>
+                                        <li><a href="{{ path('app_contact_new') }}">تماس با ما</a></li>
                                         <li class="dropdown"><a href="about.html">About</a>
                                             <ul>
                                                 <li><a href="about.html">About Us</a></li>
@@ -194,6 +190,14 @@
             </div><!-- End Mobile Menu -->
         </header>
         <!--End Main Header -->
+        {% for label, messages in app.flashes %}
+            <div class="alert alert-{{ label }}">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endfor %}
+
         {% block body %}
             <!-- Banner Section -->
             <section class="banner-section">
@@ -349,7 +353,7 @@
                                             <h4><a href="service-detail.html">{{ item.title }}</a></h4>
                                             <div class="text rtl">{{ item.metadesc|length > 65 ? item.metadesc|slice(0, 65)|trim('.', 'right') ~ '...' : item.metadesc }}
                                             </div> 
-                                            <div class="btn-box"><a href="{{ path('article_show') }}" class="btn btn-success pl-5 pr-5">مشاهده ی بیشتر</a></div>
+                                            <div class="btn-box"><a href="{{ path('article_show', {'url' : item.url}) }}" class="btn btn-success pl-5 pr-5">مشاهده ی بیشتر</a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -891,7 +895,7 @@
                                          <!--Footer Column-->
                                         <div class="widget-content">
                                             <ul class="list-style-two">
-                                                <li><a href="services.html">All Services</a></li>
+                                                <li><a href="{{ path('products_show') }}">قالب ها</a></li>
                                                 <li><a href="service-detail.html">General Carpentry</a></li>
                                                 <li><a href="service-detail.html">Furniture Remod..</a></li>
                                                 <li><a href="service-detail.html">Hang Paintings</a></li>
@@ -1032,6 +1036,6 @@
     <script src="{{ asset('front/js/script.js') }}"></script>
     <!-- Color Setting -->
     <script src="{{ asset('front/js/color-settings.js') }}"></script>
-
+    {% block js %}{% endblock %}
 </body>
 </html>

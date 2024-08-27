@@ -17,6 +17,9 @@ class Comment
     #[ORM\Column(type: "string", length: 256, nullable: true)]
     private ?string $fullName;
 
+    #[ORM\Column(type: "string", length: 256, nullable: true)]
+    private ?string $phone;
+
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $text;
 
@@ -42,6 +45,10 @@ class Comment
     #[ORM\JoinColumn(name: "article", referencedColumnName: "id", nullable: true)]
     private ?Article $article = null; // Notice the nullable type declaration
 
+    #[ORM\ManyToOne(targetEntity: "Product")]
+    #[ORM\JoinColumn(name: "product", referencedColumnName: "id", nullable: true)]
+    private ?Product $product = null; // Notice the nullable type declaration    
+    
     #[ORM\ManyToOne(targetEntity: "Comment")]
     #[ORM\JoinColumn(name: "Comment", referencedColumnName: "id", nullable: true)]
     private ?Comment $comment = null;
@@ -169,6 +176,30 @@ class Comment
     public function setComment(?Comment $comment): static
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): static
+    {
+        $this->product = $product;
 
         return $this;
     }

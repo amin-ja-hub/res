@@ -25,26 +25,6 @@ class ContactUsController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_contact_us_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $contactU = new ContactUs();
-        $form = $this->createForm(ContactUsType::class, $contactU);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($contactU);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_contact_us_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('contact_us/new.html.twig', [
-            'contact_u' => $contactU,
-            'form' => $form,
-        ]);
-    }
-
     #[Route('/{id}', name: 'app_contact_us_show', methods: ['GET'])]
     public function show(ContactUs $contactU): Response
     {

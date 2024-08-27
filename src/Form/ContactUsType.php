@@ -12,17 +12,17 @@ class ContactUsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('fullName')
-            ->add('text')
-            ->add('cdate', null, [
+            ->remove('fullName')
+            ->remove('text')
+            ->remove('cdate', null, [
                 'widget' => 'single_text',
             ])
-            ->add('published')
-            ->add('type')
-            ->add('subject')
-            ->add('mobile')
-            ->add('emali')
-            ->add('remove')
+            ->remove('published')
+            ->remove('type')
+            ->remove('subject')
+            ->remove('mobile')
+            ->remove('email')
+            ->remove('remove')
         ;
     }
 

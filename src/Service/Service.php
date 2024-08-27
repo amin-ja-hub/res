@@ -109,7 +109,7 @@ class Service
                     $fileDir = $projectDir . '/public/uploads/category/' . $id;
                     $FileEntity->setPath('/uploads/category/' . $id);
                     $sizes = [
-                        ['width' => 770, 'height' => 350],
+                        ['width' => 419, 'height' => 554],
                         ['width' => 570, 'height' => 300],
                         ['width' => 85, 'height' => 85],
                     ];
@@ -243,23 +243,30 @@ class Service
     public function findEntitiesWithCriteria(string $entityClass, ?int $count = null, array $criteria = [], string $orderByField = 'id'): array
     {
         $queryBuilder = $this->em->createQueryBuilder();
-    
+
         $queryBuilder
             ->select('e')
             ->from($entityClass, 'e')
-            ->orderBy("e.$orderByField", 'DESC'); // Ordering by the field in descending order
-    
+            ->orderBy("e.$orderByField", 'DESC');
+
         foreach ($criteria as $field => $value) {
-            $queryBuilder->andWhere("e.$field = :$field")
-                         ->setParameter($field, $value);
+            // Check for special conditions
+            if (strpos($field, ' !=') !== false) {
+                $actualField = str_replace(' !=', '', $field);
+                $queryBuilder->andWhere("e.$actualField != :$actualField")
+                             ->setParameter($actualField, $value);
+            } else {
+                $queryBuilder->andWhere("e.$field = :$field")
+                             ->setParameter($field, $value);
+            }
         }
-    
+
         if ($count !== null) {
             $queryBuilder->setMaxResults($count);
         }
-    
+
         $query = $queryBuilder->getQuery();
-    
+
         return $query->getResult();
-    }    
+    }
 }

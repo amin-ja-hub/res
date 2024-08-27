@@ -2,12 +2,14 @@
 
 <!--search box-->
 <div class="sidebar-widget search-box">
-    <form method="post" action="blog.html">
-        <div class="form-group">
-            <input type="search" name="search-field" value="" placeholder="Search....." required="">
-            <button type="submit"><span class="icon fa fa-search"></span></button>
-        </div>
-    </form>
+<form method="get" action="{{ path('articles_search') }}">
+    <div class="form-group">
+        <input type="search" name="search" value="{% if searchTerm is defined and searchTerm %}{{ searchTerm }}{% endif %}" placeholder="Search..." required>
+        <button type="submit"><span class="icon fa fa-search"></span></button>
+    </div>
+</form>
+
+
 </div>
 
 <!-- Categories -->
@@ -16,7 +18,7 @@
     {% for item in findEntitiesWithCriteria('App\\Entity\\Category',null, {'published': '1', 'type': '2'}) %}
         <ul class="cat-list">
             <li>
-                <a href="{{ path('articles_by_item', { item: 'category', itemtitle: item.title }) }}">
+                <a href="{{ path('articles_by_item', { entity : 'Article' ,item: 'category', itemtitle: item.title }) }}">
                     {{ item.title }}
                 </a>
             </li>
@@ -30,7 +32,7 @@
     <div class="widget-content">
         {% for item in findEntitiesWithCriteria('App\\Entity\\Article',3, {'published': '1'}) %}
             <article class="post">
-                <div class="post-thumb"><a href="{{ path('article_show', {'url' : item.url}) }}"><img src="images/resource/post-thumb-3.jpg" alt=""></a></div>
+                <div class="post-thumb"><a href="{{ path('article_show', {'url' : item.url}) }}"><img src="{{ item.Image.path ~ '/85x85_' ~ item.Image.name ~ '.webp' }}" alt=""></a></div>
                 <h3><a href="{{ path('article_show', {'url' : item.url}) }}">{{ item.title|length > 40 ? item.title|slice(0, 40)|trim('.', 'right') ~ '...' : item.title }}</a></h3>
                 <div class="post-info">{{ item.cdate|localizeddatetr('custom', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', null) }}</div>
             </article>    

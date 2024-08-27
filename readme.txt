@@ -1,3 +1,6 @@
 categoty type = [product = 1 ,article = 2]	
 barchasb type =>  [product = 1 ,article = 2 , category = 3] 
 user role => [ROLE_USER =0 , ROLE_ADMIN = 1 , ROLE_WRITER = 2]
+comment type => [artcile = 1]
+contactus type => [main = 1]
+commetns type => [article = 1 , product = 2 ]

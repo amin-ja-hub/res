@@ -1,11 +1,109 @@
-{% extends 'base.html.twig' %}
+{% extends 'base.front.twig' %}
 
 {% block title %}New ContactUs{% endblock %}
 
 {% block body %}
     <h1>Create new ContactUs</h1>
 
-    {{ include('contact_us/_form.html.twig') }}
 
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="auto-container">
+            <div class="upper-box">
+                <h2>Write us a Message !</h2>
+                <div class="text">Phosfluorescently engage worldwide methodologies with web-enabled technology.</div>
+            </div>
+            <div class="row clearfix">
+                <!-- Form Column -->
+                <div class="form-column col-lg-6 col-md-12 col-sm-12 order-2">
+                    <div class="inner-column">
+                        <div class="contact-form">
+                            {{ form_start(form) }}
+                                <div class="response"></div>
+
+                                <div class="form-group">
+                                    <input type="text" name="fullName" placeholder="نام و نام خانوادگی خود را وارد کنید">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" name="email" placeholder="ایمیل خود را وارد کنید">
+                                </div>
+                                
+                                <div class="form-group">
+                                     <textarea name="text" placeholder="متن خود را وارد کنید" id=""></textarea>
+                                </div>
+                                <input type="hidden" name="type" value="1">
+                                <div class="form-group">
+                                    <button class="theme-btn btn-style-two" type="submit" id="submit" name="submit-form"><span class="btn-title">Submit Now</span> </button>
+                                </div>
+
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Column -->
+                <div class="contact-column col-lg-6 col-md-12 col-sm-12">
+                    <div class="inner-column">
+                        <div class="row no-gutters">
+                            <div class="contact-info-block col-lg-6 col-md-6 col-sm-12">
+                                <div class="inner">
+                                    <span class="icon flaticon-worldwide"></span> 
+                                    <h4>Address</h4>
+                                    <p>Breaking Street, <br>Newyork, USA</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-info-block col-lg-6 col-md-6 col-sm-12">
+                                <div class="inner">
+                                    <span class="icon flaticon-phone"></span> 
+                                    <h4>Call Us</h4>
+                                    <p><a href="contact.html#">(+92) 313 888 000</a></p>
+                                    <p><a href="contact.html#">(+92) 313 999 000</a></p>
+                                </div>
+                            </div>
+
+                            <div class="contact-info-block col-lg-6 col-md-6 col-sm-12">
+                                <div class="inner">
+                                    <span class="icon flaticon-email"></span> 
+                                    <h4>Mail Us</h4>
+                                    <p><a href="mailto:support@example.com">support@example.com</a></p>
+                                    <p><a href="mailto:support@example.com">support@example.com</a></p>
+                                </div>
+                            </div>
+
+                            <div class="contact-info-block col-lg-6 col-md-6 col-sm-12">
+                                <div class="inner">
+                                    <span class="icon flaticon-clock"></span> 
+                                    <h4>Time Table</h4>
+                                    <p>Mon - Sat: 09AM to 05PM</p>
+                                    <p>Sunday - Close</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End Contact Section -->
+
+
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="map-outer">
+            <div class="map-canvas"
+                data-zoom="12"
+                data-lat="-37.817085"
+                data-lng="144.955631"
+                data-type="roadmap"
+                data-hue="#ffc400"
+                data-title="Envato"
+                data-icon-path="images/icons/map-marker.png"
+                data-content="Melbourne VIC 3000, Australia<br><a href='mailto:info@youremail.com'>info@youremail.com</a>">
+            </div>
+        </div>
+    </section>
+    <!-- End Map Section -->
     <a href="{{ path('app_contact_us_index') }}">back to list</a>
 {% endblock %}

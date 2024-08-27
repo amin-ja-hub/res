@@ -26,7 +26,7 @@
                                     <div class="lower-content">
                                         <ul class="post-info">
                                             <li><span class="far fa-user"></span>ادمین</li>
-                                            <li><a href="{{ path('articles_by_item', { item: 'category', itemtitle: item.Category.title }) }}"><span class="far fa-list-alt"></span>{{ item.Category.title }}</a></li>
+                                            <li><a href="{{ path('articles_by_item', { entity : 'Article' ,item: 'category', itemtitle: item.Category.title }) }}"><span class="far fa-list-alt"></span>{{ item.Category.title }}</a></li>
                                             <li><span class="far fa-calendar"></span> {{ item.cdate|localizeddatetr('custom', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', null) }}</li>
                                         </ul>
                                         <h4><a href="blog-detail.html">{{ item.title }}</a></h4>
