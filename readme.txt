@@ -1,4 +1,4 @@
-categoty type = [product = 1 ,article = 2]	
+categoty type = [product = 1 ,article = 2,faq = 3]	
 barchasb type =>  [product = 1 ,article = 2 , category = 3] 
 user role => [ROLE_USER =0 , ROLE_ADMIN = 1 , ROLE_WRITER = 2]
 comment type => [artcile = 1]

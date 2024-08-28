@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Faq{% endblock %}
+
+{% block body %}
+    <h1>Create new Faq</h1>
+
+{{ form_start(form, {'attr': {'id': 'kt_ecommerce_add_product_form', 'enctype': 'multipart/form-data'}}) }}
+    <div class="row">
+        <div class="col-6">
+            {{ form_widget(form.question, {'attr': {'class': 'form-control mb-2'}}) }}        
+        </div>
+        <div class="col-6"></div>
+
+    </div>
+
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}    
+    <a href="{{ path('app_faq_index') }}">back to list</a>
+{% endblock %}

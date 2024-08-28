@@ -1,0 +1,269 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Faq index{% endblock %}
+
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Select2 for the category dropdown in creation form
+        $('#categorySelect').select2({
+            ajax: {
+                url: '{{ path('api_categories') }}',  // Your API endpoint
+                dataType: 'json',
+                processResults: function (data) {
+                    // Map the response to Select2's format
+                    return {
+                        results: data.map(function (category) {
+                            return {
+                                id: category.id,
+                                text: category.name
+                            };
+                        })
+                    };
+                }
+            }
+        });
+
+            // Initialize Select2 for category dropdowns in the editing forms
+        // Initialize Select2 for category dropdowns in editing forms
+        $('[id^=categorySelectEdit-]').each(function() {
+            $(this).select2({
+                ajax: {
+                    url: '{{ path('api_categories') }}',  // Your API endpoint
+                    dataType: 'json',
+                    processResults: function (data) {
+                        // Map the response to Select2's format
+                        return {
+                            results: data.map(function (category) {
+                                return {
+                                    id: category.id,
+                                    text: category.name
+                                };
+                            })
+                        };
+                    }
+                }
+            });
+        });
+
+            // Edit button click handler
+            document.querySelectorAll('.edit-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    const faqId = this.getAttribute('data-id');
+                    toggleEditMode(faqId, true);
+                });
+            });
+
+            // Cancel button click handler
+            document.querySelectorAll('.cancel-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    const faqId = this.getAttribute('data-id');
+                    toggleEditMode(faqId, false);
+                });
+            });
+
+            function toggleEditMode(id, isEditMode) {
+                const faqContainer = document.querySelector('#articleRow-' + id);
+                if (faqContainer) {
+                    const displaySection = faqContainer.querySelector('.faq-content');
+                    const editSection = faqContainer.querySelector('.faq-edit');
+                    if (isEditMode) {
+                        displaySection.classList.add('d-none');
+                        editSection.classList.remove('d-none');
+                    } else {
+                        displaySection.classList.remove('d-none');
+                        editSection.classList.add('d-none');
+                    }
+                }
+            }
+
+            // Handling the AJAX for publish/remove actions
+            $('.sendData').click(function(e) {
+                e.preventDefault();
+                var button = $(this);
+                var dataTable = button.data('table');
+                var dataField = button.data('field');
+                var dataValue = button.data('value');
+                var dataId = button.data('id');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('update_field') }}',
+                    data: {
+                        table: dataTable,
+                        field: dataField,
+                        value: dataValue,
+                        id: dataId
+                    },
+                    success: function(response) {
+                        if (dataField === 'published') {
+                            var newValue = dataValue === 1 ? 0 : 1;
+                            button.data('value', newValue);
+                            button.toggleClass('badge-danger badge-light-success')
+                                .text(newValue === 1 ? 'منتشر کردن' : 'کنار گذاشتن');
+                            $('#publishStatus-' + dataId)
+                                .toggleClass('badge-danger badge-light-success')
+                                .text(newValue === 0 ? 'منتشر شده' : 'در انتظار');
+                        } else if (dataField === 'remove') {
+                            $('#articleRow-' + dataId).remove();
+                        }
+                        alert('OK: ' + response.message);
+                    },
+                    error: function(error) {
+                        alert('Not OK: ' + error.responseJSON.error);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+        <div class="post d-flex flex-column-fluid" id="kt_post">
+            <div id="kt_content_container" class="container-xxl">
+                <div class="card card-flush">
+                    <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+                        <div class="card-title">
+                            <div class="d-flex align-items-center position-relative my-1">
+                                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                <input type="text" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="جستجو مقالات" />
+                            </div>
+                        </div>
+                        <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
+                            <button class="btn btn-primary" data-bs-toggle="collapse" href="#addFaqForm" aria-expanded="false" aria-controls="addFaqForm">افزودن سوال جدید</button>
+                        </div>
+                    </div>
+
+                    <div class="collapse" id="addFaqForm">
+                        <div class="card-body border rounded shadow-sm p-4 bg-light">
+                            <h5 class="mb-4">افزودن سوال جدید</h5>
+                            {{ form_start(form) }}
+                                <div class="mb-3">
+                                    {{ form_label(form.question, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                    {{ form_widget(form.question, {'attr': {'class': 'form-control', 'placeholder': 'سوال خود را وارد کنید...'}}) }}
+                                    {{ form_errors(form.question) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.answer, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                    {{ form_widget(form.answer, {'attr': {'class': 'form-control', 'placeholder': 'پاسخ خود را وارد کنید...'}}) }}
+                                    {{ form_errors(form.answer) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.category, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                    <select id="categorySelect" name="faq[category]" class="form-control mb-2">
+                                        <option value="" disabled selected>انتخاب دسته‌بندی</option>
+                                    </select>
+                                    {{ form_errors(form.category) }}
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-success mt-3">
+                                        <i class="ki-duotone ki-check-circle me-2"></i> ایجاد سوال جدید
+                                    </button>
+                                </div>
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+
+                    <div class="card-body pt-0">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5 border" id="kt_ecommerce_products_table">
+                            <thead class="border">
+                                <tr class="text-start fw-bold fs-7 text-uppercase gs-0">
+                                    <th class="min-w-40px">ردیف</th>
+                                    <th class="text-start min-w-70px">سوال</th>
+                                    <th class="text-start min-w-70px">دسته بندی</th>
+                                    <th class="text-start min-w-100px">زمان ساخت</th>
+                                    <th class="text-start min-w-100px">زمان آپدیت</th>
+                                    <th class="text-start min-w-100px">کاربر</th>
+                                    <th class="text-start min-w-40px">وضعیت</th>
+                                    <th class="text-start min-w-70px">عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fw-semibold border">
+                                {% for faq in faqs %}
+                                    <tr id="articleRow-{{ faq.id }}">
+                                        <td>{{ faq.id }}</td>
+                                        <td>
+                                            <div class="faq-container">
+                                                <div class="d-flex align-items-center py-3 toggle mb-0 faq-display" data-bs-toggle="collapse" data-bs-target="#faq_{{ faq.id }}-display">
+                                                    <div class="btn btn-sm btn-icon mw-20px btn-active-color-primary me-5">
+                                                        <i class="ki-duotone ki-minus-square toggle-on text-primary fs-1">
+                                                            <span class="path1"></span>
+                                                            <span class="path2"></span>
+                                                        </i>
+                                                        <i class="ki-duotone ki-plus-square toggle-off fs-1">
+                                                            <span class="path1"></span>
+                                                            <span class="path2"></span>
+                                                            <span class="path3"></span>
+                                                        </i>
+                                                    </div>
+                                                    <h4 class="text-gray-700 fw-bold cursor-pointer mb-0">{{ faq.question }}</h4>
+                                                    <button class="btn btn-primary btn-sm ms-3 edit-button" data-id="{{ faq.id }}">ویرایش</button>
+                                                </div>
+                                                <div id="faq_{{ faq.id }}-display" class="collapse fs-6 ms-1 faq-content">
+                                                    <div class="mb-4 text-gray-600 fw-semibold fs-6 ps-10">{{ faq.answer }}</div>
+                                                </div>
+                                                <div id="faq_{{ faq.id }}-edit" class="faq-edit d-none">
+                                                    <form method="post" action="{{ path('app_faq_index') }}" class="d-flex flex-column">
+                                                        <input type="hidden" name="id" value="{{ faq.id }}" />
+                                                        <div class="mb-3">
+                                                            <label class="form-label">سوال:</label>
+                                                            <input type="text" name="question" value="{{ faq.question }}" class="form-control mb-2" placeholder="سوال" required />
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">پاسخ:</label>
+                                                            <textarea name="answer" class="form-control mb-2" placeholder="پاسخ" rows="4" required>{{ faq.answer }}</textarea>
+                                                        </div>
+        <div class="mb-3">
+            <label class="form-label">دسته‌بندی:</label>
+            <select id="categorySelectEdit-{{ faq.id }}" name="category" class="form-control mb-2">
+                <option value="" disabled>انتخاب دسته‌بندی</option>
+            </select>
+        </div>
+                                                        <div class="d-flex justify-content-end">
+                                                            <button type="submit" name="update" class="btn btn-warning me-2">بروزرسانی</button>
+                                                            <button type="button" class="btn btn-secondary cancel-button" data-id="{{ faq.id }}">انصراف</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ faq.category.title?? 'No user' }}</td>
+                                        <td>{{ faq.cdate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', 'yyy/MM/dd') }} ساعت {{ faq.cdate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', 'HH:mm') }}</td>
+                                        <td>{{ faq.udate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', 'yyy/MM/dd') }} ساعت {{ faq.udate|localizeddatetr('full', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', 'HH:mm') }}</td>
+                                        <td>{{ faq.user.id ?? 'No user' }}</td>
+                                        <td>
+                                            {% if faq.published == 1 %}
+                                                <span id="publishStatus-{{ faq.id }}" class="badge badge-light-success">منتشر شده</span>
+                                            {% else %}
+                                                <span id="publishStatus-{{ faq.id }}" class="badge badge-danger">در انتظار</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="menu-item px-3">
+                                                <button id="removeButton-{{ faq.id }}" class="sendData deleteData btn badge badge-dark" data-table="faq" data-field="remove" data-value="1" data-id="{{ faq.id }}">حذف کردن</button>
+                                            </div>
+                                            <div class="menu-item px-3">
+                                                {% if faq.published == 0 %}
+                                                    <button id="publishButton-{{ faq.id }}" class="btn badge badge-light-success sendData" data-table="faq" data-field="published" data-value="1" data-id="{{ faq.id }}">منتشر کردن</button>
+                                                {% elseif faq.published == 1 %}
+                                                    <button id="publishButton-{{ faq.id }}" class="btn badge badge-danger sendData" data-table="faq" data-field="published" data-value="0" data-id="{{ faq.id }}">کنار گذاشتن</button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
