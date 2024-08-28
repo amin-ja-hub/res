@@ -188,8 +188,8 @@
                                                             <label class="form-label">دسته بندی ها</label>
                                                             <!--end::Tags-->
                                                             <!--begin::انتخاب2-->
-                                                            <select name="category" class="form-select mb-2" data-control="select2" data-placeholder="انتخاب ">
-                                                                {% for category in getCategory(1)  %}
+                                                            <select name="category" class="form-select mb-2" data-control="select2" data-placeholder="انتخاب">
+                                                                {% for category in findEntitiesWithCriteria('App\\Entity\\Category', null, {'type': '2'}) %}
                                                                     <option value="{{ category.id }}">{{ category.title }}</option>
                                                                 {% endfor %}
                                                             </select>

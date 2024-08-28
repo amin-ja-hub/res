@@ -116,7 +116,7 @@
                                                                 {% if article.category is not null %}
                                                                     <option selected="" value="{{ article.category.id }}">{{ article.category.title }}</option>
                                                                 {% endif %}
-                                                                {% for category in getCategory(2)  %}
+                                                                {% for category in findEntitiesWithCriteria('App\\Entity\\Category', null, {'type': '2'}) %}
                                                                     <option value="{{ category.id }}">{{ category.title }}</option>
                                                                 {% endfor %}
                                                             </select>

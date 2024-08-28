@@ -11,11 +11,11 @@ use ReflectionClass;
 
 class TwigExtension extends AbstractExtension
 {
-    private $persianDateConverter;
+    private $service;
 
-    public function __construct(Service $persianDateConverter)
+    public function __construct(Service $service)
     {
-        $this->persianDateConverter = $persianDateConverter;
+        $this->service = $service;
     }
 
     public function getFilters()
@@ -27,43 +27,38 @@ class TwigExtension extends AbstractExtension
 
     public function getFunctions()
     {
-        $functions = [];
-
-        // Get all public methods from the Service class
-        $reflection = new ReflectionClass($this->persianDateConverter);
-        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            $functions[] = new TwigFunction($method->getName(), [$this->persianDateConverter, $method->getName()]);
-        }
-
-        return $functions;
+        // Predefined array of Twig functions to expose
+        return [
+            new \Twig\TwigFunction('findEntitiesWithCriteria', [$this->service, 'findEntitiesWithCriteria']),
+        ];
     }
 
-public function persiandatetimeFilter(Environment $env, $date, $dateFormat = 'medium', $timeFormat = 'medium', $locale = null, $timezone = null, $format = null)
-{
-    $date = twig_date_converter($env, $date, $timezone);
+    public function persiandatetimeFilter(Environment $env, $date, $dateFormat = 'medium', $timeFormat = 'medium', $locale = null, $timezone = null, $format = null)
+    {
+        $date = twig_date_converter($env, $date, $timezone);
 
-    $formatValues = [
-        'none'   => IntlDateFormatter::NONE,
-        'short'  => IntlDateFormatter::SHORT,
-        'medium' => IntlDateFormatter::MEDIUM,
-        'long'   => IntlDateFormatter::LONG,
-        'full'   => IntlDateFormatter::FULL,
-        'custom' => 'd MMMM yyyy'  // Custom format for Persian date
-    ];
+        $formatValues = [
+            'none'   => IntlDateFormatter::NONE,
+            'short'  => IntlDateFormatter::SHORT,
+            'medium' => IntlDateFormatter::MEDIUM,
+            'long'   => IntlDateFormatter::LONG,
+            'full'   => IntlDateFormatter::FULL,
+            'custom' => 'd MMMM yyyy'  // Custom format for Persian date
+        ];
 
-    // If a specific format is provided, use it; otherwise, use the one from the formatValues array
-    $format = $format ?? $formatValues[$dateFormat];
+        // If a specific format is provided, use it; otherwise, use the one from the formatValues array
+        $format = $format ?? $formatValues[$dateFormat];
 
-    $formatter = IntlDateFormatter::create(
-        $locale ?? 'fa_IR@calendar=persian',
-        IntlDateFormatter::FULL,
-        IntlDateFormatter::NONE,
-        $date->getTimezone()->getName(),
-        IntlDateFormatter::TRADITIONAL,
-        $format
-    );
+        $formatter = IntlDateFormatter::create(
+            $locale ?? 'fa_IR@calendar=persian',
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::NONE,
+            $date->getTimezone()->getName(),
+            IntlDateFormatter::TRADITIONAL,
+            $format
+        );
 
-    return $formatter->format($date->getTimestamp());
-}
+        return $formatter->format($date->getTimestamp());
+    }
 
 }

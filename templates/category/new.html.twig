@@ -161,7 +161,7 @@
                                                             <!--begin::انتخاب2-->
                                                             <select name="category1" class="form-select "  data-placeholder="انتخاب">
                                                                     <option value="">انتخاب کنید</option>
-                                                                {% for category in getCategory(null) %}
+                                                                {% for category in {% for category in findEntitiesWithCriteria('App\\Entity\\Category', null, null) %} %}
                                                                     <option value="{{ category.id }}">{{ category.title }}</option>
                                                                 {% endfor %}
                                                             </select>

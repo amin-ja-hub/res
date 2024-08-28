@@ -33,43 +33,6 @@ class Service
         return $this->pdf->getOutputFromHtml($htmlContent);
     }
 
-    public function getReplayMessages($replay)
-    {
-        $dql = "SELECT c FROM App\Entity\Comment c WHERE c.comment = :replay ORDER BY c.id ASC";
-
-        $query = $this->em->createQuery($dql)->setParameter('replay', $replay);
-        return $query->getResult();
-    }
-
-    public function getCategory($type)
-    {
-        // Base DQL query
-        $dql = "SELECT c FROM App\Entity\Category c WHERE c.published = :published";
-
-        // Check if type is provided
-        if ($type !== null) {
-            // Append the type condition to the DQL if type is not null
-            $dql .= " AND c.type = :type";
-        }
-
-        // Add ordering
-        $dql .= " ORDER BY c.id ASC";
-
-        // Create the query
-        $query = $this->em->createQuery($dql);
-
-        // Set the published parameter
-        $query->setParameter('published', '1'); // Assuming you want to fetch published categories
-
-        // Set the type parameter if it's not null
-        if ($type !== null) {
-            $query->setParameter('type', $type);
-        }
-
-        // Execute and return the result
-        return $query->getResult();
-    }
-
     //type 1 == article
     //type 2 == category
     //type 3 == product
@@ -242,31 +205,30 @@ class Service
 
     public function findEntitiesWithCriteria(string $entityClass, ?int $count = null, array $criteria = [], string $orderByField = 'id'): array
     {
+        // Initialize the query builder
         $queryBuilder = $this->em->createQueryBuilder();
 
+        // Build the base query
         $queryBuilder
             ->select('e')
             ->from($entityClass, 'e')
             ->orderBy("e.$orderByField", 'DESC');
 
+        // Add criteria to the query
         foreach ($criteria as $field => $value) {
-            // Check for special conditions
-            if (strpos($field, ' !=') !== false) {
-                $actualField = str_replace(' !=', '', $field);
-                $queryBuilder->andWhere("e.$actualField != :$actualField")
-                             ->setParameter($actualField, $value);
-            } else {
-                $queryBuilder->andWhere("e.$field = :$field")
-                             ->setParameter($field, $value);
-            }
+            $operator = strpos($field, ' !=') !== false ? '!=' : '=';
+            $actualField = str_replace(' !=', '', $field);
+            $queryBuilder->andWhere("e.$actualField $operator :$actualField")
+                         ->setParameter($actualField, $value);
         }
 
+        // Set a maximum result count if provided
         if ($count !== null) {
             $queryBuilder->setMaxResults($count);
         }
 
-        $query = $queryBuilder->getQuery();
-
-        return $query->getResult();
+        // Execute the query and return the results
+        return $queryBuilder->getQuery()->getResult();
     }
+
 }

@@ -67,7 +67,7 @@ class DefaultController extends AbstractController
         return $this->render('default/front/product/show.html.twig', compact('product'));
     }
 
-    #[Route('/{entity}/{item}/{itemtitle}', name: 'articles_by_item')]
+    #[Route('/find/{entity}/{item}/{itemtitle}', name: 'articles_by_item')]
     public function findArticlesByItem(string $entity, string $item, string $itemtitle, Request $request, EntityManagerInterface $entityManager): Response
     {
         $page = $request->query->getInt('page', 1);

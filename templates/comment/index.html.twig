@@ -260,7 +260,7 @@
                                                                     </td>
 
                                                                     <td class="text-start max-width-130 max-heig ">
-                                                                        {% for message in getReplayMessages(comment.id) %}
+                                                                        {% for message in findEntitiesWithCriteria('App\\Entity\\Comment', null, {'comment': comment.id}) %}
                                                                             {% if message.published == 1 %}
                                                                                 <div class="publish-color text-center">
                                                                                     <small class="badge badge-light-success" id="publishStatus-{{ message.id }}">منتشر شده</small>
