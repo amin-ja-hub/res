@@ -1,20 +1,30 @@
 {% extends "base.front.twig" %}
-{% block body %}
-    {% block css %}
-        <style>
-@media (min-width:320px)  { /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
-    .res-img{
-        height: 300px !important;
-    }
-}
-@media (min-width:600px)  { 
-    .res-img{
-        height: 550px !important;
-    }
-}
+{% block css %}
+    <style>
+        @media (min-width:320px)  { /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
+            .res-img{
+                height: 300px !important;
+            }
+        }
+        @media (min-width:600px)  { 
+            .res-img{
+                height: 550px !important;
+            }
+        }
+    </style>
+{% endblock %}
+{% block breadcrumbs %}
+{% set breadcrumbs = [
+    {'label': 'خانه', 'url': path('app_home')},
+    {'label': 'قالب ها', 'url': path('products_show')},
+    {'label': product.title|length > 15 ? product.title|slice(0, 15)|trim('.', 'right') ~ '...' : product.title, 'url': path('product_show',{'url' : product.url})}
+] %}
+{% set title = product.title %}
 
-        </style>
-    {% endblock %}
+{{ parent() }} {# This ensures the breadcrumbs are rendered in the base template #}
+{% endblock %}
+{% block body %}
+
     <!-- Service Detail Section -->
     <div class="service-detail-section">
         <div class="auto-container">
@@ -60,7 +70,6 @@
                         </div>
                         <!--Title Style One-->
                         <div class="content-box">
-                            <h2>{{ product.title }}</h2>
                             <div class="two-column row">
                                 {{ product.text|raw }}
                             </div>

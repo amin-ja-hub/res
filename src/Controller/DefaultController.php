@@ -177,7 +177,7 @@ class DefaultController extends AbstractController
     #[Route('/contact-us', name: 'app_contact_new', methods: ['GET', 'POST'])]
     public function contact(Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->handleContactUsForm($request, $entityManager, 'contact_us/new.html.twig');
+        return $this->handleContactUsForm($request, $entityManager, 'contact_us/front.twig');
     }
 
     #[Route('/faqs', name: 'app_faqs', methods: ['GET', 'POST'])]

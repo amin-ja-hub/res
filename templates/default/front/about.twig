@@ -4,21 +4,16 @@
 {%  block js %}
 {% endblock %}
 {% block jshead %}
-
+{% endblock %}
+{% block breadcrumbs %}
+    {% set breadcrumbs = [
+        {'label': 'خانه', 'url': path('app_home')},
+        {'label': 'درباره ی ما', 'url': path('app_about')}
+    ] %}
+    {% set title = 'درباره ی ما' %}
+    {{ parent() }} {# This ensures the breadcrumbs are rendered in the base template #}
 {% endblock %}
 {% block body %}
-    <!--Page Title-->
-    <section class="page-title" style="background-image:url(images/background/7.jpg);">
-        <div class="auto-container clearfix">
-            <h1>About Us</h1>
-            <ul class="bread-crumb clearfix">
-                <li><a href="index.html">Home</a></li>
-                <li>About Us</li>
-            </ul>
-        </div>
-    </section>
-    <!--End Page Title-->
-
     <!-- About Us -->
     <section class="about-us">
         <div class="auto-container">

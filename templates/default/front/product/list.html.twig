@@ -26,9 +26,9 @@
 {% block breadcrumbs %}
     {% set breadcrumbs = [
         {'label': 'خانه', 'url': path('app_home')},
-        {'label': 'محصولات', 'url': path('products_show')}
+        {'label': 'قالب ها', 'url': path('products_show')}
     ] %}
-    {% set title = 'محصولات' %}
+    {% set title = 'قالب ها' %}
     {{ parent() }} {# This ensures the breadcrumbs are rendered in the base template #}
 {% endblock %}
 {% block body %}

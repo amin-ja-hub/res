@@ -1,4 +1,14 @@
 {% extends "base.front.twig" %}
+{% block breadcrumbs %}
+    {% set breadcrumbs = [
+        {'label': 'خانه', 'url': path('app_home')},
+        {'label': 'مقالات', 'url': path('articles_show')},
+        {'label': article.title|length > 15 ? article.title|slice(0, 15)|trim('.', 'right') ~ '...' : article.title, 'url': path('article_show',{'url' : article.url})}
+    ] %}
+    {% set title = article.title %}
+    
+    {{ parent() }} {# This ensures the breadcrumbs are rendered in the base template #}
+{% endblock %}
 {% block body %}
     <!-- Sidebar Page Container -->
     <div class="sidebar-page-container">

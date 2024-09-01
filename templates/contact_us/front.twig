@@ -1,11 +1,14 @@
 {% extends 'base.front.twig' %}
-
 {% block title %}New ContactUs{% endblock %}
-
+{% block breadcrumbs %}
+    {% set breadcrumbs = [
+        {'label': 'خانه', 'url': path('app_home')},
+        {'label': 'تماس با ما', 'url': path('app_contact_new')}
+    ] %}
+    {% set title = 'تماس با ما' %}
+    {{ parent() }} {# This ensures the breadcrumbs are rendered in the base template #}
+{% endblock %}
 {% block body %}
-    <h1>Create new ContactUs</h1>
-
-
     <!-- Contact Section -->
     <section class="contact-section" id="contact">
         <div class="auto-container">

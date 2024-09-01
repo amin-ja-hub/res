@@ -1,7 +1,12 @@
 {% extends "base.front.twig" %}
-{#{% for product in article %}
-    <h1>amin</h1>
-{% endfor %}#}
+{% block breadcrumbs %}
+    {% set breadcrumbs = [
+        {'label': 'خانه', 'url': path('app_home')},
+        {'label': 'مقالات', 'url': path('articles_show')}
+    ] %}
+    {% set title = 'مقالات' %}
+    {{ parent() }} {# This ensures the breadcrumbs are rendered in the base template #}
+{% endblock %}
 {% block body %}
     <!-- Sidebar Page Container -->
     <div class="sidebar-page-container">

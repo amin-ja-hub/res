@@ -20,6 +20,14 @@
         }
     </style>
 {% endblock %}
+{% block breadcrumbs %}
+    {% set breadcrumbs = [
+        {'label': 'خانه', 'url': path('app_home')},
+        {'label': 'سوالات متداول', 'url': path('app_faqs')}
+    ] %}
+    {% set title = 'سوالات متداول' %}
+    {{ parent() }} {# This ensures the breadcrumbs are rendered in the base template #}
+{% endblock %}
 {%  block js %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
