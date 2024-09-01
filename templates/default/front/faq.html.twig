@@ -1,0 +1,126 @@
+{%extends "base.front.twig"%}
+{% block style %}
+    <style>/* Additional styles for filtering */
+        .btn-group .btn {
+            margin-right: 0.5rem;
+        }
+
+        .news-block {
+            display: none; /* Initially hide all news blocks */
+        }
+
+        .news-block.show {
+            display: block; /* Show filtered blocks */
+        }
+        .color-link{
+            color: #004bca !important;
+        }
+        .h-65px{
+            height: 65px;
+        }
+    </style>
+{% endblock %}
+{%  block js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnContainer = document.getElementById('myBtnContainer');
+            const buttons = btnContainer.getElementsByClassName('btn');
+            const filterDivs = document.getElementsByClassName('news-block');
+
+            function filterSelection(filter) {
+                for (const div of filterDivs) {
+                    const classes = div.className.split(' ');
+                    // Match against classes from the second item onwards (skipping grid classes)
+                    const match = classes.slice(1).includes(filter);
+                    div.style.display = (filter === 'all' || match) ? 'block' : 'none';
+                }
+            }
+
+            function handleButtonClick(event) {
+                for (const btn of buttons) {
+                    btn.classList.remove('active');
+                }
+                event.currentTarget.classList.add('active');
+                filterSelection(event.currentTarget.dataset.filter);
+            }
+
+            for (const button of buttons) {
+                button.addEventListener('click', handleButtonClick);
+            }
+
+            // Initial load to show all
+            filterSelection('all');
+        });
+    </script>
+{% endblock %}
+{% block jshead %}
+
+{% endblock %}
+{% block body %}
+    <!-- FAQ Section -->
+    <section class="faqs-section alternate"> 
+        <div class="auto-container">
+            <div class="row">
+                <!-- FAQ Column -->
+                <div class="faq-column col-12">
+                    <div id="myBtnContainer" class="btn-group mb-4" role="group">
+                        <button class="btn btn-primary active" data-filter="all">Show all</button>
+                        {% for item in findEntitiesWithCriteria('App\\Entity\\Category', null, {'published': '1', 'type': '3'}) %}
+                            <button class="btn btn-secondary" data-filter="{{ item.title | replace({' ': '-'}) }}">{{ item.title }}</button>
+                        {% endfor %}
+                    </div>                    
+                    <ul class="accordion-box">
+                        {% for faq in faqs %}
+                        <!--Block-->
+                        <li class="accordion block news-block {{ faq.Category.title | replace({' ': '-'}) }}">
+                            <div class="acc-btn">{{ faq.question }}<div class="icon fa fa-plus-circle"></div></div>
+                            <div class="acc-content">
+                                <div class="content">
+                                    <div class="text">{{ faq.answer }}</div>
+                                </div>
+                            </div>
+                        </li>
+                        <!--Block-->
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End FAQ Section -->
+
+    <!-- Faq Form Section -->
+    <section class="faq-form-section" style="background-image: url(images/background/16.jpg);">
+        <div class="auto-container">
+            <div class="sec-title light text-center">
+                <h2>Didn’t Find Your Answer?</h2>
+                <div class="text">Submit your question</div>
+            </div>
+            
+            <!-- Faq Form -->
+            <div class="faq-form">
+                {{ form_start(form) }}
+                    <div class="response"></div>
+
+                    <div class="form-group">
+                        <input type="text" name="fullName" placeholder="نام و نام خانوادگی خود را وارد کنید">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="email" placeholder="ایمیل خود را وارد کنید">
+                    </div>
+
+                    <div class="form-group">
+                         <textarea name="text" placeholder="متن خود را وارد کنید" id=""></textarea>
+                    </div>
+                    <input type="hidden" name="type" value="1">
+                    <div class="form-group">
+                        <button class="theme-btn btn-style-two" type="submit" id="submit" name="submit-form"><span class="btn-title">Submit Now</span> </button>
+                    </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </section>
+    <!--End Contact Section -->
+{% endblock %}

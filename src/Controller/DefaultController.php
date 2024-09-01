@@ -141,19 +141,70 @@ class DefaultController extends AbstractController
         ]);
     }
 
+    #[Route('/message/{entity}', name: 'app_add_message', methods: ['POST'])]
+    public function message(Request $request, EntityManagerInterface $entityManager, string $entity): Response
+    {
+        $formData = $request->request->all();
+        $comment = new \App\Entity\Comment();
+        $className = 'App\Entity\\' . $entity;
+
+        // Retrieve the entity instance based on the provided entity type
+        $entityInstance = $entityManager->getRepository($className)->find($formData['article'] ?? $formData['product']);
+
+        $comment->setFullName($formData['fullName'])
+            ->setText($formData['text'])
+            ->setPhone($formData['email'])
+            ->setType($formData['type'])
+            ->setCdate(new \DateTime());
+
+        // Conditionally set the appropriate relationship
+        if ($entity === 'Article') {
+            $comment->setArticle($entityInstance);
+        } elseif ($entity === 'Product') {
+            $comment->setProduct($entityInstance);
+        } else {
+            throw $this->createNotFoundException('Invalid entity type.');
+        }
+
+        $entityManager->persist($comment);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Your message was added successfully.');
+
+        return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('app_homepage'));
+    }    
+    
     #[Route('/contact-us', name: 'app_contact_new', methods: ['GET', 'POST'])]
     public function contact(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        return $this->handleContactUsForm($request, $entityManager, 'contact_us/new.html.twig');
+    }
+
+    #[Route('/faqs', name: 'app_faqs', methods: ['GET', 'POST'])]
+    public function faqs(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $faqRepository = $entityManager->getRepository('App\Entity\Faq');
+        $faqs = $faqRepository->createQueryBuilder('f')
+            ->where('f.published = :published')
+            ->setParameter('published', true)
+            ->getQuery()
+            ->getResult();
+
+        return $this->handleContactUsForm($request, $entityManager, 'default/front/faq.html.twig', ['faqs' => $faqs]);
+    }
+
+    private function handleContactUsForm(Request $request, EntityManagerInterface $entityManager, string $template, array $additionalData = []): Response
     {
         $contactUs = new \App\Entity\ContactUs();
         $form = $this->createForm(\App\Form\ContactUsType::class, $contactUs);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $contactUs->setFullName($formData->getFullName())
-                      ->setText($formData->getText())
-                      ->setEmail($formData->getEmail())
-                      ->setType($formData->getType())
+            $formData = $request->request->all();
+            $contactUs->setFullName($formData['fullName'])
+                      ->setText($formData['text'])
+                      ->setEmail($formData['email'])
+                      ->setType($formData['type'])
                       ->setCdate(new \DateTime());
 
             $entityManager->persist($contactUs);
@@ -164,43 +215,39 @@ class DefaultController extends AbstractController
             return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('app_homepage'));
         }
 
-        return $this->render('contact_us/new.html.twig', [
-            'form' => $form->createView(),
+        return $this->render($template, array_merge(['form' => $form->createView()], $additionalData));
+    }
+   
+    #[Route('/samples/{temp}', name: 'app_samples', methods: ['GET', 'POST'])]
+    public function samples(EntityManagerInterface $entityManager ,string $temp): Response
+    {
+        // Hardcoded user ID
+        $user = $entityManager->getRepository(\App\Entity\User::class)->find(20);
+
+        // Assuming you have an existing UserInformation entity that you want to work with
+        $userInformation = $entityManager->getRepository(\App\Entity\UserInformation::class)->findOneBy(['User' => $user]);
+
+        // Ensure $userInformation is not null before proceeding
+        if (!$userInformation) {
+            throw $this->createNotFoundException('User information not found');
+        }
+
+        // Filter sections with type
+        $sectionsWithType = array_filter($userInformation->getSections()->toArray(), fn($section) => $section->getShtype());
+
+        // Render the template
+        return $this->render("user_information/show/{$temp}.html.twig", [
+            'info' => $userInformation,
+            'type' => $sectionsWithType,
         ]);
     }
     
-#[Route('/message/{entity}', name: 'app_add_message', methods: ['POST'])]
-public function message(Request $request, EntityManagerInterface $entityManager, string $entity): Response
-{
-    $formData = $request->request->all();
-    $comment = new \App\Entity\Comment();
-    $className = 'App\Entity\\' . $entity;
-
-    // Retrieve the entity instance based on the provided entity type
-    $entityInstance = $entityManager->getRepository($className)->find($formData['article'] ?? $formData['product']);
-
-    $comment->setFullName($formData['fullName'])
-        ->setText($formData['text'])
-        ->setPhone($formData['email'])
-        ->setType($formData['type'])
-        ->setCdate(new \DateTime());
-
-    // Conditionally set the appropriate relationship
-    if ($entity === 'Article') {
-        $comment->setArticle($entityInstance);
-    } elseif ($entity === 'Product') {
-        $comment->setProduct($entityInstance);
-    } else {
-        throw $this->createNotFoundException('Invalid entity type.');
-    }
-
-    $entityManager->persist($comment);
-    $entityManager->flush();
-
-    $this->addFlash('success', 'Your message was added successfully.');
-
-    return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('app_homepage'));
-}
-
-
+    #[Route('/about', name: 'app_about')]
+    public function about(Request $request): Response
+    {
+        return $this->render('default/front/about.twig', [
+            'controller_name' => 'about',
+        ]);
+    }    
+    
 }

@@ -15,6 +15,79 @@
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" type="image/x-icon">
     <link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/x-icon">
     {% block style %}{% endblock %}
+    <style> 
+        /* Custom styles for dropdown icon */
+        .navigation .dropdown > a {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .dropdown-icon {
+            font-size: 0.8em; /* Adjust this value for larger or smaller icon size */
+            margin-left: 5px; /* Space between text and icon */
+            transform: translateY(4px); /* Adjust this value to move the icon up or down */
+        }
+
+        /* Optionally, if you want to ensure the icon is aligned with the text baseline */
+        .navigation .dropdown > a {
+            line-height: 1.2; /* Adjust line height for proper vertical alignment */
+        }        
+        /* Container for the auth buttons */
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            margin-left: auto; /* Aligns buttons to the right */
+        }
+
+        /* General button styles */
+        .auth-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-left: 15px; /* Space between buttons */
+        }
+
+        /* Login button specific styles */
+        .login-btn {
+            background-color: #007bff; /* Primary color */
+            color: white;
+            border: 2px solid #007bff;
+        }
+
+        .login-btn:hover {
+            background-color: white;
+            color: #007bff;
+            border-color: #007bff;
+        }
+
+        /* Register button specific styles */
+        .register-btn {
+            background-color: white;
+            color: #28a745; /* Success color */
+            border: 2px solid #28a745;
+        }
+
+        .register-btn:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+        /* Optional: Adjust spacing for buttons on smaller screens */
+        @media (max-width: 768px) {
+            .auth-buttons {
+                margin-top: 15px;
+            }
+
+            .auth-btn {
+                margin-left: 0;
+                margin-right: 15px; /* Add space between buttons on small screens */
+            }
+        }
+
+    </style>    
     <!-- Responsive -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -85,68 +158,53 @@
                         <div class="nav-outer clearfix">
                             <!--Mobile Navigation Toggler-->
                             <div class="mobile-nav-toggler"><span class="icon flaticon-menu"></span></div>
-
                             <!-- Main Menu -->
                             <nav class="main-menu navbar-expand-md navbar-light">
                                 <div class="collapse navbar-collapse clearfix" id="navbarSupportedContent">
                                     <ul class="navigation clearfix">
-                                        <li><a href="index.html">Home</a>
+                                        <li class="{{ app.request.attributes.get('_route') == 'app_home' ? 'current' : '' }}">
+                                            <a href="{{ path('app_home') }}">خانه</a>
                                         </li>
-                                        <li class="dropdown"><a href="{{ path('products_show') }}">رزومه</a>
+                                        <li class="dropdown {{ app.request.attributes.get('_route') in ['products_show', 'app_user_information_new'] ? 'current' : '' }}">
+                                            <a href="{{ path('products_show') }}">رزومه <i class="fas fa-chevron-down dropdown-icon"></i></a>
                                             <ul>
-                                                <li><a href="services.html">ساخت رزومه</a></li>
-                                                <li><a href="service-detail.html">نمونه رزومه های تکمیل شده</a></li>
-                                                <li><a href="service-detail.html">قالب های رزومه</a></li>
-                                                <li><a href="service-detail.html">Hang Paintings</a></li>
-                                                <li><a href="service-detail.html">Manufactur Furniture</a></li>
-                                                <li><a href="service-detail.html">Commercial work</a></li>
-                                                <li><a href="service-detail.html">Furniture Design</a></li>
+                                                <li class="{{ app.request.attributes.get('_route') == 'app_user_information_new' ? 'current' : '' }}">
+                                                    <a href="{{ path('app_user_information_new') }}">ساخت رزومه</a>
+                                                </li>
+                                                <li class="{{ app.request.attributes.get('_route') == 'products_show' ? 'current' : '' }}">
+                                                    <a href="{{ path('products_show') }}">نمونه رزومه‌های تکمیل‌شده</a>
+                                                </li>
+                                                <li><a href="{{ path('products_show') }}">قالب‌های رزومه</a></li>
+                                                <li><a href="service-detail.html">رزومه چیست؟</a></li>
                                             </ul>
                                         </li>
-                                        <li class="dropdown"><a href="projects.html">Projects</a>
-                                            <ul>
-                                                <li><a href="projects.html">Projects</a></li>
-                                                <li><a href="project-detail.html">Project Detail</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="dropdown">
+                                        <li class="{{ app.request.attributes.get('_route') == 'articles_show' ? 'current' : '' }}">
                                             <a href="{{ path('articles_show') }}">مقالات</a>
                                         </li>
-                                        <li class="dropdown"><a href="index.html#">Shop</a>
+                                        <li class="dropdown {{ app.request.attributes.get('_route') in ['projects_show', 'project_detail'] ? 'current' : '' }}">
+                                            <a href="projects.html">کمک می‌خوام! <i class="fas fa-chevron-down dropdown-icon"></i></a>
                                             <ul>
-                                                <li><a href="shop.html">Shop</a></li>
-                                                <li><a href="shop-single.html">Product Details</a></li>
-                                                <li><a href="shopping-cart.html">Cart Page</a></li>
-                                                <li><a href="checkout.html">Checkout Page</a></li>
-                                                <li><a href="login.html">Registration Page</a></li>
+                                                <li><a href="projects.html">چگونه یک رزومه بسازم؟</a></li>
+                                                <li><a href="project-detail.html">سوالات متداول</a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="{{ path('app_contact_new') }}">تماس با ما</a></li>
-                                        <li class="dropdown"><a href="about.html">About</a>
-                                            <ul>
-                                                <li><a href="about.html">About Us</a></li>
-                                                <li><a href="faqs.html">FAQ's</a></li>
-                                                <li><a href="team.html">Team</a></li>
-                                                <li><a href="pricing.html">Pricing</a></li>
-                                                <li><a href="coming-soon.html">Coming Soon</a></li>
-                                            </ul>
+                                        <li class="{{ app.request.attributes.get('_route') == 'app_contact_new' ? 'current' : '' }}">
+                                            <a href="{{ path('app_contact_new') }}">تماس با ما</a>
+                                        </li>
+                                        <li class="{{ app.request.attributes.get('_route') == 'app_about' ? 'current' : '' }}">
+                                            <a href="{{ path('app_about') }}">درباره‌ی ما</a>
                                         </li>
                                     </ul>
+
+                                    <!-- Custom Login and Register Buttons -->
+                                    <div class="auth-buttons">
+                                        <a href="" class="auth-btn login-btn">ورود</a>
+                                        <a href="" class="auth-btn register-btn">ثبت‌نام</a>
+                                    </div>
                                 </div>
                             </nav>
-                            <!-- Main Menu End-->
+                            <!-- Main Menu End -->
 
-                            <div class="outer-box">
-                                <!-- Shoppping Car -->
-                                <div class="cart-btn">
-                                    <a href="index.html#"><i class="icon flaticon-shopping-bag"></i> <span class="count">2</span></a>
-                                </div>
-
-                                <!-- Btn Box -->
-                                <div class="btn-box">
-                                    <a href="contact.html" class="theme-btn btn-style-one"><span class="btn-title">Appointment</span> </a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -197,7 +255,29 @@
                 {% endfor %}
             </div>
         {% endfor %}
+    {% block breadcrumbs %}
+        {% if breadcrumbs is defined %}
+            <section class="page-title">
+                <div class="auto-container clearfix">
+                    <h1>{{ title }}</h1>
+                    <ul class="bread-crumb clearfix">
+                        {% for breadcrumb in breadcrumbs %}
+                            <li class="">
+                                {% if not loop.last %}
+                                    <a href="{{ breadcrumb.url }}">{{ breadcrumb.label|raw }}</a>
+                                {% else %}
+                                    {{ breadcrumb.label|raw }}
+                                {% endif %}
+                            </li>
+                        {% endfor %}                        
+                    </ul>
+                </div>
+            </section>
+        {% endif %}
+    {% endblock %}
+    <!--Page Title-->
 
+    <!--End Page Title-->    
         {% block body %}
             <!-- Banner Section -->
             <section class="banner-section">
@@ -280,7 +360,6 @@
                 </div>
             </section>
             <!-- End About Us -->
-
             <!-- Services Section -->
             <section class="services-section">
                 <div class="auto-container">
@@ -301,7 +380,7 @@
                     <div class="carousel-outer">
                         <!-- Services Carousel -->
                         <div class="services-carousel owl-carousel owl-theme">
-                            {% for item in findEntitiesWithCriteria('App\\Entity\\Product', 10, {'published': '1'}) %}
+{% for item in findEntitiesWithCriteria('App\\Entity\\Product', null, {'published': '1'},'order', 'ASC') %}
                                 <div class="service-block">
                                     <div class="inner-box">
                                         <div class="image-box">
@@ -322,44 +401,38 @@
                 </div>
             </section>
             <!-- End service Section -->
-
-            <!-- Services Section -->
-            <section class="services-section">
+            <!-- News Section -->
+            <section class="news-section">
                 <div class="auto-container">
-                    <div class="row">
-                        <div class="col-lg-8 col-md-12">
-                            <div class="sec-title">
-                                <h2>Our Services</h2>
-                                <div class="text">What We Provide For You check now and deside it<br> do you want now this</div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-12">
-                            <div class="right-btn text-right">
-                                <a href="about.html" class="theme-btn btn-style-two"><span class="btn-title">All Services</span></a>
-                            </div>
-                        </div>
+                    <div class="sec-title">
+                        <h2>سلام</h2>
+                        <div class="text">سلام</div>
                     </div>
 
-                    <div class="carousel-outer">
-                        <!-- Services Carousel -->
-                        <div class="services-carousel owl-carousel owl-theme">
-                            {% for item in findEntitiesWithCriteria('App\\Entity\\Article', 10, {'published': '1'}) %}
-                                <div class="service-block">
-                                    <div class="inner-box">
-                                        <div class="image-box">
-                                            <figure class="image"><a href="service-detail.html"><img src="{{ item.Image.path ~ '/770x350_' ~ item.Image.name ~ '.webp' }}" alt=""></a></figure>
-                                        </div>
-                                        <div class="lower-content">
-                                            <h4><a href="service-detail.html">{{ item.title }}</a></h4>
-                                            <div class="text rtl">{{ item.metadesc|length > 65 ? item.metadesc|slice(0, 65)|trim('.', 'right') ~ '...' : item.metadesc }}
-                                            </div> 
-                                            <div class="btn-box"><a href="{{ path('article_show', {'url' : item.url}) }}" class="btn btn-success pl-5 pr-5">مشاهده ی بیشتر</a></div>
-                                        </div>
+                    <div class="row">
+                        {% for item in findEntitiesWithCriteria('App\\Entity\\Article', 10, {'published': '1'}) %}       
+                            <!-- News Block -->
+                            <div class="news-block col-lg-4 col-md-6 col-sm-12">
+                                <div class="inner-box">
+                                    <div class="image-box">
+                                        <figure class="image"><a href="{{ path('article_show', {'url' : item.url}) }}"><img src="{{ item.Image.path ~ '/770x350_' ~ item.Image.name ~ '.webp' }}" alt=""></a></figure>
+                                    </div>
+                                    <div class="lower-content">
+                                        <div class="post-date"><span class="far fa-calendar"></span>{{ item.cdate|localizeddatetr('custom', 'none', 'fa_IR@calendar=persian', 'Asia/Tehran', null) }}</div>
+                                        <ul class="post-info">
+                                            <li><span class="far fa-user"></span> ادمین | </li>
+                                            <li><a href="{{ path('articles_by_item', { entity : 'Article' ,item: 'category', itemtitle: item.Category.title }) }}">{{ item.Category.title }}</a></li>
+                                        </ul>
+                                        <h4><a href="{{ path('article_show', {'url' : item.url}) }}">{{ item.title }}</a></h4>
+                                        <div class="btn-box"><a href="{{ path('article_show', {'url' : item.url}) }}" class="read-more">مشاهده بیشتر<span class="fa fa-arrow-right"></span></a></div>
                                     </div>
                                 </div>
-                            {% endfor %}
-                        </div>
+                            </div>
+                        {% endfor %}
                     </div>
+                </div>
+            </section>
+            <!--End News Section Two -->                        
                 </div>
             </section>
             <!-- End service Section -->
@@ -795,72 +868,6 @@
             </section>
             <!--End Offer Section -->
 
-            <!-- News Section -->
-            <section class="news-section">
-                <div class="auto-container">
-                    <div class="sec-title">
-                        <h2>News & Artical</h2>
-                        <div class="text">You read now our latest news and artical</div>
-                    </div>
-
-                    <div class="row">
-                        <!-- News Block -->
-                        <div class="news-block col-lg-4 col-md-6 col-sm-12">
-                            <div class="inner-box">
-                                <div class="image-box">
-                                    <figure class="image"><a href="blog-detail.html"><img src="{{ asset('front/images/resource/news-1.jpg') }}" alt=""></a></figure>
-                                </div>
-                                <div class="lower-content">
-                                    <div class="post-date"><span class="far fa-calendar"></span> Jan 01, 2020</div>
-                                    <ul class="post-info">
-                                        <li><span class="far fa-user"></span> By Admin | </li>
-                                        <li><a href="index.html#">General Carpentry</a></li>
-                                    </ul>
-                                    <h4><a href="blog-detail.html">Woodworker treak truned into furniture for exhibition.</a></h4>
-                                    <div class="btn-box"><a href="index.html#" class="read-more">Read More <span class="fa fa-arrow-right"></span></a></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- News Block -->
-                        <div class="news-block col-lg-4 col-md-6 col-sm-12">
-                            <div class="inner-box">
-                                <div class="image-box">
-                                    <figure class="image"><a href="blog-detail.html"><img src="{{ asset('front/images/resource/news-2.jpg') }}" alt=""></a></figure>
-                                </div>
-                                <div class="lower-content">
-                                    <div class="post-date"><span class="far fa-calendar"></span> Jan 02, 2020</div>
-                                    <ul class="post-info">
-                                        <li><span class="far fa-user"></span> By Admin | </li>
-                                        <li><a href="index.html#">General Carpentry</a></li>
-                                    </ul>
-                                    <h4><a href="blog-detail.html">Home Repair and Maintain safe now in the rantain.</a></h4>
-                                    <div class="btn-box"><a href="index.html#" class="read-more">Read More <span class="fa fa-arrow-right"></span></a></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- News Block -->
-                        <div class="news-block col-lg-4 col-md-6 col-sm-12">
-                            <div class="inner-box">
-                                <div class="image-box">
-                                    <figure class="image"><a href="blog-detail.html"><img src="{{ asset('front/images/resource/news-3.jpg') }}" alt=""></a></figure>
-                                </div>
-                                <div class="lower-content">
-                                    <div class="post-date"><span class="far fa-calendar"></span> Jan 03, 2020</div>
-                                    <ul class="post-info">
-                                        <li><span class="far fa-user"></span> By Admin | </li>
-                                        <li><a href="index.html#">General Carpentry</a></li>
-                                    </ul>
-                                    <h4><a href="blog-detail.html">Good furniture is now on persale in showroom in Dec.</a></h4>
-                                    <div class="btn-box"><a href="index.html#" class="read-more">Read More <span class="fa fa-arrow-right"></span></a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!--End News Section Two -->
         {% endblock %}
         <!-- Main Footer -->
         <footer class="main-footer" style="background-image: url(images/background/12.png);">

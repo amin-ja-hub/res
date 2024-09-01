@@ -9,7 +9,7 @@
 }
 @media (min-width:600px)  { 
     .res-img{
-        height: 450px !important;
+        height: 550px !important;
     }
 }
 
@@ -31,7 +31,7 @@
                                         {% set imageUrl = (product.Image is not null and product.Image.path is not null and product.Image.name is not null) 
                                             ? product.Image.path ~ '/770x350_' ~ product.Image.name ~ '.webp' 
                                             : null %}
-                                        <a href="{{ imageUrl }}" class="lightbox-image" data-fancybox="gallery">
+                                            <a href="{{ imageUrl }}" class="lightbox-image" data-fancybox="gallery">
                                             {% if imageUrl is not null %}
                                                 <img class="img-fluid res-img rounded shadow" src="{{ imageUrl }}" alt="Project Image">
                                             {% endif %}
@@ -44,7 +44,7 @@
                             <div class="col-md-4 col-lg-4 col-sm-12">
                                 <!-- Latest News -->
                                 <div class="sidebar-widget latest-news">
-                                    <div class="sidebar-title"><h2>آخرین مقالات</h2></div>
+                                    <div class="sidebar-title"><h2>قالب های مرتبط</h2></div>
                                     <div class="widget-content">
                                                 {% set relatedProducts = findEntitiesWithCriteria('App\\Entity\\Product', 3, {'published': '1', 'category': product.category.id, 'id !=': product.id}) %}
                                                 {% for item in relatedProducts %}

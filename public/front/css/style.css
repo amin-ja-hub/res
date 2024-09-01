@@ -79,8 +79,8 @@ Tags: one-column, two-columns, right-sidebar, custom-header, custom-menu, editor
 
 /*
 	font-family: 'PT Serif', serif;
-	font-family: 'Montserrat', sans-serif;
-	font-family: 'Poppins', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
+	font-family: 'Poppins', IRANSansWeb;
 */
 
 @import url('flaticon.css');
@@ -99,7 +99,14 @@ Tags: one-column, two-columns, right-sidebar, custom-header, custom-menu, editor
 ====================================================================
 
  ***/
-
+@font-face {
+  font-family: "IRANSansWeb";
+  src: url("../fonts/IRANSansWeb.eot"); /* IE */
+  src: url("../fonts/IRANSansWeb.eot@") format("embedded-opentype"), /* IE */
+  url("../fonts/IRANSansWeb.woff") format("woff"), /* Modern Browsers */
+  url("../fonts/IRANSansWeb.ttf") format("truetype"); /* Safari, Android, iOS */
+  font-weight: normal;
+}
 *{
 	margin:0px;
 	padding:0px;
@@ -125,7 +132,7 @@ body {
 	background:#ffffff;
 	-webkit-font-smoothing: antialiased;
 	-moz-font-smoothing: antialiased;
-	font-family: 'Montserrat', sans-serif;
+	font-family: IRANSansWeb;
 }
 
 a{
@@ -147,7 +154,7 @@ h1,h2,h3,h4,h5,h6 {
 	margin:0px;
 	background:none;
 	line-height:1.2em;
-	font-family: 'Poppins', sans-serif;
+	font-family: IRANSansWeb;
 	color: #353535;
 }
 
@@ -412,7 +419,7 @@ ul,li{
     font-weight: 400;
     padding-left: 30px;
     margin-bottom: 5px;
-    font-family: "Montserrat", sans-serif;
+    font-family: "Montserrat", IRANSansWeb;
 }
 
 .list-style-two li a{
@@ -760,7 +767,7 @@ img{
 .main-menu{
 	position:relative;
 	float:left;
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
 }
 
 .main-menu .navbar-header{
@@ -2783,7 +2790,7 @@ img{
     font-weight: 600;
     text-transform: capitalize;
     margin-bottom: 20px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', IRANSansWeb;
 }
 
 .video-banner .text{
@@ -3254,7 +3261,7 @@ img{
 	line-height: 1.2em;
 	color: #353535;
 	font-weight: 500;
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
 	-webkit-transition: all 300ms ease;
 	-moz-transition: all 300ms ease;
 	-ms-transition: all 300ms ease;
@@ -4106,7 +4113,7 @@ img{
 	font-weight: 700;
 	margin-right: 10px;
 	color: #ab7442;
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
 }
 
 .about-us .about-years h3{
@@ -5259,7 +5266,7 @@ img{
 	position:relative;
 	display: inline-block;
 	margin: 0;
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
 	text-transform: uppercase;
 	font-weight: 600;
 }
@@ -7055,7 +7062,7 @@ img{
 	font-size: 14px;
 	line-height: 20px;
 	color: #ffffff;
-	font-family: 'Poppins', sans-serif;
+	font-family: 'Poppins', IRANSansWeb;
 }
 
 .news-block .post-info{
@@ -7070,7 +7077,7 @@ img{
 	line-height: 24px;
 	color: #353535;
 	font-weight: 400;
-	font-family: "Poppins", sans-serif;
+	font-family: "Poppins", IRANSansWeb;
 }
 
 .news-block .post-info li a{
@@ -7439,7 +7446,7 @@ img{
 	font-weight:600;
 	margin:0;
 	display: inline-block;
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
 }
 
 .blog-detail .post-share-options .tags{
@@ -9013,7 +9020,7 @@ form .response .text-info{
 	-webkit-transition:all 500ms ease;
 	-ms-transition:all 500ms ease;
 	-o-transition:all 500ms ease;
-	font-family: 'Rubik', sans-serif;
+	font-family: 'Rubik', IRANSansWeb;
 }
 
 .blog-cat li:last-child a{
@@ -9118,7 +9125,7 @@ form .response .text-info{
 	font-weight:600;
 	color:#252525;
 	margin-right: 10px;
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
 }
 
 .comments-area .comment-box .date{
@@ -9490,7 +9497,7 @@ form .response .text-info{
 	font-weight:600;
 	color:#353535;
 	line-height:24px;
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
 }
 
 .product-details .basic-details .details-header .item-price del{
@@ -9976,7 +9983,7 @@ form .response .text-info{
 	text-align:center;
 	font-weight: 500;
 	border-left:1px solid #dddddd;
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
 }
 
 .cart-table tbody tr td.total{
@@ -10534,7 +10541,7 @@ form .response .text-info{
 	padding: 30px 30px;
 	box-shadow: 0 0 20px rgba(0,0,0,0.05);
 	margin-bottom: 50px;
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
 }
 
 .order-box .sec-title{
@@ -10917,7 +10924,7 @@ form .response .text-info{
 	border-radius: 20px;
 	box-shadow: 0 0 30px rgba(0,0,0,0.25);
     background-color: rgba(54,54,54,.40);
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', IRANSansWeb;
 	margin:0 15px 20px;
 }
 

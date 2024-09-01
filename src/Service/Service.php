@@ -203,8 +203,13 @@ class Service
         imagedestroy($image);
     }
 
-    public function findEntitiesWithCriteria(string $entityClass, ?int $count = null, array $criteria = [], string $orderByField = 'id'): array
-    {
+    public function findEntitiesWithCriteria(
+        string $entityClass, 
+        ?int $count = null, 
+        array $criteria = [], 
+        string $orderByField = 'id', 
+        string $orderDirection = 'ASC' // New parameter for order direction
+    ): array {
         // Initialize the query builder
         $queryBuilder = $this->em->createQueryBuilder();
 
@@ -212,7 +217,7 @@ class Service
         $queryBuilder
             ->select('e')
             ->from($entityClass, 'e')
-            ->orderBy("e.$orderByField", 'DESC');
+            ->orderBy("e.$orderByField", $orderDirection); // Use the dynamic order direction
 
         // Add criteria to the query
         foreach ($criteria as $field => $value) {
@@ -230,5 +235,6 @@ class Service
         // Execute the query and return the results
         return $queryBuilder->getQuery()->getResult();
     }
+
 
 }

@@ -15,10 +15,21 @@
     .color-link{
         color: #004bca !important;
     }
-    .h-65px{
-        height: 65px;
+    .h-56px{
+        height: 56px;
+    }
+    .h-125px{
+        height: 125px;
     }
 </style>
+{% endblock %}
+{% block breadcrumbs %}
+    {% set breadcrumbs = [
+        {'label': 'خانه', 'url': path('app_home')},
+        {'label': 'محصولات', 'url': path('products_show')}
+    ] %}
+    {% set title = 'محصولات' %}
+    {{ parent() }} {# This ensures the breadcrumbs are rendered in the base template #}
 {% endblock %}
 {% block body %}
 
@@ -45,8 +56,9 @@
                                     </a>
                                 </figure>
                             </div>
-                            <div class="h-65px text-center">
-                                <h4><a class="color-link" href="{{ path('product_show', {'url': product.url}) }}">{{ product.title|length > 45 ? product.title|slice(0, 45)|trim('.', 'right') ~ '...' : product.title }}</a></h4>
+                            <div class="h-125px text-center">
+                                <h4><a class="color-link h-56px" href="{{ path('product_show', {'url': product.url}) }}">{{ product.title|length > 45 ? product.title|slice(0, 45)|trim('.', 'right') ~ '...' : product.title }}</a></h4>
+                                <a href="{{ path('app_samples',{'temp': product.htmlFile}) }}" class="btn btn-primary"> نمومه رزومه تکمیل شده</a>
                             </div>
                         </div>
                     </div>
@@ -59,35 +71,35 @@
 
 {% endblock %}
 {% block js %}
-        <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const btnContainer = document.getElementById('myBtnContainer');
-        const buttons = btnContainer.getElementsByClassName('btn');
-        const filterDivs = document.getElementsByClassName('news-block');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnContainer = document.getElementById('myBtnContainer');
+            const buttons = btnContainer.getElementsByClassName('btn');
+            const filterDivs = document.getElementsByClassName('news-block');
 
-        function filterSelection(filter) {
-            for (const div of filterDivs) {
-                const classes = div.className.split(' ');
-                // Match against classes from the second item onwards (skipping grid classes)
-                const match = classes.slice(1).includes(filter);
-                div.style.display = (filter === 'all' || match) ? 'block' : 'none';
+            function filterSelection(filter) {
+                for (const div of filterDivs) {
+                    const classes = div.className.split(' ');
+                    // Match against classes from the second item onwards (skipping grid classes)
+                    const match = classes.slice(1).includes(filter);
+                    div.style.display = (filter === 'all' || match) ? 'block' : 'none';
+                }
             }
-        }
 
-        function handleButtonClick(event) {
-            for (const btn of buttons) {
-                btn.classList.remove('active');
+            function handleButtonClick(event) {
+                for (const btn of buttons) {
+                    btn.classList.remove('active');
+                }
+                event.currentTarget.classList.add('active');
+                filterSelection(event.currentTarget.dataset.filter);
             }
-            event.currentTarget.classList.add('active');
-            filterSelection(event.currentTarget.dataset.filter);
-        }
 
-        for (const button of buttons) {
-            button.addEventListener('click', handleButtonClick);
-        }
+            for (const button of buttons) {
+                button.addEventListener('click', handleButtonClick);
+            }
 
-        // Initial load to show all
-        filterSelection('all');
-    });
+            // Initial load to show all
+            filterSelection('all');
+        });
     </script>
 {% endblock %}
